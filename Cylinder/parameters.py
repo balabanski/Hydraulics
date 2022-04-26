@@ -4,6 +4,8 @@ import json
 c={}
 
 messages={
+    "F1": 'F1 (см2) -площадь поршня ',
+    "F2": 'F2 (см2) -пплощадь кольцевого сечения',
     "d1": 'd1 (мм)-диаметр поршня ',
     "d2": 'd2 (мм)-диаметр штока ',
     "t1":'t1 (сек)-время выдвижения штока',
@@ -23,6 +25,7 @@ messages={
 # файлы для записи и чтения
 
 #file_name = "E:/ГИДРООБОРУДОВАНИЕ/7535  Кран  'PRESTEL'/УСКОРЯЮ PRESTEL/7535_PRESTEL.json"
+#file_name='C:/Python34/MyLessons/Hydraulics/Cylinder/cylinder.json'
 file_name='cylinder.json'
 #file_name ="C:/Python34/MyLessons/Hydraulics/JsonFiles/7535_PRESTEL.json"
 

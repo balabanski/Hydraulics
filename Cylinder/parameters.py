@@ -26,7 +26,8 @@ messages={
 
 #file_name = "E:/ГИДРООБОРУДОВАНИЕ/7535  Кран  'PRESTEL'/УСКОРЯЮ PRESTEL/7535_PRESTEL.json"
 #file_name='C:/Python34/MyLessons/Hydraulics/Cylinder/cylinder.json'
-file_name='cylinder.json'
+#file_name='cylinder.json'
+file_name = 'Cylinder/cylinder.json'
 #file_name ="C:/Python34/MyLessons/Hydraulics/JsonFiles/7535_PRESTEL.json"
 
 

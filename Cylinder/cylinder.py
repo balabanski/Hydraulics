@@ -1,6 +1,6 @@
 from math import sqrt
-from Cylinder.parameters import c, get_par, parameter_input, w_file, r_file
-from Cylinder.debug import *
+from Cylinder.parameters import c, get_par, parameter_input, w_file
+
 
 get_par()# получаю словарь из внешнего фаила или записываю c нулевыми значениями
 
@@ -19,13 +19,15 @@ def F_ring(d, d2):
 
 def func_F_with_dict( key_d, *args):
     def _F_with_dict():
-        d= parameter_input(key_d)# ввод параметра и перезапись файла
+        #d= parameter_input(key_d)# ввод параметра и перезапись файла
+        d = c.get(key_d, 0)
         if len(args)==0:
             f=F_circle(d)
             return f
         if len(args)==1:
             key_d2 = args[0]
-            d2 = parameter_input(key_d2)
+            #d2 = parameter_input(key_d2)
+            d2 = c.get(key_d2, 0)
             f = F_ring(d, d2)
             return f
     return _F_with_dict

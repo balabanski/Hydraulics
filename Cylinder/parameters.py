@@ -1,5 +1,14 @@
 
 import json
+import tkinter as tk
+
+
+
+
+
+font = ['Arial Bold']
+btn_master = dict(bg='#000000', activebackground='#555555',
+                  fg='#ffffff', activeforeground='#ffffff')
 
 c={}
 
@@ -57,6 +66,12 @@ def get_par():
 
 
 # ввод запрашиваемых значений и перезапись файла
+
+
+
+
+
+
 def parameter_input(key):
     par = c.get(key, 0)
     print('параметр {} определён значением {}'.format(messages.get(key), par))
@@ -69,8 +84,8 @@ def parameter_input(key):
         c[key]=par
         w_file() #перезаписываю файл
     return par
-    
-  
+
+
 
 
 '''

@@ -71,7 +71,7 @@ def get_par():
 
 
 
-
+'''
 def parameter_input(key):
     par = c.get(key, 0)
     print('параметр {} определён значением {}'.format(messages.get(key), par))
@@ -85,7 +85,7 @@ def parameter_input(key):
         w_file() #перезаписываю файл
     return par
 
-
+'''
 
 
 '''

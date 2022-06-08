@@ -1,5 +1,5 @@
 from math import sqrt
-from Cylinder.parameters import c, get_par, parameter_input, w_file
+from Cylinder.parameters import c, get_par, w_file
 
 
 get_par()# получаю словарь из внешнего фаила или записываю c нулевыми значениями

@@ -34,50 +34,45 @@ lbl_F1.grid(column=1, row=1)
 def clicked_F1():
     parameter_input('d1')
 
-def parameter_input(key):
-    title_text = "ввод параметра {}".format(messages.get(key))
-    window_ = tk.Tk()
-    window_.title(title_text)
 
-
-    lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0))+\
-               '\n (можешь ввести новое значение в поле справа'+\
-               '\n либо ничего не вводить и оставить прежним)'
-
-    lbl = tk.Label(window_, text= lbl_text,
-              font=(font[0], 15),
-              **btn_master)
-    lbl.grid(column = 0, row = 0)
-
-    def clicked_d():
-        try:
-            par = float(ent.get())
-            c[key] = par
-            w_file() #перезаписываю файл
-            return par
-        except:
-            par = c.get(key, 0)
-            return par
-        finally:
-            lbl_F1.configure(text = F1())
-            lbl_F2.configure(text = F2())
-
-
-
-
-
-
-    ent = tk.Entry(window_,  font=(font[0], 15))
-    ent.grid(column = 1, row = 0)
-
-    btn = tk.Button(window_, text=' подтвердить запись',
-                    command = clicked_d,
-                    font=(font[0], 15))
-    btn.grid(column = 0, row = 1)
+def parameter_input(*keys):
+    def clicked_(lbl1, lbl2, func1, func2):
+        def clicked__():
+            try:
+                par = float(ent.get())
+                c[key] = par
+                w_file()  # перезаписываю файл
+                return par
+            except:
+                par = c.get(key, 0)
+                return par
+            finally:
+                lbl1.configure(text=func1())
+                lbl2.configure(text=func2())
+        return clicked__
+    F1_ = clicked_(lbl_F1, lbl_F2, F1, F2)
+    for key in keys:
+        title_text = "ввод параметра {}".format(messages.get(key))
+        window_ = tk.Tk()
+        window_.title(title_text)
+        lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
+                '\n (можешь ввести новое значение в поле справа' + \
+                '\n либо ничего не вводить и оставить прежним)'
+        lbl = tk.Label(window_, text=lbl_text,
+                    font=(font[0], 15),
+                    **btn_master)
+        lbl.grid(column=0, row=0)
+        ent = tk.Entry(window_, font=(font[0], 15))
+        ent.grid(column=1, row=0)
+        btn = tk.Button(window_, text=' подтвердить запись',
+                        command=F1_,
+                        font=(font[0], 15))
+        btn.grid(column=0, row=1)
+        window_.mainloop()
 
 
 
-    window_.mainloop()
+
 
 
 '''

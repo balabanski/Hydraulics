@@ -1,3 +1,4 @@
+# coding=utf-8
 from Cylinder.cylinder import *
 from Cylinder.parameters import c, messages, file_name
 import tkinter as tk
@@ -32,11 +33,25 @@ lbl_F1 = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_F1.grid(column=1, row=1)
 
 def clicked_F1():
-    parameter_input('d1')
+    command_for_F1()
+
+btn_F1 = tk.Button(window, text='{}'.format(messages['F1']),
+                  font=(font[0], 15), command = clicked_F1, **btn_master)
+btn_F1.grid(column=0, row=1)
 
 
-def parameter_input(*keys):
-    def clicked_(lbl1, lbl2, func1, func2):
+
+lbl_F2 = tk.Label(window, text='результат', font=(font[0], 15))
+lbl_F2.grid(column=1, row=2)
+
+def clicked_F2():
+    command_for_F2()
+
+btn_F2 = tk.Button(window, text='{}'.format(messages['F2']),
+                  font=(font[0], 15), command = clicked_F2, **btn_master)
+btn_F2.grid(column=0, row=2)
+
+def clicked_(lbl1, lbl2, func1, func2):
         def clicked__():
             try:
                 par = float(ent.get())
@@ -50,89 +65,43 @@ def parameter_input(*keys):
                 lbl1.configure(text=func1())
                 lbl2.configure(text=func2())
         return clicked__
-    F1_ = clicked_(lbl_F1, lbl_F2, F1, F2)
-    for key in keys:
-        title_text = "ввод параметра {}".format(messages.get(key))
-        window_ = tk.Tk()
-        window_.title(title_text)
-        lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
-                '\n (можешь ввести новое значение в поле справа' + \
-                '\n либо ничего не вводить и оставить прежним)'
-        lbl = tk.Label(window_, text=lbl_text,
-                    font=(font[0], 15),
-                    **btn_master)
-        lbl.grid(column=0, row=0)
-        ent = tk.Entry(window_, font=(font[0], 15))
-        ent.grid(column=1, row=0)
-        btn = tk.Button(window_, text=' подтвердить запись',
-                        command=F1_,
-                        font=(font[0], 15))
-        btn.grid(column=0, row=1)
-        window_.mainloop()
+_F1 = clicked_(lbl_F1, lbl_F2, F1, F2)
+_F2 = clicked_(lbl_F2, lbl_F1, F2, F1)
 
 
 
 
 
+def parameter_input(func_command, *keys):
+        def _parameter_input():
+            global key
+            for key in keys:
+                window_ = tk.Toplevel()
+                global ent
+                title_text = "ввод параметра {}".format(messages.get(key))
 
-'''
-def clicked_F1():
-    key = 'd1'
-    title_text = "Расчет площади поршня"
-    window_ = tk.Tk()
-    window_.title(title_text)
-    par = c.get(key, 0)
+                window_.title(title_text)
+                lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
+                        '\n (можешь ввести новое значение в поле справа' + \
+                        '\n либо ничего не вводить и оставить прежним)'
+                lbl = tk.Label(window_, text=lbl_text,
+                            font=(font[0], 15),
+                            **btn_master)
+                lbl.grid(column=0, row=0)
 
-    lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), par)+\
-               '\n (можешь ввести новое значение в поле справа)'
+                ent = tk.Entry(window_, font=(font[0], 15))
+                ent.grid(column=1, row=0)
+                btn = tk.Button(window_, text=' подтвердить запись',
+                                command=func_command,
+                                font=(font[0], 15))
+                btn.grid(column=0, row=1)
 
-    def clicked_d(f_d = F_ring):
-        try:
-            c[key] = float(ent.get())
-            w_file() #перезаписываю файл
-            lbl_F2.configure(text = f_d(c[key],c['d2']))
-        except:
-            pass
-        lbl_1.configure(text=F_circle(c[key]))
+                window_.grab_set()
+                window_.wait_window() #запускает локальный цикл событий, который завершается после уничтожения окна
+        return _parameter_input
+command_for_F1 = parameter_input(_F1, 'd1')
+command_for_F2 = parameter_input(_F2, 'd1', 'd2')
 
-    lbl = tk.Label(window_, text= lbl_text,
-              font=(font[0], 15),
-              **btn_master).grid(column = 0, row = 0)
-
-    ent = tk.Entry(window_,  font=(font[0], 15))
-    ent.grid(column = 1, row = 0)
-
-    btn = tk.Button(window_, text='расчет',
-                    command = clicked_d,
-                    font=(font[0], 15))
-    btn.grid(column = 0, row = 1)
-
-    window_.mainloop()
-'''
-
-
-
-
-
-btn_F1 = tk.Button(window, text='{}'.format(messages['F1']),
-                  font=(font[0], 15), **btn_master)
-btn_F1.grid(column=0, row=1)
-
-btn_F1['command'] = clicked_F1
-
-btn_F2 = tk.Button(window, text='{}'.format(messages['F2']),
-                  font=(font[0], 15), **btn_master)
-btn_F2.grid(column=0, row=2)
-lbl_F2 = tk.Label(window, text='результат', font=(font[0], 15))
-lbl_F2.grid(column=1, row=2)
-
-
-def clicked_2():
-    lbl_F2.configure(text=F2())
-    lbl_F1.configure(text=F_circle(c['d1']))
-
-
-btn_F2['command'] = clicked_2
 
 btn_12 = tk.Button(window, text='подбор диаметра поршня (и штока)исходя из заданного давления и силы',
                    font=(font[0], 15), **btn_master)

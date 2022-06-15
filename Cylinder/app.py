@@ -29,78 +29,71 @@ b1 = tk.Button(text="Все параметры", font=(font[0], 13),
 b1.grid(column=0, row=0)
 
 
+
+
+def click_F1():
+    par = F1()
+    lbl_F1.configure(text = par)
+    lbl_F2.configure(text = F_ring(c.get('d1',0), c.get('d2',0)))
+
+btn_F1 = tk.Button(window, text='{}'.format(messages['F1']),
+                  font=(font[0], 15), command = click_F1, **btn_master)
+btn_F1.grid(column=0, row=1)
+
 lbl_F1 = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_F1.grid(column=1, row=1)
 
-def clicked_F1():
-    command_for_F1()
-
-btn_F1 = tk.Button(window, text='{}'.format(messages['F1']),
-                  font=(font[0], 15), command = clicked_F1, **btn_master)
-btn_F1.grid(column=0, row=1)
 
 
+def click_F2():
+    par = F2()
+    lbl_F2.configure(text = par)
+    lbl_F1.configure(text = F_circle(c.get('d1',0)))
+
+btn_F2 = tk.Button(window, text='{}'.format(messages['F2']),
+                  font=(font[0], 15), command = click_F2, **btn_master)
+btn_F2.grid(column=0, row=2)
 
 lbl_F2 = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_F2.grid(column=1, row=2)
 
-def clicked_F2():
-    command_for_F2()
 
-btn_F2 = tk.Button(window, text='{}'.format(messages['F2']),
-                  font=(font[0], 15), command = clicked_F2, **btn_master)
-btn_F2.grid(column=0, row=2)
+def clicked_main(row_,func1,func2, *keys):
+    """
+    функция фабрики закрытия для кнопок основного окна и выбора вариантов
+    """
+    def clicked_():
+        global row
+        row = row_
+        _types = ['{}'.format(messages[key]) for key in keys]
+        print(_types)
+        _type = tk.StringVar()
+        _type.set(_types[0])
+        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 15)) for t in _types]
+        for radio in radios:
+            row = row+1
+            radio.grid(column=0, row = row)
 
-def clicked_(lbl1, lbl2, func1, func2):
-        def clicked__():
-            try:
-                par = float(ent.get())
-                c[key] = par
-                w_file()  # перезаписываю файл
-                return par
-            except:
-                par = c.get(key, 0)
-                return par
-            finally:
-                lbl1.configure(text=func1())
-                lbl2.configure(text=func2())
-        return clicked__
-_F1 = clicked_(lbl_F1, lbl_F2, F1, F2)
-_F2 = clicked_(lbl_F2, lbl_F1, F2, F1)
+        def click():
+            par = None
+            if _type.get() == _types[0]:
+                par = func1()
+            if _type.get() == _types[1]:
+                par = func2()
+            lbl_v.configure(text = par)
+
+        btn = tk.Button(window, text='подтвердить выбор',
+                      font=(font[0], 15), command = click, **btn_master)
+        btn.grid(column=0, row = row+1)
+        print(row)
+    return clicked_
 
 
-
-
-
-def parameter_input(func_command, *keys):
-        def _parameter_input():
-            global key
-            for key in keys:
-                window_ = tk.Toplevel()
-                global ent
-                title_text = "ввод параметра {}".format(messages.get(key))
-
-                window_.title(title_text)
-                lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
-                        '\n (можешь ввести новое значение в поле справа' + \
-                        '\n либо ничего не вводить и оставить прежним)'
-                lbl = tk.Label(window_, text=lbl_text,
-                            font=(font[0], 15),
-                            **btn_master)
-                lbl.grid(column=0, row=0)
-
-                ent = tk.Entry(window_, font=(font[0], 15))
-                ent.grid(column=1, row=0)
-                btn = tk.Button(window_, text=' подтвердить запись',
-                                command=func_command,
-                                font=(font[0], 15))
-                btn.grid(column=0, row=1)
-
-                window_.grab_set()
-                window_.wait_window() #запускает локальный цикл событий, который завершается после уничтожения окна
-        return _parameter_input
-command_for_F1 = parameter_input(_F1, 'd1')
-command_for_F2 = parameter_input(_F2, 'd1', 'd2')
+btn_v = tk.Button(window, text='Расчёт фактической скорости(м/сек)',
+                  font=(font[0], 15), command = clicked_main(3,v1,v2,'v1','v2'), **btn_master)
+btn_v.grid(column=0, row=3)
+lbl_v = tk.Label(window, text='результат', font=(font[0], 15))
+lbl_v.grid(column=1, row=3)
 
 
 btn_12 = tk.Button(window, text='подбор диаметра поршня (и штока)исходя из заданного давления и силы',

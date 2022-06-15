@@ -1,5 +1,5 @@
 from math import sqrt
-from Cylinder.parameters import c, get_par, w_file
+from Cylinder.parameters import c, get_par, w_file, parameter_input
 
 
 get_par()# получаю словарь из внешнего фаила или записываю c нулевыми значениями
@@ -19,14 +19,14 @@ def F_ring(d, d2):
 
 def func_F_with_dict( key_d, *args):
     def _F_with_dict():
-        #d= parameter_input(key_d)# ввод параметра и перезапись файла
+        parameter_input(key_d)# ввод параметра и перезапись файла
         d = c.get(key_d, 0)
         if len(args)==0:
             f=F_circle(d)
             return f
         if len(args)==1:
             key_d2 = args[0]
-            #d2 = parameter_input(key_d2)
+            parameter_input(key_d2)
             d2 = c.get(key_d2, 0)
             f = F_ring(d, d2)
             return f
@@ -59,12 +59,14 @@ def v(L, t ):
 
 def func_v_with_dict(func_v, key_L, key_t, key_v):
     def _v_with_dict():
-        L = parameter_input(key_L)
-        t= parameter_input(key_t)            
+        parameter_input(key_L)
+        parameter_input(key_t)
+        L = c.get(key_L, 0)
+        t = c.get(key_t, 0)
         v=func_v(L, t)
         c[key_v] = v
         w_file()
-        return v 
+        return v
     return _v_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
 v1  = func_v_with_dict(v,  "L1",  "t1","v1")
@@ -82,6 +84,7 @@ def Q(F, v, n_ob = 0.95):
 def func_Q_with_dict(func_F,funk_Q,  funk_v, key_v, key_q):
     def Q_with_dict():
         F = func_F()
+        parameter_input(key_v)
         v = c.get(key_v,0)
         if v == 0:
             funk_v()

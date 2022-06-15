@@ -1,24 +1,20 @@
-
 import json
 import tkinter as tk
-
-
-
 
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#555555',
                   fg='#ffffff', activeforeground='#ffffff')
 
-c={}
+c = {}
 
-messages={
+messages = {
     "F1": 'F1 (см2) -площадь поршня ',
     "F2": 'F2 (см2) -пплощадь кольцевого сечения',
     "d1": 'd1 (мм)-диаметр поршня ',
     "d2": 'd2 (мм)-диаметр штока ',
-    "t1":'t1 (сек)-время выдвижения штока',
-    "t2":'t2 (сек)-время втягивания штока',
+    "t1": 't1 (сек)-время выдвижения штока',
+    "t2": 't2 (сек)-время втягивания штока',
     "v1": "v1 (м/сек)скорость при выдвижении штока ",
     "v2": "v2 (м/сек)скорость при втягивании штока ",
     "Q1": "Q1 (л/мин)- требуемая подача в поршневую полость",
@@ -33,42 +29,73 @@ messages={
 }
 # файлы для записи и чтения
 
-#file_name = "E:/ГИДРООБОРУДОВАНИЕ/7535  Кран  'PRESTEL'/УСКОРЯЮ PRESTEL/7535_PRESTEL.json"
-#file_name='C:/Python34/MyLessons/Hydraulics/Cylinder/cylinder.json'
+# file_name = "E:/ГИДРООБОРУДОВАНИЕ/7535  Кран  'PRESTEL'/УСКОРЯЮ PRESTEL/7535_PRESTEL.json"
+file_name = 'C:/Python34/MyLessons/Hydraulics/Cylinder/cylinder.json'
 #file_name='cylinder.json'
-file_name = 'Cylinder/cylinder.json'
+#file_name = 'Cylinder/cylinder.json'
 #file_name ="C:/Python34/MyLessons/Hydraulics/JsonFiles/7535_PRESTEL.json"
 
 
 #  запись
 def w_file():
-    with open( file_name, 'w')as file:
-        json.dump(c, file,sort_keys=True, indent=4)
+    with open(file_name, 'w')as file:
+        json.dump(c, file, sort_keys=True, indent=4)
 
 
 # чтение   
-def r_file():   
+def r_file():
     with open(file_name, 'r') as file:
-        c_read=json.load(file)
+        c_read = json.load(file)
     for key, val in c_read.items():
-        c[key]=val
-        if  c[key] != 0:
-            print('    {}:{:>2}'.format(key,val))
+        c[key] = val
+        if c[key] != 0:
+            print('    {}:{:>2}'.format(key, val))
+
 
 # получаю словарь из внешнего фаила или записываю
 def get_par():
     try:
         r_file()
-    except :
+    except:
         print("запись имеющихся  значений в файл {}".format(file_name))
         w_file()
-        
 
 
 # ввод запрашиваемых значений и перезапись файла
+def parameter_input(*keys):
+    def clicked():
+        try:
+            par = float(ent.get())
+            c[key] = par
+            w_file()  # перезаписываю файл
+        except:
+            par = c.get(key, 0)
+        return par
 
+    for key in keys:
+        window_ = tk.Toplevel()
+        global ent
+        title_text = "ввод параметра {}".format(messages.get(key))
 
+        window_.title(title_text)
+        lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
+                   '\n (можешь ввести новое значение в поле справа' + \
+                   '\n либо ничего не вводить и оставить прежним)'
+        lbl = tk.Label(window_, text=lbl_text,
+                       font=(font[0], 15),
+                       **btn_master)
+        lbl.grid(column=0, row=0)
 
+        ent = tk.Entry(window_, font=(font[0], 15))
+        ent.grid(column=1, row=0)
+        btn = tk.Button(window_, text=' подтвердить запись',
+                        command=clicked,
+                        font=(font[0], 15))
+        btn.grid(column=0, row=1)
+
+        window_.grab_set()
+        window_.wait_window()  #запускает локальный цикл событий, который
+        # завершается после уничтожения окна
 
 
 '''
@@ -86,7 +113,6 @@ def parameter_input(key):
     return par
 
 '''
-
 
 '''
 #запись

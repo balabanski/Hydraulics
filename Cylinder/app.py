@@ -31,6 +31,41 @@ b1.grid(column=0, row=0)
 
 
 
+def clicked_main(row_,lbl_result,func1,func2,func3, *keys):
+    """
+    функция фабрики закрытия - расширяем текущее окно дополнительными виджетами
+    -для возможности выбора вариантов исполнения чего-либо
+    -для вывода полученного результата
+    """
+
+    def clicked_():
+        global row
+        row = row_
+        _types = ['{}'.format(messages[key]) for key in keys]
+        _type = tk.StringVar()
+        _type.set(_types[0])
+        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 15)) for t in _types]
+        for radio in radios:
+            row = row+1
+            radio.grid(column=0, row = row)
+
+        def click():
+            par = None
+            if _type.get() == _types[0]:
+                par = func1()
+            if _type.get() == _types[1]:
+                par = func2()
+            else:
+                par = func3()
+            lbl_result.configure(text = par)
+
+        btn = tk.Button(text='подтвердить выбор',
+                      font=(font[0], 15), command = click, **btn_master)
+        btn.grid(column=0, row = row+1)
+        print(row)
+    return clicked_
+
+
 def click_F1():
     par = F1()
     lbl_F1.configure(text = par)
@@ -58,50 +93,30 @@ lbl_F2 = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_F2.grid(column=1, row=2)
 
 
-def clicked_main(row_,func1,func2, *keys):
-    """
-    функция фабрики закрытия для кнопок основного окна и выбора вариантов
-    """
-    def clicked_():
-        global row
-        row = row_
-        _types = ['{}'.format(messages[key]) for key in keys]
-        print(_types)
-        _type = tk.StringVar()
-        _type.set(_types[0])
-        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 15)) for t in _types]
-        for radio in radios:
-            row = row+1
-            radio.grid(column=0, row = row)
 
-        def click():
-            par = None
-            if _type.get() == _types[0]:
-                par = func1()
-            if _type.get() == _types[1]:
-                par = func2()
-            lbl_v.configure(text = par)
-
-        btn = tk.Button(window, text='подтвердить выбор',
-                      font=(font[0], 15), command = click, **btn_master)
-        btn.grid(column=0, row = row+1)
-        print(row)
-    return clicked_
-
-
-btn_v = tk.Button(window, text='Расчёт фактической скорости(м/сек)',
-                  font=(font[0], 15), command = clicked_main(3,v1,v2,'v1','v2'), **btn_master)
-btn_v.grid(column=0, row=3)
 lbl_v = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_v.grid(column=1, row=3)
+btn_v = tk.Button(window, text='v(м/сек) - расчёт фактической скорости',
+                  font=(font[0], 15), command = clicked_main(3,lbl_v,v1,v2,None,'v1','v2'), **btn_master)
+btn_v.grid(column=0, row=3)
+
+
+
+lbl_Q = tk.Label(window, text='результат', font=(font[0], 15))
+lbl_Q.grid(column=1, row=7)
+btn_Q = tk.Button(window, text='Q(л/мин) - расчёт требуемого(фактического) расхода',
+                  font=(font[0], 15), command = clicked_main(7,lbl_Q, Q1,Q2,Q1_diff,'Q1','Q2','Q1_diff'), **btn_master)
+btn_Q.grid(column=0, row=7)
+
+
 
 
 btn_12 = tk.Button(window, text='подбор диаметра поршня (и штока)исходя из заданного давления и силы',
                    font=(font[0], 15), **btn_master)
-btn_12.grid(column=0, row=9)
+btn_12.grid(column=0, row=30)
 lbl_12 = tk.Label(window, text='результат',
                   font=(font[0], 15))
-lbl_12.grid(column=1, row=9)
+lbl_12.grid(column=1, row=30)
 
 
 def clicked_12():

@@ -1,5 +1,7 @@
 import json
 import tkinter as tk
+from types import FunctionType
+from pathlib import Path
 
 
 font = ['Arial Bold']
@@ -28,14 +30,12 @@ messages = {
     "L1": 'L 1(мм)- ход поршня при выдвижении штока ',
     "L2": 'L 2(мм)- ход поршня при втягивании штока ',
 }
+
 # файлы для записи и чтения
 
 # file_name = "E:/ГИДРООБОРУДОВАНИЕ/7535  Кран  'PRESTEL'/УСКОРЯЮ PRESTEL/7535_PRESTEL.json"
-file_name = 'C:/Python34/MyLessons/Hydraulics/Cylinder/cylinder.json'
-#file_name='cylinder.json'
-#file_name = 'Cylinder/cylinder.json'
-#file_name ="C:/Python34/MyLessons/Hydraulics/JsonFiles/7535_PRESTEL.json"
-
+file_name = 'C:/Python34/MyLessons/Hydraulics/Cylinder/JsonFiles/cylinder.json'
+#file_name = str(Path(Path.cwd(),'Cylinder','JsonFiles', 'cylinder.json'))# работает только с main.py
 
 #  запись
 def w_file():
@@ -103,6 +103,39 @@ def parameter_input(*keys):
         window_.grab_set()
         window_.wait_window()  #запускает локальный цикл событий, который
         # завершается после уничтожения окна
+
+
+def clicked_main_menu(row_,lbl_result,**kwargs):
+    """
+    функция фабрики закрытия - расширяем текущее окно дополнительными виджетами
+    -для возможности выбора вариантов исполнения чего-либо
+    -для вычисления и вывода полученного результата
+    :)
+    """
+    def clicked_():
+        row = row_
+        _types = [messages[key] for key, funk in sorted(kwargs.items())]
+        _type = tk.StringVar()
+        _type.set(_types[0])
+        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 15)) for t in _types]
+        for radio in radios:
+            row = row+1
+            radio.grid(column=0, row = row)
+
+        def click():
+            for key, funk in kwargs.items():
+                if _type.get() == messages[key] :
+                    if type(funk) is FunctionType:
+                        par = funk()
+                        lbl_result.configure(text = par)
+                    else:
+                        lbl_result.configure(text = 'это не фунция')
+
+        btn = tk.Button(text='подтвердить выбор',font=(font[0], 15),
+                        command = click, **btn_master)
+        btn.grid(column=0, row = row+1)
+        print(row)
+    return clicked_
 
 
 '''

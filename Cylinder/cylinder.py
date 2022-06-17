@@ -1,5 +1,6 @@
 from math import sqrt
-from Cylinder.parameters import c, get_par, w_file, parameter_input
+from Cylinder.parameters import c, get_par, w_file, parameter_input,clicked_main_menu
+
 
 
 get_par()# получаю словарь из внешнего фаила или записываю c нулевыми значениями
@@ -110,7 +111,7 @@ def P(m, a=0, g=9.8):
 # функция для вычисления требуемого усилия
 def func_P_with_dict(key_P):
     def _P_with_dict():
-        m = parameter_input('m')        
+        m = parameter_input('m')
         var=input("если хочешь получить  значение требуемого усилия исходя из приведенной "
                   "массы(при подъёме) -жми 1 \nесли исходя из ускорения (при горизонтальном перемещении)- жми 2 \n")
         if var== '1':

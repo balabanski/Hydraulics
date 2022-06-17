@@ -1,7 +1,8 @@
 # coding=utf-8
 from Cylinder.cylinder import *
-from Cylinder.parameters import c, messages, file_name
+from Cylinder.parameters import  messages, file_name
 import tkinter as tk
+
 
 
 font = ['Arial Bold']
@@ -29,41 +30,9 @@ b1 = tk.Button(text="Все параметры", font=(font[0], 13),
 b1.grid(column=0, row=0)
 
 
+data = dict(v1 = v1, v2 = v2)
 
 
-def clicked_main(row_,lbl_result,func1,func2,func3, *keys):
-    """
-    функция фабрики закрытия - расширяем текущее окно дополнительными виджетами
-    -для возможности выбора вариантов исполнения чего-либо
-    -для вывода полученного результата
-    """
-
-    def clicked_():
-        global row
-        row = row_
-        _types = ['{}'.format(messages[key]) for key in keys]
-        _type = tk.StringVar()
-        _type.set(_types[0])
-        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 15)) for t in _types]
-        for radio in radios:
-            row = row+1
-            radio.grid(column=0, row = row)
-
-        def click():
-            par = None
-            if _type.get() == _types[0]:
-                par = func1()
-            if _type.get() == _types[1]:
-                par = func2()
-            else:
-                par = func3()
-            lbl_result.configure(text = par)
-
-        btn = tk.Button(text='подтвердить выбор',
-                      font=(font[0], 15), command = click, **btn_master)
-        btn.grid(column=0, row = row+1)
-        print(row)
-    return clicked_
 
 
 def click_F1():
@@ -97,7 +66,9 @@ lbl_F2.grid(column=1, row=2)
 lbl_v = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_v.grid(column=1, row=3)
 btn_v = tk.Button(window, text='v(м/сек) - расчёт фактической скорости',
-                  font=(font[0], 15), command = clicked_main(3,lbl_v,v1,v2,None,'v1','v2'), **btn_master)
+                  font=(font[0], 15),
+                  command = clicked_main_menu(3,lbl_v,v1 = v1, v2 = v2),
+                  **btn_master)
 btn_v.grid(column=0, row=3)
 
 
@@ -105,8 +76,21 @@ btn_v.grid(column=0, row=3)
 lbl_Q = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_Q.grid(column=1, row=7)
 btn_Q = tk.Button(window, text='Q(л/мин) - расчёт требуемого(фактического) расхода',
-                  font=(font[0], 15), command = clicked_main(7,lbl_Q, Q1,Q2,Q1_diff,'Q1','Q2','Q1_diff'), **btn_master)
+                  font=(font[0], 15),
+                  command = clicked_main_menu(7,lbl_Q, Q1 = Q1,Q2 = Q2,Q1_diff = Q1_diff),
+                  **btn_master)
 btn_Q.grid(column=0, row=7)
+
+
+'''
+lbl_P = tk.Label(window, text='результат', font=(font[0], 15))
+lbl_P.grid(column=1, row=12)
+btn_P = tk.Button(window, text='P(кН) - расчёт требуемого усилия',
+                  font=(font[0], 15),
+                  command = None,
+                  **btn_master)
+btn_P.grid(column=0, row=12)
+'''
 
 
 

@@ -82,15 +82,15 @@ btn_Q = tk.Button(window, text='Q(л/мин) - расчёт требуемого
 btn_Q.grid(column=0, row=7)
 
 
-'''
+
 lbl_P = tk.Label(window, text='результат', font=(font[0], 15))
 lbl_P.grid(column=1, row=12)
 btn_P = tk.Button(window, text='P(кН) - расчёт требуемого усилия',
                   font=(font[0], 15),
-                  command = None,
+                  command = clicked_main_menu(13,lbl_P, P1= P1, P2 = P2),
                   **btn_master)
 btn_P.grid(column=0, row=12)
-'''
+
 
 
 

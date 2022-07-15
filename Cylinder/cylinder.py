@@ -111,19 +111,22 @@ def P(m, a=0, g=9.8):
 # функция для вычисления требуемого усилия
 def func_P_with_dict(key_P):
     def _P_with_dict():
-        m = parameter_input('m')
-        var=input("если хочешь получить  значение требуемого усилия исходя из приведенной "
-                  "массы(при подъёме) -жми 1 \nесли исходя из ускорения (при горизонтальном перемещении)- жми 2 \n")
-        if var== '1':
+        _P = 0
+        parameter_input('m')
+        m = c.get('m',0)
+        parameter_input('a')
+        _a = c.get('a',0)
+        parameter_input('P_var')
+        var_P = c.get('P_var', 1)
+        if var_P== 1:
             try:
-                 _a=float(input("ускорение по умолчанию 0 м/с2 , введи другое значение или жми "
-                                "кнопку 'ввод'\n"))
-                 _P=P(m ,_a )
+                 _P=round(P(m ,_a ),2)
             except:
-                 _P=P(m )
-        if var == '2':
-            a=float(input('введи значение ускорения (м/сек2)  '))
-            _P=round(P(m, a, g=0), 2)
+                 _P=round(P(m ), 2)
+            c['P_var'] = "vertical movement"
+        else:
+            _P=round(P(m, _a, g=0), 2)
+            c['P_var'] = "horizontal movement"
         c[key_P] = _P
         w_file()
         return _P

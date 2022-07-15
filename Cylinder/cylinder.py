@@ -149,12 +149,13 @@ def p(P,F):
 
 def func_p_with_dict(func_F, func_P, key_p, key_P):
     def _p_with_dict():
-        F = func_F()       
-        var_P= input('что бы ВВЕСТИ значение  усилия (кН)- жми 1\n\
-        если хочешь ВЫЧИСЛИТЬ значение  усилия - жми 2\n ')
-        if var_P == "1":
-           _P = parameter_input(key_P)
-        if var_P == "2":
+        F = func_F()
+        parameter_input('P_var_')
+        var_P = c.get('P_var_',1)
+        if var_P == 1:
+           parameter_input(key_P)
+           _P = c.get(key_P,0)
+        else:
             _P = func_P()
         _p = p(_P, F)
         c[key_p] = _p

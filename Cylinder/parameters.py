@@ -32,14 +32,16 @@ messages = {
     "a": 'a(м/с2) - ускорение',
     "P_var": 'если хочешь получить  значение требуемого усилия исходя из \n'
              'приведенной массы(при подъёме) -жми 1 если исходя из ускорения \n'
-             '(при горизонтальном перемещении)- жми 2 \n'
+             '(при горизонтальном перемещении)- жми 2 \n',
+    "P_var_": 'что бы ВВЕСТИ значение  усилия (кН)- жми 1\n\
+               что бы ВЫЧИСЛИТЬ значение  усилия - жми 2\n '
 }
 
 # файлы для записи и чтения
 
 # file_name = "E:/ГИДРООБОРУДОВАНИЕ/7535  Кран  'PRESTEL'/УСКОРЯЮ PRESTEL/7535_PRESTEL.json"
-file_name = 'C:/Python34/MyLessons/Hydraulics/Cylinder/JsonFiles/cylinder.json'
-#file_name = str(Path(Path.cwd(),'Cylinder','JsonFiles', 'cylinder.json'))# работает только с main.py
+#file_name = 'C:/Python34/MyLessons/Hydraulics/Cylinder/JsonFiles/cylinder.json'
+file_name = str(Path(Path.cwd(),'Cylinder','JsonFiles', 'cylinder.json'))# работает только с main.py
 
 #  запись
 def w_file():
@@ -93,15 +95,15 @@ def parameter_input(*keys):
                    '\n (можешь ввести новое значение в поле справа' + \
                    '\n либо ничего не вводить и оставить прежним)'
         lbl = tk.Label(window_, text=lbl_text,
-                       font=(font[0], 15),
+                       font=(font[0], 12),
                        **btn_master)
         lbl.grid(column=0, row=0)
 
-        ent = tk.Entry(window_, font=(font[0], 15))
+        ent = tk.Entry(window_, font=(font[0], 12))
         ent.grid(column=1, row=0)
         btn = tk.Button(window_, text=' подтвердить запись',
                         command=clicked,
-                        font=(font[0], 15))
+                        font=(font[0], 12))
         btn.grid(column=0, row=1)
 
         window_.grab_set()
@@ -121,7 +123,7 @@ def clicked_main_menu(row_,lbl_result,**kwargs):
         _types = [messages[key] for key, funk in sorted(kwargs.items())]
         _type = tk.StringVar()
         _type.set(_types[0])
-        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 15)) for t in _types]
+        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 12)) for t in _types]
         for radio in radios:
             row = row+1
             radio.grid(column=0, row = row)
@@ -135,7 +137,7 @@ def clicked_main_menu(row_,lbl_result,**kwargs):
                     else:
                         lbl_result.configure(text = 'это не фунция')
 
-        btn = tk.Button(text='подтвердить выбор',font=(font[0], 15),
+        btn = tk.Button(text='подтвердить выбор',font=(font[0], 12),
                         command = click, **btn_master)
         btn.grid(column=0, row = row+1)
         print(row)

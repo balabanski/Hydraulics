@@ -1,12 +1,9 @@
 from math import sqrt
-from Cylinder.parameters import c, get_par, w_file, parameter_input,clicked_main_menu
+from Cylinder.parameters import c, w_file, parameter_input
 
 
-
-get_par()# получаю словарь из внешнего фаила или записываю c нулевыми значениями
 
 # функция для расчета площади поршня  (см2)
-
 def F_circle(d):
         f=3.1416 * d**2 / (4*100)   #см2
         f=round(f,3)
@@ -32,7 +29,7 @@ def func_F_with_dict( key_d, *args):
             f = F_ring(d, d2)
             return f
     return _F_with_dict
-# функции фабрики закрытия - для вызова ввести   NameFunc()
+
 '''площадь поршня  (см2)-  расчет и запись параметров  '''
 F1 = func_F_with_dict('d1')
 
@@ -49,6 +46,7 @@ F_diff = func_F_with_dict('d2')
 def v_t(F, Q):
     v = Q  / (F * 6)
     return v
+
 
 # функция для расчета  фактиеской скорости  (м/с)
 # _L-ход(мм)
@@ -75,12 +73,13 @@ v2 = func_v_with_dict(v, "L2", "t2", "v2")
 
 
 
- #функция для вычисления требуемого(фактического) расхода (л/мин)
+#функция для вычисления требуемого(фактического) расхода (л/мин)
 # _F-площадь(см3) _v -скорость (м/сек)
 def Q(F, v, n_ob = 0.95):
     Q=F *v * 6 / n_ob   # л/мин
     q=round(Q,2)
     return q
+
 
 def func_Q_with_dict(func_F,funk_Q,  funk_v, key_v, key_q):
     def Q_with_dict():
@@ -112,19 +111,20 @@ def P(m, a=0, g=9.8):
 def func_P_with_dict(key_P):
     def _P_with_dict():
         _P = 0
+        parameter_input('P_var')
+        var_P = c.get('P_var', 1)
         parameter_input('m')
         m = c.get('m',0)
         parameter_input('a')
         _a = c.get('a',0)
-        parameter_input('P_var')
-        var_P = c.get('P_var', 1)
-        if var_P== 1:
+
+        if var_P== 1 or var_P == "vertical movement":
             try:
                  _P=round(P(m ,_a ),2)
             except:
                  _P=round(P(m ), 2)
             c['P_var'] = "vertical movement"
-        else:
+        elif var_P== 2 or var_P == "horizontal movement":
             _P=round(P(m, _a, g=0), 2)
             c['P_var'] = "horizontal movement"
         c[key_P] = _P
@@ -134,7 +134,6 @@ def func_P_with_dict(key_P):
 # функции фабрики закрытия - для вызова ввести   NameFunc()
 P1  = func_P_with_dict('P1')
 P2  = func_P_with_dict('P2')
-
 
 
 
@@ -151,7 +150,7 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
     def _p_with_dict():
         F = func_F()
         parameter_input('P_var_')
-        var_P = c.get('P_var_',1)
+        var_P = c.pop('P_var_',1)
         if var_P == 1:
            parameter_input(key_P)
            _P = c.get(key_P,0)
@@ -165,8 +164,6 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
 # функции фабрики закрытия - для вызова ввести   NameFunc()
 p1 = func_p_with_dict(F1,P1,'p1', 'P1') # требуемое давление при выдвижении штока
 p2 = func_p_with_dict(F2,P2,'p2', 'P2') # требуемое давление при втягивании штока
-
-
 
 
 

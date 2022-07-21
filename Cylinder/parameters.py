@@ -2,6 +2,7 @@ import json
 import tkinter as tk
 from types import FunctionType
 from pathlib import Path
+from tkinter import filedialog
 
 
 font = ['Arial Bold']
@@ -37,13 +38,54 @@ messages = {
                что бы ВЫЧИСЛИТЬ значение  усилия - жми 2\n '
 }
 
-# файлы для записи и чтения
 
-# file_name = "E:/ГИДРООБОРУДОВАНИЕ/7535  Кран  'PRESTEL'/УСКОРЯЮ PRESTEL/7535_PRESTEL.json"
-#file_name = 'C:/Python34/MyLessons/Hydraulics/Cylinder/JsonFiles/cylinder.json'
-file_name = str(Path(Path.cwd(),'Cylinder','JsonFiles', 'cylinder.json'))# работает только с main.py
+def file_name_input():
+    window = tk.Tk()
+    title_text = 'открыть или создать файл для хранения параметров'
+    lbl_text_error = 'Для работы необходимо ' + title_text
+    lbl_text_message = lbl_text_error + '\nвыбери вариант'
 
-#  запись
+    window.title(title_text)
+    tk.Label(window, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
+    lbl_error = tk.Label(window, text=lbl_text_error, font=(font[0], 12), **btn_master)
+
+    def click_save():
+        global file_name
+        file_name = filedialog.asksaveasfilename(title='СОЗДАТЬ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
+                                                 **options)
+        if file_name:
+            w_file()
+            window.destroy()
+        else:
+            lbl_error.grid(row=2, column=0)
+
+    def click_open():
+        global file_name
+        file_name = filedialog.askopenfilename(title='ОТКРЫТЬ СУЩЕСТВУЮЩИЙ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
+                                               **options)
+        if file_name:
+            window.destroy()
+        else:
+            lbl_error.grid(row=2, column=0)
+
+
+    btn_open = tk.Button(window, text='открыть файл', font=(font[0], 12),
+                         command=click_open, **btn_master)
+    btn_open.grid(row=1, column=0)
+    btn_create = tk.Button(window, text='создать файл', font=(font[0], 12),
+                           command=click_save, **btn_master)
+    btn_create.grid(row=1, column=1)
+    options = dict(initialdir=str(Path(Path.cwd(), 'Cylinder', 'JsonFiles')),
+                   defaultextension=".json",
+                   filetypes=[("JSON files", "*.json"),
+                              ("TXT files", "*.txt"),
+                              ("All files", "*.*")])
+
+    window.mainloop()
+    return file_name
+
+
+# запись
 def w_file():
     with open(file_name, 'w')as file:
         json.dump(c, file, sort_keys=True, indent=4)
@@ -74,6 +116,7 @@ def parameter_input(*keys):
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
     """
+
     def clicked():
         try:
             par = float(ent.get())
@@ -82,7 +125,7 @@ def parameter_input(*keys):
         except:
             par = c.get(key, 0)
         btn.configure(text='закрыть для продолжения и получения результатов',
-                    command=window_.destroy)
+                      command=window_.destroy)
         return par
 
     for key in keys:
@@ -111,55 +154,38 @@ def parameter_input(*keys):
         # завершается после уничтожения окна
 
 
-def clicked_main_menu(row_,lbl_result,**kwargs):
+def clicked_main_menu(row_, lbl_result, **kwargs):
     """
     функция фабрики закрытия - расширяем текущее окно дополнительными виджетами
     -для возможности выбора вариантов исполнения чего-либо
     -для вычисления и вывода полученного результата
-    :)
+    :param row_: просто номер строки (для отображения виджет)
+    :param lbl_result: виджета для отображения результата
+    :param kwargs: ключ - это имя параметра, значение - соответствующая функция
     """
+
     def clicked_():
         row = row_
         _types = [messages[key] for key, funk in sorted(kwargs.items())]
         _type = tk.StringVar()
         _type.set(_types[0])
-        radios = [tk.Radiobutton(text=t, value=t, variable=_type,font=(font[0], 12)) for t in _types]
+        radios = [tk.Radiobutton(text=t, value=t, variable=_type, font=(font[0], 12)) for t in _types]
         for radio in radios:
-            row = row+1
-            radio.grid(column=0, row = row)
+            row = row + 1
+            radio.grid(column=0, row=row)
 
         def click():
             for key, funk in kwargs.items():
-                if _type.get() == messages[key] :
+                if _type.get() == messages[key]:
                     if type(funk) is FunctionType:
                         par = funk()
-                        lbl_result.configure(text = par)
+                        lbl_result.configure(text=par)
                     else:
-                        lbl_result.configure(text = 'это не фунция')
+                        lbl_result.configure(text='это не фунция')
 
-        btn = tk.Button(text='подтвердить выбор',font=(font[0], 12),
-                        command = click, **btn_master)
-        btn.grid(column=0, row = row+1)
+        btn = tk.Button(text='подтвердить выбор', font=(font[0], 12),
+                        command=click, **btn_master)
+        btn.grid(column=0, row=row + 1)
         print(row)
+
     return clicked_
-
-
-'''
-#запись
-def w_file(file='cilinder.txt'):
-    with open(file, 'w')as file:
-        for key,val in cil.items():
-            file.write('{}:{} \n'.format(key, str(val)))
-    pass
-
-#чтение
-def r_file(file='cilinder.txt'):
-    new={}
-    with open(file, 'r')as file:
-        for i in file.readlines():
-            key,val = i.strip().split(':')
-            new[key]=val
-    print (new) 
-'''
-
-

@@ -1,14 +1,12 @@
 # coding=utf-8
 from Cylinder.cylinder import *
-from Cylinder.parameters import  file_name_input, r_file,messages, clicked_main_menu
+from Cylinder.parameters import  font,btn_master, file_name_input, r_file,messages, clicked_main_menu
 import tkinter as tk
 
 
 file_name = file_name_input()
 
-font = ['Arial Bold']
-btn_master = dict(bg='#000000', activebackground='#555555',
-                  fg='#ffffff', activeforeground='#ffffff')
+
 
 
 main_window = tk.Tk()

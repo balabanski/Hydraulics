@@ -1,5 +1,5 @@
 from math import sqrt
-from Cylinder.parameters import c, w_file, parameter_input
+from Cylinder.parameters import c, w_file, parameter_input, option_input
 
 
 
@@ -111,22 +111,25 @@ def P(m, a=0, g=9.8):
 def func_P_with_dict(key_P):
     def _P_with_dict():
         _P = 0
-        parameter_input('P_var')
-        var_P = c.get('P_var', 1)
+        options = ("подъём груза", "горизональное перемещение")
+        var_P = option_input(*options)
+        print(var_P)
         parameter_input('m')
         m = c.get('m',0)
         parameter_input('a')
         _a = c.get('a',0)
 
-        if var_P== 1 or var_P == "vertical movement":
+        if var_P == "подъём груза":
             try:
                  _P=round(P(m ,_a ),2)
             except:
                  _P=round(P(m ), 2)
             c['P_var'] = "vertical movement"
-        elif var_P== 2 or var_P == "horizontal movement":
+        elif var_P == "горизональное перемещение":
             _P=round(P(m, _a, g=0), 2)
             c['P_var'] = "horizontal movement"
+        else:
+            print('че то не так - не задана опция давления , var_P == {}'.format(var_P))
         c[key_P] = _P
         w_file()
         return _P
@@ -149,13 +152,15 @@ def p(P,F):
 def func_p_with_dict(func_F, func_P, key_p, key_P):
     def _p_with_dict():
         F = func_F()
-        parameter_input('P_var_')
-        var_P = c.pop('P_var_',1)
-        if var_P == 1:
+        options = ('ввести значение усилия', 'вычислить значение усилия')
+        var_P = option_input(*options)
+        if var_P == options[0]:
            parameter_input(key_P)
            _P = c.get(key_P,0)
-        else:
+        elif var_P == options[1]:
             _P = func_P()
+        else:
+            print('че то не так - не задана опция давления , var_P == {}'.format(var_P))
         _p = p(_P, F)
         c[key_p] = _p
         w_file()

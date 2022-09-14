@@ -31,9 +31,6 @@ messages = {
     "L1": 'L 1(мм)- ход поршня при выдвижении штока ',
     "L2": 'L 2(мм)- ход поршня при втягивании штока ',
     "a": 'a(м/с2) - ускорение',
-    "P_var": 'если хочешь получить  значение требуемого усилия исходя из \n'
-             'приведенной массы(при подъёме) -жми 1 если исходя из ускорения \n'
-             '(при горизонтальном перемещении)- жми 2 \n',
     "P_var_": 'что бы ВВЕСТИ значение  усилия (кН)- жми 1\n\
                что бы ВЫЧИСЛИТЬ значение  усилия - жми 2\n '
 }
@@ -48,6 +45,12 @@ def file_name_input():
     window.title(title_text)
     tk.Label(window, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
     lbl_error = tk.Label(window, text=lbl_text_error, font=(font[0], 12), **btn_master)
+
+    options = dict(initialdir=str(Path(Path.cwd(), 'Cylinder', 'JsonFiles')),
+                   defaultextension=".json",
+                   filetypes=[("JSON files", "*.json"),
+                              ("TXT files", "*.txt"),
+                              ("All files", "*.*")])
 
     def click_save():
         global file_name
@@ -75,11 +78,6 @@ def file_name_input():
     btn_create = tk.Button(window, text='создать файл', font=(font[0], 12),
                            command=click_save, **btn_master)
     btn_create.grid(row=1, column=1)
-    options = dict(initialdir=str(Path(Path.cwd(), 'Cylinder', 'JsonFiles')),
-                   defaultextension=".json",
-                   filetypes=[("JSON files", "*.json"),
-                              ("TXT files", "*.txt"),
-                              ("All files", "*.*")])
 
     window.mainloop()
     return file_name
@@ -110,13 +108,60 @@ def get_par():
         w_file()
 
 
+
+
+
+
+
+def option_input(*options):
+
+    """
+    сосдаем окно верхнего уровня (поверх основного)
+    для выбора опции
+    """
+    window = tk.Toplevel()
+    title_text = "ввод варианта"
+    window.title(title_text)
+
+    _type = tk.StringVar()
+    for name_option  in options:
+        radio = tk.Radiobutton(window, text = name_option,
+                               value = name_option,
+                               variable = _type,
+                               font=(font[0], 12),)
+        radio.grid()
+
+    _type.set(options[0])
+
+    def clicked():
+        window.destroy()
+
+    button = tk.Button(window, text=' подтвердить выбор',
+                    command=clicked,
+                    font=(font[0], 12),
+                    **btn_master)
+    button.grid()
+    window.grab_set()
+    window.wait_window()  #запускает локальный цикл событий, который
+                          # завершается после уничтожения окна
+
+    return _type.get()
+
+
+
+
+
+
 # ввод запрашиваемых значений и перезапись файла
-def parameter_input(*keys):
+def parameter_input(key):
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
     """
-
+    title_text = "ввод параметра {}".format(messages.get(key))
+    lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
+                '\n (можешь ввести новое значение в поле справа' + \
+                '\n либо ничего не вводить и оставить прежним)'
     def clicked():
         try:
             par = float(ent.get())
@@ -128,29 +173,22 @@ def parameter_input(*keys):
                       command=window_.destroy)
         return par
 
-    for key in keys:
-        window_ = tk.Toplevel()
-        global ent
-        title_text = "ввод параметра {}".format(messages.get(key))
+    window_ = tk.Toplevel()
+    window_.title(title_text)
+    lbl = tk.Label(window_, text=lbl_text,
+                    font=(font[0], 12),
+                    **btn_master)
+    lbl.grid(column=0, row=0)
 
-        window_.title(title_text)
-        lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
-                   '\n (можешь ввести новое значение в поле справа' + \
-                   '\n либо ничего не вводить и оставить прежним)'
-        lbl = tk.Label(window_, text=lbl_text,
-                       font=(font[0], 12),
-                       **btn_master)
-        lbl.grid(column=0, row=0)
+    ent = tk.Entry(window_, font=(font[0], 12))
+    ent.grid(column=1, row=0)
+    btn = tk.Button(window_, text=' подтвердить запись',
+                    command=clicked,
+                    font=(font[0], 12))
+    btn.grid(column=0, row=1)
 
-        ent = tk.Entry(window_, font=(font[0], 12))
-        ent.grid(column=1, row=0)
-        btn = tk.Button(window_, text=' подтвердить запись',
-                        command=clicked,
-                        font=(font[0], 12))
-        btn.grid(column=0, row=1)
-
-        window_.grab_set()
-        window_.wait_window()  #запускает локальный цикл событий, который
+    window_.grab_set()
+    window_.wait_window()  #запускает локальный цикл событий, который
         # завершается после уничтожения окна
 
 
@@ -187,5 +225,4 @@ def clicked_main_menu(row_, lbl_result, **kwargs):
                         command=click, **btn_master)
         btn.grid(column=0, row=row + 1)
         print(row)
-
     return clicked_

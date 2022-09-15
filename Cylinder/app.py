@@ -108,18 +108,23 @@ btn_pressure_p = tk.Button(main_window, text='вычисление требуе�
 btn_pressure_p.grid(column=0, row=17)
 
 
+def clicked_selection_d():
+    lbl_diameter_selection_d.configure(text=selection_D_and_d())
 
-btn_diameter_selection_d = tk.Button(main_window, text='подбор диаметра поршня (и штока)исходя из заданного давления и силы \n'
-                                                  '(пока не работает в окне приложения)',
-                   font=(font[0], 15), **btn_master)
+btn_diameter_selection_d = tk.Button(main_window,
+                                     text='подбор диаметра поршня и штока исходя из:'
+                                          '\n\t-выбранной конфигурации работы цилиндра \n\t-заданного давления и силы ',
+                                     font=(font[0], 12),
+                                     command = clicked_selection_d ,
+                                     **btn_master)
+
 btn_diameter_selection_d.grid(column=0, row=40)
 lbl_diameter_selection_d = tk.Label(main_window, text='результат',
-                  font=(font[0], 15))
+                  font=(font[0], 12))
 lbl_diameter_selection_d.grid(column=1, row=40)
 
 
-def clicked_selection_d():
-    lbl_diameter_selection_d.configure(text=d())
+
 
 
 btn_diameter_selection_d['command'] = clicked_selection_d

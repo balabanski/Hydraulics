@@ -1,4 +1,5 @@
 from math import sqrt
+from pathlib import Path
 from Cylinder.parameters import c, w_file, parameter_input, option_input
 
 
@@ -172,47 +173,85 @@ p2 = func_p_with_dict(F2,P2,'p2', 'P2') # требуемое давление п
 
 
 
-def d():
+def selection_D_and_d():
     '''
     подбор диаметра поршня (и штока) исходя из заданного давления и силы  (мм)
     диаметр штока d2  ЗАДАЁМ исходя из нагрузги и длины штока по номогррамме для
     определения диаметра штока (стр.439)
     '''
-    var_p = input('выбери вариант работы цилиндра.\n\
-            если выход штока(давление в поршневой полости) - жми 1\n\
-            если втягивание штока(давление в штоковой полости) - жми 2\n')
-    if var_p =='1':
+    options = ('выход штока(давление в поршневой полости)',
+               'втягивание штока(давление в штоковой полости)' )
+    var_p = option_input(*options)
+    var_p1 = None
+    key_p = None
+    key_P = None
+    options_p1 = None
+    image_path= str(Path(Path.cwd(),'Cylinder','images', 'Nomogramma_.png'))# работает только с main.py
+    if var_p == options[0]:
+        options_p1 = ('обычная схема подключения', 'дифференциальная схема подключения')
         key_p = 'p1'
         key_P = 'P1'
-        var_p1=input('выбери вариант схемы подключения.\n\
-                если обычная - жми 1 \n\
-                если дифференциальная - жми 2\n')
-        if var_p1 == '1':
-            key_d = 'd1'
-        elif var_p1 == '2':
-            key_d = 'd2'
-    if var_p =='2':
+        var_p1=option_input(*options_p1)
+
+    elif var_p == options[1]:
         key_p = 'p2'
         key_P = 'P2'
-        key_d = 'd1'
+
     p = parameter_input(key_p)
-    var_P= input('чтобы ВВЕСТИ значение  усилия (кН)- жми 1\n'
-                 'если хочешь ВЫЧИСЛИТЬ значение  усилия - жми 2\n ')
-    if var_P == '1':
+    P = None
+    options_P = ('ввести значение усилия', 'вычислить значение усилия')
+    var_P= option_input(*options_P)
+    if var_P == options_P[0]:
         P=parameter_input(key_P)
-    elif var_P == '2':
+    elif var_P == options_P[1]:
         P = func_P_with_dict(key_P)()
+        c[key_P]=P
+        w_file()
+        P=parameter_input(key_P, message= 'в результате вычисления')
+
+    reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм) цилиндров(поршня)\n25, ' \
+                       '32, 40, 50, 63(65), 80, 100, 125, 140, 160, 180, 200,250, ' \
+                       '320, 400\n'
+    reference_for_d2 = 'ДЛЯ СПРАВКИ:типовые диаметры штока 12, 14, 18, 22(25), 28' \
+                       '(32), 36(40), 45(50), 56, 63, 70, 80, 90, 100, 140, 180, ' \
+                       '220 мм\n'
+    arg_for_d2 = dict(reference = 'задаём диаметр штока d2 исходя из заданной нагрузки '
+                                 '{}кН и длины штока {}мм по номогррамме.'
+                                 '\n'.format(c.get('P1',c.get('P2')), c.get('L1',c.get('L2'))) + reference_for_d2,
+                      image_path = image_path)
+
     F = P*100/p   #  определяем требуемую площадь см2(Н/см2==10Bar
-    if var_p == '1' :
+
+    if var_p == options[0] and var_p1 == options_p1[0]:
         d = sqrt(F * 100 / 0.785)
-    elif var_p == '2':
-        d2 = float(input('задаём диаметр штока d2 исходя из нагрузки {}кН и длины штока(мм)'
-                         'по номогррамме.\n'
-                         'Основные размеры:15, 16, 18, 20, 25, 32, 40, 50, 63, 80, 100 мм\n'.format(c.get('P2', 0))))
-        c['d2'] = d2
-        d  =sqrt(( F * 100  / 0.786 ) + d2**2)
-        print ('если диаметр штока определён значением {} мм , то '
-               'min диаметр поршня при втягивании равен {} мм'.format(d2, d))
-    c[key_d] = d
-    d = parameter_input(key_d)
-    return d
+        c['d1'] = d
+        w_file()
+        d = parameter_input('d1',
+                            message= 'в результате вычисления min значение параметра\n ',
+                            reference= reference_for_d1
+                            )
+        parameter_input('d2', **arg_for_d2)
+
+    elif var_p == options[0] and var_p1 == options_p1[1]:
+        d = sqrt(F * 100 / 0.785)
+        c['d2'] = d
+        w_file()
+        d = parameter_input('d2',
+                            message= 'при дифференциальной схеме рабочей площадью является '
+                                     'площадь штока.\nВ соответствии с заданным усилием при выдвижении '
+                                     'штока {}кН min значение параметра\n'.format(c.get('P1')),
+                            reference= reference_for_d2)
+
+
+    elif var_p == options[1]:
+        d2 = parameter_input('d2', **arg_for_d2)
+
+        d = sqrt(( F * 100  / 0.786 ) + d2**2)
+        c['d1'] = d
+        w_file()
+        msg_d2 = 'если диаметр штока определён значением {} мм , то min значение параметра'.format(c.get('d2'))
+        parameter_input('d1',
+                        message= msg_d2,
+                        reference= reference_for_d1)
+    return 'диаметр поршня d1 = {}\n диаметр штока d2 = {}'.format(c.get('d1'), c.get('d2'))
+

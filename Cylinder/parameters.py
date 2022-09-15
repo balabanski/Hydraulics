@@ -31,7 +31,7 @@ messages = {
     "L1": 'L 1(мм)- ход поршня при выдвижении штока ',
     "L2": 'L 2(мм)- ход поршня при втягивании штока ',
     "a": 'a(м/с2) - ускорение',
-    "P_var_": 'что бы ВВЕСТИ значение  усилия (кН)- жми 1\n\
+    "message_d2": 'что бы ВВЕСТИ значение  усилия (кН)- жми 1\n\
                что бы ВЫЧИСЛИТЬ значение  усилия - жми 2\n '
 }
 
@@ -149,29 +149,44 @@ def option_input(*options):
 
 
 
+def insert_image(root, image_path):
+    canvas = tk.Canvas(root, height = 550, width = 1050)
+    img = tk.PhotoImage(file = image_path)
+    image = canvas.create_image(0, 0, anchor = 'nw', image = img)
+    canvas.grid()
+    root.grab_set()
+    root.wait_window()
 
 
 
 # ввод запрашиваемых значений и перезапись файла
-def parameter_input(key):
+def parameter_input(key, message = None, reference = None, image_path = None):
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
     """
+
     title_text = "ввод параметра {}".format(messages.get(key))
-    lbl_text = 'параметр {} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
-                '\n (можешь ввести новое значение в поле справа' + \
-                '\n либо ничего не вводить и оставить прежним)'
+
+    default_text = '{} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
+                    '\n (можешь ввести новое значение в поле справа' + \
+                    '\n либо ничего не вводить и оставить прежним)'
+    lbl_text = default_text
+    if message  :
+        lbl_text = '{}\n{}'.format(message, lbl_text)
+    if reference :
+        lbl_text = '{}\n\n{}'.format(lbl_text, reference )
+
     def clicked():
+        global par
         try:
             par = float(ent.get())
             c[key] = par
             w_file()  # перезаписываю файл
         except:
             par = c.get(key, 0)
-        btn.configure(text='закрыть для продолжения и получения результатов',
-                      command=window_.destroy)
-        return par
+        window_.destroy()
+
 
     window_ = tk.Toplevel()
     window_.title(title_text)
@@ -187,9 +202,13 @@ def parameter_input(key):
                     font=(font[0], 12))
     btn.grid(column=0, row=1)
 
-    window_.grab_set()
-    window_.wait_window()  #запускает локальный цикл событий, который
-        # завершается после уничтожения окна
+    if image_path :
+        insert_image(window_, image_path)
+    else:
+        window_.grab_set()
+        window_.wait_window()  #запускает локальный цикл событий, который
+                            # завершается после уничтожения окна
+    return par
 
 
 def clicked_main_menu(row_, lbl_result, **kwargs):

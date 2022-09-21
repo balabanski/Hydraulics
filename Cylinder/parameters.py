@@ -10,7 +10,7 @@ btn_master = dict(bg='#000000', activebackground='#555555',
                   fg='#ffffff', activeforeground='#ffffff')
 
 c = {}
-
+print()
 messages = {
     "F1": 'F1 (см2) -площадь поршня ',
     "F2": 'F2 (см2) -пплощадь кольцевого сечения',
@@ -20,21 +20,19 @@ messages = {
     "t2": 't2 (сек)-время втягивания штока',
     "v1": "v1 (м/сек)скорость при выдвижении штока ",
     "v2": "v2 (м/сек)скорость при втягивании штока ",
-    "Q1": "Q1 (л/мин)- требуемая подача в поршневую полость",
-    "Q2": "Q2 (л/мин)- требуемая подача в штоковую полость",
+    "Q1": "Q1 (л/мин)- требуемая подача в поршневую полость (при выдвижении штока)",
+    "Q2": "Q2 (л/мин)- требуемая подача в штоковую полость(при втягивании штока)",
     "Q1_diff": "Q1_diff (л/мин)- (при дифференциальной схеме)требуемая подача при выдвижении штока",
     "P1": 'P1 (кН) - усилие при выдвижении штока',
     "P2": 'P2 (кН) - усилие при втягивании штока',
     "m": 'm (тн) - масса груза',
-    "p1": 'p1 (Bar) - давление в поршневой полости',
-    "p2": 'p2 (Bar) - давление в штоковой полости',
+    "p1": 'p1 (Bar) - давление в поршневой полости (при выдвижении штока)',
+    "p2": 'p2 (Bar) - давление в штоковой полости (при втягивании штока)',
     "L1": 'L 1(мм)- ход поршня при выдвижении штока ',
     "L2": 'L 2(мм)- ход поршня при втягивании штока ',
     "a": 'a(м/с2) - ускорение',
-    "message_d2": 'что бы ВВЕСТИ значение  усилия (кН)- жми 1\n\
-               что бы ВЫЧИСЛИТЬ значение  усилия - жми 2\n '
-}
 
+}
 
 def file_name_input():
     window = tk.Tk()
@@ -108,12 +106,8 @@ def get_par():
         w_file()
 
 
-
-
-
-
-
-def option_input(*options):
+cl_img_cmpld = None
+def option_input(*options, **image_comp):
 
     """
     сосдаем окно верхнего уровня (поверх основного)
@@ -122,14 +116,23 @@ def option_input(*options):
     window = tk.Toplevel()
     title_text = "ввод варианта"
     window.title(title_text)
-
+    global cl_img_cmpld
+    if cl_img_cmpld == None:
+        print('создаю образ img')
+        cl_img_cmpld=dict(in_vert_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylverhdeinM.gif'))),
+                            out_vert_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylverhdausP.gif'))),
+                            out_gor_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordausP.gif'))),
+                            in_gor_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordeinM.gif'))),
+                            gor_2=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhorgausP.gif'))),
+                            vert_2=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylvergausP.gif'))))
     _type = tk.StringVar()
-    for name_option  in options:
-        radio = tk.Radiobutton(window, text = name_option,
-                               value = name_option,
-                               variable = _type,
-                               font=(font[0], 12),)
-        radio.grid()
+    if options:
+        for name_option  in options:
+            radio = tk.Radiobutton(window, text = name_option,
+                                   value = name_option,
+                                   variable = _type,
+                                   font=(font[0], 12),)
+            radio.grid()
 
     _type.set(options[0])
 
@@ -148,19 +151,20 @@ def option_input(*options):
     return _type.get()
 
 
+def insert_image(image_path):
+    def create_img(root):
+        canvas = tk.Canvas(root, height = 550, width = 1050)
+        image = canvas.create_image(0, 0, anchor = 'nw', image = img_compiled)
+        canvas.grid(row = 4, column = 0)
+        root.grab_set()
+        root.wait_window()
+    img_compiled = tk.PhotoImage(file = image_path)
+    return create_img
 
-def insert_image(root, image_path):
-    canvas = tk.Canvas(root, height = 550, width = 1050)
-    img = tk.PhotoImage(file = image_path)
-    image = canvas.create_image(0, 0, anchor = 'nw', image = img)
-    canvas.grid()
-    root.grab_set()
-    root.wait_window()
 
-
-
+window_ = None
 # ввод запрашиваемых значений и перезапись файла
-def parameter_input(key, message = None, reference = None, image_path = None):
+def parameter_input(key, message = None, reference = None, image_compiled = None):
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
@@ -187,7 +191,7 @@ def parameter_input(key, message = None, reference = None, image_path = None):
             par = c.get(key, 0)
         window_.destroy()
 
-
+    global window_
     window_ = tk.Toplevel()
     window_.title(title_text)
     lbl = tk.Label(window_, text=lbl_text,
@@ -202,8 +206,8 @@ def parameter_input(key, message = None, reference = None, image_path = None):
                     font=(font[0], 12))
     btn.grid(column=0, row=1)
 
-    if image_path :
-        insert_image(window_, image_path)
+    if image_compiled :
+        image_compiled(window_)
     else:
         window_.grab_set()
         window_.wait_window()  #запускает локальный цикл событий, который
@@ -223,7 +227,7 @@ def clicked_main_menu(row_, lbl_result, **kwargs):
 
     def clicked_():
         row = row_
-        _types = [messages[key] for key, funk in sorted(kwargs.items())]
+        _types = [messages[key] for key in sorted(kwargs.keys())]
         _type = tk.StringVar()
         _type.set(_types[0])
         radios = [tk.Radiobutton(text=t, value=t, variable=_type, font=(font[0], 12)) for t in _types]
@@ -243,5 +247,4 @@ def clicked_main_menu(row_, lbl_result, **kwargs):
         btn = tk.Button(text='подтвердить выбор', font=(font[0], 12),
                         command=click, **btn_master)
         btn.grid(column=0, row=row + 1)
-        print(row)
     return clicked_

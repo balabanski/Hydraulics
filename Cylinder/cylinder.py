@@ -1,6 +1,7 @@
 from math import sqrt
 from pathlib import Path
-from Cylinder.parameters import c, messages, w_file, parameter_input, option_input,insert_image
+from Cylinder.options import c, messages, w_file, option_input,insert_image, arrangement, direction, dif_or_no
+from Cylinder.parameters import parameter_input
 
 
 # функция для расчета площади поршня  (см2)
@@ -99,7 +100,7 @@ Q1_diff = func_Q_with_dict(F_diff,Q, v1, 'v1','Q1') # (при дифференц
 
 
 # сила (кН)   (m = тн, а=м/с2)
-def P(m, a=0, g=9.8):
+def P(m, a=0.2, g=0.0):
     _P= a * m + (g * m)
     return _P             # кН
 
@@ -108,22 +109,20 @@ def P(m, a=0, g=9.8):
 def func_P_with_dict(key_P):
     def _P_with_dict():
         _P = 0
-        options = ("подъём груза", "горизональное перемещение")
-        var_P = option_input(*options)
+        var_P = option_input(*arrangement)
         parameter_input('m')
         m = c.get('m',0)
         parameter_input('a')
         _a = c.get('a',0)
 
-        if var_P == "подъём груза":
-            try:
-                 _P=round(P(m ,_a ),2)
-            except:
-                 _P=round(P(m ), 2)
-            c['P_var'] = "vertical movement"
-        elif var_P == "горизональное перемещение":
-            _P=round(P(m, _a, g=0), 2)
-            c['P_var'] = "horizontal movement"
+        if var_P == arrangement[0]:
+            _P=round(P(m, _a), 2)
+            c['config']['arrangement']="horizontal movement"
+
+
+        elif var_P == arrangement[1]:
+            _P=round(P(m, a=_a, g=9.8), 2)
+            c['config']['arrangement'] = "vertical movement"
         else:
             print('че то не так - не задана опция давления , var_P == {}'.format(var_P))
         c[key_P] = _P
@@ -163,34 +162,34 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
     return _p_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
 p1 = func_p_with_dict(F1,P1,'p1', 'P1') # требуемое давление при выдвижении штока
+p1_dif = func_p_with_dict(F_diff,P1,'p1', 'P1')
 p2 = func_p_with_dict(F2,P2,'p2', 'P2') # требуемое давление при втягивании штока
 
 
-image_compiled = None
+nomogramma_compiled = None
 def selection_D_and_d():
     '''
     подбор диаметра поршня (и штока) исходя из заданного давления и силы  (мм)
     диаметр штока d2  ЗАДАЁМ исходя из нагрузги и длины штока по номогррамме для
     определения диаметра штока
     '''
-    options = ('выход штока (давление в поршневой полости)',
-               'втягивание штока (давление в штоковой полости)' )
-    var_p = option_input(*options)
+
+    var_p = option_input(*direction)
     var_p1 = None
     key_p = None
     key_P = None
-    options_p1 = None
-    image_path= str(Path(Path.cwd(),'Cylinder','images', 'Nomogramma_.png'))
-    global image_compiled
-    if not image_compiled :
-        image_compiled = insert_image(image_path)
-    if var_p == options[0]:
-        options_p1 = ('обычная схема подключения', 'дифференциальная схема подключения')
+
+    nomogramma_path= str(Path(Path.cwd(),'Cylinder','images', 'Nomogramma_.png'))
+    global nomogramma_compiled
+    if not nomogramma_compiled :
+        nomogramma_compiled = insert_image(nomogramma_path)
+
+    if var_p == direction[0]:
         key_p = 'p1'
         key_P = 'P1'
-        var_p1=option_input(*options_p1)
+        var_p1=option_input(*dif_or_no)
 
-    elif var_p == options[1]:
+    elif var_p == direction[1]:
         key_p = 'p2'
         key_P = 'P2'
 
@@ -219,11 +218,11 @@ def selection_D_and_d():
                                  '{} (кН) и длины штока {} (мм) по номогррамме.'
                                  '\n'.format(c.get('P1',c.get('P2')),
                                              c.get('L1',c.get('L2'))) + reference_for_d2,
-                      image_compiled = image_compiled)
+                      image_compiled = nomogramma_compiled)
 
     F = P*100/p   #  определяем требуемую площадь см2(Н/см2==10Bar
 
-    if var_p == options[0] and var_p1 == options_p1[0]:
+    if var_p == direction[0] and var_p1 == dif_or_no[0]:
         d = sqrt(F * 100 / 0.785)
         c['d1'] = d
         w_file()
@@ -233,17 +232,18 @@ def selection_D_and_d():
                             )
         parameter_input('d2', **arg_for_d2)
 
-    elif var_p == options[0] and var_p1 == options_p1[1]:
+    elif var_p == direction[0] and var_p1 == dif_or_no[1]:
         d = sqrt(F * 100 / 0.785)
         c['d2'] = d
         w_file()
         d = parameter_input('d2',
                             message= 'при дифференциальной схеме рабочей площадью '
                                      'является площадь штока.\n'+ message_for_d1,
-                            reference= reference_for_d2)
+                            reference= reference_for_d2,
+                            image_compiled = nomogramma_compiled)
 
 
-    elif var_p == options[1]:
+    elif var_p == direction[1]:
         d2 = parameter_input('d2', **arg_for_d2)
         d = sqrt(( F * 100  / 0.786 ) + d2**2)
         msg_for_d2 = 'если диаметр штока определён значением {} мм и\n{} опрелен' \

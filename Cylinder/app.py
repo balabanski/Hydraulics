@@ -1,12 +1,8 @@
 # coding=utf-8
+from Cylinder.parameters import  file_name,r_file
+from Cylinder.options import   font,btn_master, clicked_main_menu
 from Cylinder.cylinder import *
-from Cylinder.parameters import  font,btn_master, file_name_input, r_file,messages, clicked_main_menu
 import tkinter as tk
-
-
-file_name = file_name_input()
-
-
 
 
 main_window = tk.Tk()
@@ -14,10 +10,11 @@ main_window.title("Расчет параметров цилиндра")
 
 
 txt_param = tk.Text(main_window, width=30, height=12, font=(font[0], 12))
-txt_param.grid(column=1, row=0)
+txt_param.grid(column=1, row=1)
 
 error_open_file_message = '\nне задан файл для хранения параметров\n'
 def get_all_param():
+    txt_param.delete(0.0,100.100)
     if file_name:
         with open(file_name, 'r') as file:
             c_read = file.read()
@@ -35,7 +32,7 @@ else:
 
 btn_all_parameters = tk.Button(main_window, text="Все параметры", font=(font[0], 12),
                command = get_all_param, **btn_master)
-btn_all_parameters.grid(column=0, row=0)
+btn_all_parameters.grid(column=0, row=1)
 
 
 
@@ -46,10 +43,10 @@ def click_F1():
 
 btn_area_F1 = tk.Button(main_window, text='{}'.format(messages['F1']),
                   font=(font[0], 12), command = click_F1, **btn_master)
-btn_area_F1.grid(column=0, row=1)
+btn_area_F1.grid(column=0, row=3)
 
 lbl_area_F1 = tk.Label(main_window, text='результат', font=(font[0], 12))
-lbl_area_F1.grid(column=1, row=1)
+lbl_area_F1.grid(column=1, row=3)
 
 
 
@@ -60,20 +57,22 @@ def click_F2():
 
 btn_area_F2 = tk.Button(main_window, text='{}'.format(messages['F2']),
                   font=(font[0], 12), command = click_F2, **btn_master)
-btn_area_F2.grid(column=0, row=2)
+btn_area_F2.grid(column=0, row=4)
 
 lbl_area_F2 = tk.Label(main_window, text='результат', font=(font[0], 12))
-lbl_area_F2.grid(column=1, row=2)
+lbl_area_F2.grid(column=1, row=4)
 
 
 
 lbl_speed_v = tk.Label(main_window, text='результат', font=(font[0], 12))
-lbl_speed_v.grid(column=1, row=3)
+lbl_speed_v.grid(column=1, row=5)
 btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт фактической скорости',
                   font=(font[0], 12),
-                  command = clicked_main_menu(3,lbl_speed_v,v1 = v1, v2 = v2),
+                  command = clicked_main_menu(lbl_speed_v,
+                                              message= True,
+                                              v1 = v1, v2 = v2),
                   **btn_master)
-btn_speed_v.grid(column=0, row=3)
+btn_speed_v.grid(column=0, row=5)
 
 
 
@@ -81,7 +80,9 @@ lbl_flow_Q = tk.Label(main_window, text='результат', font=(font[0], 12)
 lbl_flow_Q.grid(column=1, row=7)
 btn_flow_Q = tk.Button(main_window, text='Q(л/мин) - расчёт требуемого(фактического) расхода',
                   font=(font[0], 12),
-                  command = clicked_main_menu(7,lbl_flow_Q, Q1 = Q1,Q2 = Q2,Q1_diff = Q1_diff),
+                  command = clicked_main_menu(lbl_flow_Q,
+                                              message= True,
+                                              Q1 = Q1,Q2 = Q2,Q1_diff = Q1_diff),
                   **btn_master)
 btn_flow_Q.grid(column=0, row=7)
 
@@ -91,7 +92,8 @@ lbl_force_P = tk.Label(main_window, text='результат', font=(font[0], 12
 lbl_force_P.grid(column=1, row=12)
 btn_force_P = tk.Button(main_window, text='P(кН) - расчёт требуемого усилия',
                 font=(font[0], 12),
-                command = clicked_main_menu(13,lbl_force_P,
+                command = clicked_main_menu(lbl_force_P,
+                                            message= True,
                                             P1= P1, P2 = P2),
                 **btn_master)
 btn_force_P.grid(column=0, row=12)
@@ -102,8 +104,9 @@ lbl_pressure_p.grid(column=1, row=17)
 btn_pressure_p = tk.Button(main_window, text='вычисление требуемого давления'
                                '(без учета потерь трения)',
                   font=(font[0], 12),
-                  command = clicked_main_menu(17,lbl_pressure_p,
-                                              p1= p1, p2 = p2),
+                  command = clicked_main_menu(lbl_pressure_p,
+                                              message= True,
+                                              p1= p1,p1_dif = p1_dif, p2 = p2),
                   **btn_master)
 btn_pressure_p.grid(column=0, row=17)
 
@@ -118,15 +121,9 @@ btn_diameter_selection_d = tk.Button(main_window,
                                      command = clicked_selection_d ,
                                      **btn_master)
 
-btn_diameter_selection_d.grid(column=0, row=40)
+btn_diameter_selection_d.grid(column=0, row=21)
 lbl_diameter_selection_d = tk.Label(main_window, text='результат',
                   font=(font[0], 12))
-lbl_diameter_selection_d.grid(column=1, row=40)
-
-
-
-
-
-btn_diameter_selection_d['command'] = clicked_selection_d
+lbl_diameter_selection_d.grid(column=1, row=21)
 
 main_window.mainloop()

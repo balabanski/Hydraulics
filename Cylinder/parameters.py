@@ -1,16 +1,13 @@
 import json
-import tkinter as tk
-from types import FunctionType
-from pathlib import Path
 from tkinter import filedialog
-
+import tkinter as tk
+from pathlib import Path
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#555555',
                   fg='#ffffff', activeforeground='#ffffff')
 
 c = {}
-print()
 messages = {
     "F1": 'F1 (см2) -площадь поршня ',
     "F2": 'F2 (см2) -пплощадь кольцевого сечения',
@@ -27,12 +24,28 @@ messages = {
     "P2": 'P2 (кН) - усилие при втягивании штока',
     "m": 'm (тн) - масса груза',
     "p1": 'p1 (Bar) - давление в поршневой полости (при выдвижении штока)',
+    "p1_dif": 'p1_dif (Bar) - (при дифференциальной схеме)давление в поршневой полости (при выдвижении штока)',
     "p2": 'p2 (Bar) - давление в штоковой полости (при втягивании штока)',
     "L1": 'L 1(мм)- ход поршня при выдвижении штока ',
     "L2": 'L 2(мм)- ход поршня при втягивании штока ',
     "a": 'a(м/с2) - ускорение',
 
 }
+
+
+# запись
+def w_file():
+    with open(file_name, 'w')as file:
+        json.dump(c, file, sort_keys=True, indent=4)
+
+
+# чтение
+def r_file():
+    with open(file_name, 'r') as file:
+        c_read = json.load(file)#получаю словарь с внешнего файла
+    for key, val in c_read.items():
+        c[key] = val
+
 
 def file_name_input():
     window = tk.Tk()
@@ -69,7 +82,6 @@ def file_name_input():
         else:
             lbl_error.grid(row=2, column=0)
 
-
     btn_open = tk.Button(window, text='открыть файл', font=(font[0], 12),
                          command=click_open, **btn_master)
     btn_open.grid(row=1, column=0)
@@ -80,97 +92,20 @@ def file_name_input():
     window.mainloop()
     return file_name
 
-
-# запись
-def w_file():
-    with open(file_name, 'w')as file:
-        json.dump(c, file, sort_keys=True, indent=4)
+file_name = file_name_input()
 
 
-# чтение   
-def r_file():
-    with open(file_name, 'r') as file:
-        c_read = json.load(file)
-    for key, val in c_read.items():
-        c[key] = val
-        if c[key] != 0:
-            print('    {}:{:>2}'.format(key, val))
-
-
-# получаю словарь из внешнего фаила или записываю
-def get_par():
-    try:
-        r_file()
-    except:
-        print("запись имеющихся  значений в файл {}".format(file_name))
-        w_file()
-
-
-cl_img_cmpld = None
-def option_input(*options, **image_comp):
-
-    """
-    сосдаем окно верхнего уровня (поверх основного)
-    для выбора опции
-    """
-    window = tk.Toplevel()
-    title_text = "ввод варианта"
-    window.title(title_text)
-    global cl_img_cmpld
-    if cl_img_cmpld == None:
-        print('создаю образ img')
-        cl_img_cmpld=dict(in_vert_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylverhdeinM.gif'))),
-                            out_vert_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylverhdausP.gif'))),
-                            out_gor_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordausP.gif'))),
-                            in_gor_1=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordeinM.gif'))),
-                            gor_2=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhorgausP.gif'))),
-                            vert_2=tk.PhotoImage(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylvergausP.gif'))))
-    _type = tk.StringVar()
-    if options:
-        for name_option  in options:
-            radio = tk.Radiobutton(window, text = name_option,
-                                   value = name_option,
-                                   variable = _type,
-                                   font=(font[0], 12),)
-            radio.grid()
-
-    _type.set(options[0])
-
-    def clicked():
-        window.destroy()
-
-    button = tk.Button(window, text=' подтвердить выбор',
-                    command=clicked,
-                    font=(font[0], 12),
-                    **btn_master)
-    button.grid()
-    window.grab_set()
-    window.wait_window()  #запускает локальный цикл событий, который
-                          # завершается после уничтожения окна
-
-    return _type.get()
-
-
-def insert_image(image_path):
-    def create_img(root):
-        canvas = tk.Canvas(root, height = 550, width = 1050)
-        image = canvas.create_image(0, 0, anchor = 'nw', image = img_compiled)
-        canvas.grid(row = 4, column = 0)
-        root.grab_set()
-        root.wait_window()
-    img_compiled = tk.PhotoImage(file = image_path)
-    return create_img
-
-
-window_ = None
 # ввод запрашиваемых значений и перезапись файла
 def parameter_input(key, message = None, reference = None, image_compiled = None):
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
     """
-
+    window_ = tk.Toplevel()
     title_text = "ввод параметра {}".format(messages.get(key))
+    window_.title(title_text)
+
+
 
     default_text = '{} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
                     '\n (можешь ввести новое значение в поле справа' + \
@@ -180,6 +115,9 @@ def parameter_input(key, message = None, reference = None, image_compiled = None
         lbl_text = '{}\n{}'.format(message, lbl_text)
     if reference :
         lbl_text = '{}\n\n{}'.format(lbl_text, reference )
+
+    if image_compiled:
+        image_compiled(window_,height = 550, width = 1050).grid(row = 6, column = 0)
 
     def clicked():
         global par
@@ -191,9 +129,6 @@ def parameter_input(key, message = None, reference = None, image_compiled = None
             par = c.get(key, 0)
         window_.destroy()
 
-    global window_
-    window_ = tk.Toplevel()
-    window_.title(title_text)
     lbl = tk.Label(window_, text=lbl_text,
                     font=(font[0], 12),
                     **btn_master)
@@ -206,45 +141,7 @@ def parameter_input(key, message = None, reference = None, image_compiled = None
                     font=(font[0], 12))
     btn.grid(column=0, row=1)
 
-    if image_compiled :
-        image_compiled(window_)
-    else:
-        window_.grab_set()
-        window_.wait_window()  #запускает локальный цикл событий, который
+    window_.grab_set()
+    window_.wait_window()  #запускает локальный цикл событий, который
                             # завершается после уничтожения окна
     return par
-
-
-def clicked_main_menu(row_, lbl_result, **kwargs):
-    """
-    функция фабрики закрытия - расширяем текущее окно дополнительными виджетами
-    -для возможности выбора вариантов исполнения чего-либо
-    -для вычисления и вывода полученного результата
-    :param row_: просто номер строки (для отображения виджет)
-    :param lbl_result: виджета для отображения результата
-    :param kwargs: ключ - это имя параметра, значение - соответствующая функция
-    """
-
-    def clicked_():
-        row = row_
-        _types = [messages[key] for key in sorted(kwargs.keys())]
-        _type = tk.StringVar()
-        _type.set(_types[0])
-        radios = [tk.Radiobutton(text=t, value=t, variable=_type, font=(font[0], 12)) for t in _types]
-        for radio in radios:
-            row = row + 1
-            radio.grid(column=0, row=row)
-
-        def click():
-            for key, funk in kwargs.items():
-                if _type.get() == messages[key]:
-                    if type(funk) is FunctionType:
-                        par = funk()
-                        lbl_result.configure(text=par)
-                    else:
-                        lbl_result.configure(text='это не фунция')
-
-        btn = tk.Button(text='подтвердить выбор', font=(font[0], 12),
-                        command=click, **btn_master)
-        btn.grid(column=0, row=row + 1)
-    return clicked_

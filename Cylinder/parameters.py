@@ -41,10 +41,9 @@ def w_file():
 
 # чтение
 def r_file():
+    global c
     with open(file_name, 'r') as file:
-        c_read = json.load(file)#получаю словарь с внешнего файла
-    for key, val in c_read.items():
-        c[key] = val
+        c  = json.load(file)#получаю словарь с внешнего файла
 
 
 def file_name_input():
@@ -93,6 +92,8 @@ def file_name_input():
     return file_name
 
 file_name = file_name_input()
+#получаю словарь с внешнего файла
+r_file()
 
 
 # ввод запрашиваемых значений и перезапись файла

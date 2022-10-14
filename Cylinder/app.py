@@ -1,39 +1,60 @@
 # coding=utf-8
-from Cylinder.parameters import  file_name,r_file
+from Cylinder.parameters import  file_name
 from Cylinder.options import   font,btn_master, clicked_main_menu
 from Cylinder.cylinder import *
 import tkinter as tk
-
+import json
 
 main_window = tk.Tk()
 main_window.title("Расчет параметров цилиндра")
 
 
-txt_param = tk.Text(main_window, width=30, height=12, font=(font[0], 12))
-txt_param.grid(column=1, row=1)
+txt_param = tk.Text(main_window, width=50, height=12, font=(font[0], 12))
+txt_param.grid(column=0, row=1)
 
 error_open_file_message = '\nне задан файл для хранения параметров\n'
+
 def get_all_param():
     txt_param.delete(0.0,100.100)
     if file_name:
         with open(file_name, 'r') as file:
             c_read = file.read()
-        txt_param.insert(1.0, c_read)
+        txt_param.insert(0.0, c_read)
     else:
-        txt_param.insert(1.0, error_open_file_message)
+        txt_param.insert(0.0, error_open_file_message)
 
 
 if file_name:
-    txt_param.insert(1.0,'\nпараметры загружены \n для просмотра жми кнопку "параметры"\n')
-    r_file()
+    txt_param.insert(0.0,'\nпараметры загружены \n для просмотра жми кнопку "параметры"\n')
+
 else:
-    txt_param.insert(1.0, error_open_file_message)
+    txt_param.insert(0.0, error_open_file_message)
 
 
-btn_all_parameters = tk.Button(main_window, text="Все параметры", font=(font[0], 12),
+btn_all_parameters = tk.Button(main_window, text="Отобразить параметры", font=(font[0], 12),
                command = get_all_param, **btn_master)
-btn_all_parameters.grid(column=0, row=1)
+btn_all_parameters.grid(column=0, row=0)
 
+def change_param():
+    try:
+        new_param = txt_param.get(0.0, 100.100)
+        _param = json.loads(new_param.replace("'", '"'))
+        c.clear()
+        for key, val in _param.items():
+            c[key ]= val
+        w_file()
+        get_all_param()
+    except:
+        txt_param.delete(0.0, 100.100)
+        txt_param.insert(0.0,'ошибка синтаксиса файла json(запятые, двоеточия)\n'
+                             'побробуйте еще')
+
+
+
+
+btn_change_parameters = tk.Button(main_window, text="Редактировать & перезаписать", font=(font[0], 12),
+               command = change_param, **btn_master)
+btn_change_parameters.grid(column=1, row=0)
 
 
 def click_F1():

@@ -10,6 +10,9 @@ arrangement = ( 'горизонтальное расположение цили�
 config = {
     "v1": direction[0],
     "v2": direction[1],
+    'v1_t': direction[0],
+    'v1_t_diff': dif_or_no[1],
+    'v2_t': direction[1],
     "p1": direction[0],
     "p2": direction[1],
     "p1_dif" : dif_or_no[1],
@@ -107,32 +110,29 @@ def option_input(*args, message = False):
     dif_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'dif_ zylhordausP.gif')))
     in_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordeinM.gif')))
     gor_2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhorgausP.gif')))
-    gor_2=insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhorgausP.gif')))
     ver_1_p1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verdaus_p1.gif')))
     ver_1_p2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verhdein_p2.gif')))
 
+    if message:
+        for option_key  in sorted(args):
+            radio = tk.Radiobutton(window, text = config.get(option_key),
+                                   value = config.get(option_key),
+                                   variable = _type,
+                                   command = select_img_and_message ,
+                                   font=(font[0], 12),)
+            radio.grid()
+        _type.set(config.get(sorted(args)[0]))
 
-    if args:
-        if message:
-            for option_key  in sorted(args):
-                radio = tk.Radiobutton(window, text = config.get(option_key),
-                                       value = config.get(option_key),
-                                       variable = _type,
-                                       command = select_img_and_message ,
-                                       font=(font[0], 12),)
-                radio.grid()
-            _type.set(config.get(sorted(args)[0]))
-
-        else:
-            for option  in args:
-                radio = tk.Radiobutton(window, text = option,
-                                       value = option,
-                                       variable = _type,
-                                       command = select_img_and_message ,
-                                       font=(font[0], 12),)
-                radio.grid()
-            _type.set(args[0])
-        select_img_and_message()
+    else:
+        for option  in args:
+            radio = tk.Radiobutton(window, text = option,
+                                   value = option,
+                                   variable = _type,
+                                   command = select_img_and_message ,
+                                   font=(font[0], 12),)
+            radio.grid()
+        _type.set(args[0])
+    select_img_and_message()
 
     def clicked():
         w_file()

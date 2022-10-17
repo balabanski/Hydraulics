@@ -43,7 +43,7 @@ F_diff = func_F_with_dict('d2')
 
 # функция для расчета  теоретической  скорости  (м/с)
 # _Q(л/мин)_F(см2)
-def v_t(F, Q):
+def v_theoretic(F, Q):
     v = Q  / (F * 6)
     return v
 
@@ -56,7 +56,7 @@ def v(L, t ):
     return v_par
 
 
-def func_v_with_dict(func_v, key_L, key_t, key_v):
+def func_v_fact_with_dict(func_v, key_L, key_t, key_v):
     def _v_with_dict():
         parameter_input(key_L)
         parameter_input(key_t)
@@ -68,8 +68,22 @@ def func_v_with_dict(func_v, key_L, key_t, key_v):
         return v
     return _v_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
-v1  = func_v_with_dict(v,  "L1",  "t1","v1")
-v2 = func_v_with_dict(v, "L2", "t2", "v2")
+v1  = func_v_fact_with_dict(v,  "L1",  "t1","v1")
+v2 = func_v_fact_with_dict(v, "L2", "t2", "v2")
+
+
+def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
+    def _v_theoretic_with_dict():
+        F = func_F()
+        Q = parameter_input(key_Q)
+        v = v_theoretic(F, Q)
+        c[key_v] = v
+        w_file()
+        return v
+    return _v_theoretic_with_dict
+v1_t = func_v_theoretic_with_dict(F1, 'Q1', 'v1_t')
+v1_t_diff = func_v_theoretic_with_dict(F_diff, 'Q1_diff', 'v1_t_diff')
+v2_t = func_v_theoretic_with_dict(F2, 'Q2', 'v2_t')
 
 
 #функция для вычисления требуемого(фактического) расхода (л/мин)

@@ -51,7 +51,6 @@ def change_param():
 
 
 
-
 btn_change_parameters = tk.Button(main_window, text="Редактировать & перезаписать", font=(font[0], 12),
                command = change_param, **btn_master)
 btn_change_parameters.grid(column=1, row=0)
@@ -95,6 +94,15 @@ btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт факт�
                   **btn_master)
 btn_speed_v.grid(column=0, row=5)
 
+lbl_speed_v_theoretic = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_speed_v_theoretic.grid(column=1, row=6)
+btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт теоретической скорости',
+                  font=(font[0], 12),
+                  command = clicked_main_menu(lbl_speed_v_theoretic,
+                                              message= True,
+                                              v1_t = v1_t, v1_t_diff = v1_t_diff, v2_t = v2_t),
+                  **btn_master)
+btn_speed_v.grid(column=0, row=6)
 
 
 lbl_flow_Q = tk.Label(main_window, text='результат', font=(font[0], 12))

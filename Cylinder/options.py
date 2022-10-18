@@ -3,6 +3,8 @@ from types import FunctionType
 from pathlib import Path
 from Cylinder.parameters import c,  btn_master, font, messages,w_file
 
+main_window = tk.Tk()
+
 direction = ('выдвижение штока (давление в поршневой полости)', 'втягивание штока (давление в штоковой полости)')
 dif_or_no = ('обычная схема подключения(штоковая и поршневая полости разделены)', 'дифференциальная схема подлючения')
 arrangement = ( 'горизонтальное расположение цилиндра', 'вертикальное расположение цилиндра\n либо расчет исходя из приведённой массы')
@@ -39,6 +41,15 @@ def insert_image(image_path):
 
     img_compiled = tk.PhotoImage(file = image_path)
     return create_img
+
+
+out_gor_1=insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordausP.gif')))
+dif_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'dif_ zylhordausP.gif')))
+in_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordeinM.gif')))
+gor_2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhorgausP.gif')))
+ver_1_p1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verdaus_p1.gif')))
+ver_1_p2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verhdein_p2.gif')))
+
 
 def get_image_from_config():
     pass
@@ -106,12 +117,6 @@ def option_input(*args, message = False):
             label.grid(row=5,column = 0)
 
 
-    out_gor_1=insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordausP.gif')))
-    dif_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'dif_ zylhordausP.gif')))
-    in_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordeinM.gif')))
-    gor_2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhorgausP.gif')))
-    ver_1_p1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verdaus_p1.gif')))
-    ver_1_p2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verhdein_p2.gif')))
 
     if message:
         for option_key  in sorted(args):

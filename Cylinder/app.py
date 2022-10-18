@@ -1,11 +1,11 @@
 # coding=utf-8
 from Cylinder.parameters import  file_name
-from Cylinder.options import   font,btn_master, clicked_main_menu
+from Cylinder.options import   main_window, font,btn_master, clicked_main_menu
 from Cylinder.cylinder import *
 import tkinter as tk
 import json
 
-main_window = tk.Tk()
+
 main_window.title("Расчет параметров цилиндра")
 
 

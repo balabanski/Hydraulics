@@ -1,6 +1,6 @@
 # coding=utf-8
 from Cylinder.parameters import  file_name
-from Cylinder.options import   main_window, font,btn_master, clicked_main_menu
+from Cylinder.options import   main_window, font,btn_master, clicked_main_menu, select_img_from_config
 from Cylinder.cylinder import *
 import tkinter as tk
 import json
@@ -26,6 +26,7 @@ def get_all_param():
 
 if file_name:
     txt_param.insert(0.0,'\nпараметры загружены \n для просмотра жми кнопку "параметры"\n')
+    main_window.title (file_name)
 
 else:
     txt_param.insert(0.0, error_open_file_message)
@@ -51,7 +52,7 @@ def change_param():
 
 
 
-btn_change_parameters = tk.Button(main_window, text="Редактировать & перезаписать", font=(font[0], 12),
+btn_change_parameters = tk.Button(main_window, text="Редактировать & сохранить", font=(font[0], 12),
                command = change_param, **btn_master)
 btn_change_parameters.grid(column=1, row=0)
 
@@ -154,5 +155,7 @@ btn_diameter_selection_d.grid(column=0, row=21)
 lbl_diameter_selection_d = tk.Label(main_window, text='результат',
                   font=(font[0], 12))
 lbl_diameter_selection_d.grid(column=1, row=21)
+
+select_img_from_config()
 
 main_window.mainloop()

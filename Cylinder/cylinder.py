@@ -1,7 +1,7 @@
 from math import sqrt
 from pathlib import Path
 from Cylinder.options import c, messages, w_file, option_input,insert_image, arrangement, direction, dif_or_no
-from Cylinder.parameters import parameter_input
+from Cylinder.parameters import parameter_input, reference_for_d1, reference_for_d2
 
 
 # функция для расчета площади поршня  (см2)
@@ -18,14 +18,14 @@ def F_ring(d, d2):
 
 def func_F_with_dict( key_d, *args):
     def _F_with_dict():
-        parameter_input(key_d)# ввод параметра и перезапись файла
+        parameter_input(key_d, reference = reference_for_d1)# ввод параметра и перезапись файла
         d = c.get(key_d, 0)
         if len(args)==0:
             f=F_circle(d)
             return f
         if len(args)==1:
             key_d2 = args[0]
-            parameter_input(key_d2)
+            parameter_input(key_d2, reference = reference_for_d2)
             d2 = c.get(key_d2, 0)
             f = F_ring(d, d2)
             return f
@@ -131,12 +131,10 @@ def func_P_with_dict(key_P):
 
         if var_P == arrangement[0]:
             _P=round(P(m, _a), 2)
-            c['config']['arrangement']="horizontal movement"
-
 
         elif var_P == arrangement[1]:
             _P=round(P(m, a=_a, g=9.8), 2)
-            c['config']['arrangement'] = "vertical movement"
+
         else:
             print('че то не так - не задана опция давления , var_P == {}'.format(var_P))
         c[key_P] = _P
@@ -222,12 +220,7 @@ def selection_D_and_d():
     message_for_d1 = 'В соответствии с заданным усилием при выдвижении ' \
                      'штока {}кН min значение параметра\n'.format(c.get('P1'))
 
-    reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм) цилиндров(поршня)\n25, ' \
-                       '32, 40, 50, 63(65), 80, 100, 125, 140, 160, 180, 200,250, ' \
-                       '320, 400\n'
-    reference_for_d2 = 'ДЛЯ СПРАВКИ:типовые диаметры штока 12, 14, 18, 22(25), 28' \
-                       '(32), 36(40), 45(50), 56, 63, 70, 80, 90, 100, 140, 180, ' \
-                       '220 мм\n'
+
     arg_for_d2 = dict(reference = 'задаём диаметр штока d2 исходя из заданной нагрузки '
                                  '{} (кН) и длины штока {} (мм) по номогррамме.'
                                  '\n'.format(c.get('P1',c.get('P2')),

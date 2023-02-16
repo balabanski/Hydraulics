@@ -7,12 +7,17 @@ font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#555555',
                   fg='#ffffff', activeforeground='#ffffff')
 
-c = {}
-messages = {
-    "F1": 'F1 (см2) -площадь поршня ',
-    "F2": 'F2 (см2) -пплощадь кольцевого сечения',
+metadata_cyl = {}
+name_par = {
     "d1": 'd1 (мм)-диаметр поршня ',
     "d2": 'd2 (мм)-диаметр штока ',
+    "L1": 'L1(мм)- ход поршня при выдвижении штока ',
+    "L2": 'L2(мм)- ход поршня при втягивании штока ',
+    "F1": 'F1 (см2) -площадь поршня ',
+    "F2": 'F2 (см2) -пплощадь кольцевого сечения',
+    "V1": 'V1 (л)- объём поршневой полости',
+    "V2": 'V2 (л)- объём штоковой полости',
+    "V1_diff": 'V1_diff (л)- при дифференц.семе подключения- требуемый объём мала',
     "t1": 't1 (сек)-время выдвижения штока',
     "t2": 't2 (сек)-время втягивания штока',
     "v1": "v1 (м/сек)-скорость при выдвижении штока ",
@@ -29,8 +34,7 @@ messages = {
     "p1": 'p1 (Bar) - давление в поршневой полости (при выдвижении штока)',
     "p1_dif": 'p1_dif (Bar) - (при дифференциальной схеме)давление в поршневой полости (при выдвижении штока)',
     "p2": 'p2 (Bar) - давление в штоковой полости (при втягивании штока)',
-    "L1": 'L 1(мм)- ход поршня при выдвижении штока ',
-    "L2": 'L 2(мм)- ход поршня при втягивании штока ',
+
     "a": 'a(м/с2) - ускорение',
 
 }
@@ -39,14 +43,14 @@ messages = {
 # запись
 def w_file():
     with open(file_name, 'w')as file:
-        json.dump(c, file, sort_keys=True, indent=4)
+        json.dump(metadata_cyl, file, sort_keys=True, indent=4)
 
 
 # чтение
 def r_file():
-    global c
+    global metadata_cyl
     with open(file_name, 'r') as file:
-        c  = json.load(file)#получаю словарь с внешнего файла
+        metadata_cyl  = json.load(file)#получаю словарь с внешнего файла
 
 
 def file_name_input():
@@ -114,12 +118,12 @@ def parameter_input(key, message = None, reference = None, image_compiled = None
     для ввода необходимых параметров и записи их во внешний файл
     """
     window_ = tk.Toplevel()
-    title_text = "ввод параметра {}".format(messages.get(key))
+    title_text = "ввод параметра {}".format(name_par.get(key))
     window_.title(title_text)
 
 
 
-    default_text = '{} определён значением {}'.format(messages.get(key), c.get(key, 0)) + \
+    default_text = '{} определён значением {}'.format(name_par.get(key), metadata_cyl.get(key, 0)) + \
                     '\n (можешь ввести новое значение в поле справа' + \
                     '\n либо ничего не вводить и оставить прежним)'
     lbl_text = default_text
@@ -135,11 +139,12 @@ def parameter_input(key, message = None, reference = None, image_compiled = None
         global par
         try:
             par = float(ent.get())
-            c[key] = par
+            metadata_cyl[key] = par
             w_file()  # перезаписываю файл
         except:
-            par = c.get(key, 0)
+            par = metadata_cyl.get(key, 0)
         window_.destroy()
+        return par
 
     lbl = tk.Label(window_, text=lbl_text,
                     font=(font[0], 12),

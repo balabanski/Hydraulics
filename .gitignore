@@ -144,6 +144,5 @@ Cylinder/__pycache__/parameters.cpython-34.pyc
 app/.local
 Cylinder/primer.py
 Cylinder/__pycache__/
-cylinder.json
-Cylinder/cylinder.json
 Cylinder/JsonFiles/
+1_testing_file.json

@@ -5,6 +5,7 @@ from Cylinder.cylinder import *
 import tkinter as tk
 import json
 
+#---------переопределить file_name
 
 main_window.title("Расчет параметров цилиндра")
 
@@ -40,9 +41,9 @@ def change_param():
     try:
         new_param = txt_param.get(0.0, 100.100)
         _param = json.loads(new_param.replace("'", '"'))
-        c.clear()
+        metadata_cyl.clear()
         for key, val in _param.items():
-            c[key ]= val
+            metadata_cyl[key ]= val
         w_file()
         get_all_param()
     except:
@@ -57,33 +58,22 @@ btn_change_parameters = tk.Button(main_window, text="Редактировать 
 btn_change_parameters.grid(column=1, row=0)
 
 
-def click_F1():
-    par = F1()
-    lbl_area_F1.configure(text = par)
-    lbl_area_F2.configure(text = F_ring(c.get('d1',0), c.get('d2',0)))
-
-btn_area_F1 = tk.Button(main_window, text='{}'.format(messages['F1']),
-                  font=(font[0], 12), command = click_F1, **btn_master)
-btn_area_F1.grid(column=0, row=3)
-
-lbl_area_F1 = tk.Label(main_window, text='результат', font=(font[0], 12))
-lbl_area_F1.grid(column=1, row=3)
 
 
+def clicked_selection_d():
+    lbl_diameter_selection_d.configure(text=selection_D_and_d())
 
-def click_F2():
-    par = F2()
-    lbl_area_F2.configure(text = par)
-    lbl_area_F1.configure(text = F_circle(c.get('d1',0)))
+btn_diameter_selection_d = tk.Button(main_window,
+                                     text='подбор диаметра поршня и штока исходя из:'
+                                          '\n\t-выбранной конфигурации работы цилиндра \n\t-заданного давления и силы ',
+                                     font=(font[0], 12),
+                                     command = clicked_selection_d ,
+                                     **btn_master)
 
-btn_area_F2 = tk.Button(main_window, text='{}'.format(messages['F2']),
-                  font=(font[0], 12), command = click_F2, **btn_master)
-btn_area_F2.grid(column=0, row=4)
-
-lbl_area_F2 = tk.Label(main_window, text='результат', font=(font[0], 12))
-lbl_area_F2.grid(column=1, row=4)
-
-
+btn_diameter_selection_d.grid(column=0, row=2)
+lbl_diameter_selection_d = tk.Label(main_window, text='результат',
+                  font=(font[0], 12))
+lbl_diameter_selection_d.grid(column=1, row=2)
 
 lbl_speed_v = tk.Label(main_window, text='результат', font=(font[0], 12))
 lbl_speed_v.grid(column=1, row=5)
@@ -141,20 +131,34 @@ btn_pressure_p = tk.Button(main_window, text='вычисление требуе�
 btn_pressure_p.grid(column=0, row=17)
 
 
-def clicked_selection_d():
-    lbl_diameter_selection_d.configure(text=selection_D_and_d())
 
-btn_diameter_selection_d = tk.Button(main_window,
-                                     text='подбор диаметра поршня и штока исходя из:'
-                                          '\n\t-выбранной конфигурации работы цилиндра \n\t-заданного давления и силы ',
-                                     font=(font[0], 12),
-                                     command = clicked_selection_d ,
-                                     **btn_master)
 
-btn_diameter_selection_d.grid(column=0, row=21)
-lbl_diameter_selection_d = tk.Label(main_window, text='результат',
-                  font=(font[0], 12))
-lbl_diameter_selection_d.grid(column=1, row=21)
+
+def click_F1():
+    par = F1()
+    lbl_area_F1.configure(text = par)
+    lbl_area_F2.configure(text = F_ring(metadata_cyl.get('d1',0), metadata_cyl.get('d2',0)))
+
+btn_area_F1 = tk.Button(main_window, text='{}'.format(name_par['F1']),
+                  font=(font[0], 12), command = click_F1, **btn_master)
+btn_area_F1.grid(column=0, row=22)
+
+lbl_area_F1 = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_area_F1.grid(column=1, row=22)
+
+
+
+def click_F2():
+    par = F2()
+    lbl_area_F2.configure(text = par)
+    lbl_area_F1.configure(text = F_circle(metadata_cyl.get('d1',0)))
+
+btn_area_F2 = tk.Button(main_window, text='{}'.format(name_par['F2']),
+                  font=(font[0], 12), command = click_F2, **btn_master)
+btn_area_F2.grid(column=0, row=23)
+
+lbl_area_F2 = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_area_F2.grid(column=1, row=23)
 
 select_img_from_config()
 

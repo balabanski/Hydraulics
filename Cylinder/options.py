@@ -1,7 +1,7 @@
 import tkinter as tk
 from types import FunctionType
 from pathlib import Path
-from Cylinder.parameters import c,  btn_master, font, messages,w_file
+from Cylinder.parameters import metadata_cyl,  btn_master, font, name_par,w_file
 
 main_window = tk.Tk()
 
@@ -47,28 +47,28 @@ ver_1_p2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verhdein
 
 
 def select_img_from_config():
-    if c.get('config') != None:
-        if c.get('config').get('direction') == 'p1':
-            if c.get('config').get('arrangement') == "vertical movement":
+    if metadata_cyl.get('config') != None:
+        if metadata_cyl.get('config').get('direction') == 'p1':
+            if metadata_cyl.get('config').get('arrangement') == "vertical movement":
                ver_1_p1(main_window).grid(row = 1, column=1)
             else:
                 out_gor_1(main_window).grid(row = 1, column=1)
 
-        elif c.get('config').get('direction') == 'p1_diff':
-            if c.get('config').get('arrangement') == "vertical movement":
+        elif metadata_cyl.get('config').get('direction') == 'p1_diff':
+            if metadata_cyl.get('config').get('arrangement') == "vertical movement":
                dif_ver_1(main_window).grid(row = 1, column=1)
             else:
                 dif_gor_1(main_window).grid(row = 1, column=1)
 
-        elif c.get('config').get('direction') == 'p2':
-            if c.get('config').get('arrangement') == "vertical movement":
+        elif metadata_cyl.get('config').get('direction') == 'p2':
+            if metadata_cyl.get('config').get('arrangement') == "vertical movement":
                ver_1_p2(main_window).grid(row = 1, column=1)
             else:
                 in_gor_1(main_window).grid(row = 1, column=1)
 
 
 
-def option_input(*args, message = False):
+def option_input(*args, from_config = False):
     """
     создаем окно верхнего уровня (поверх основного)
     -для выбора опции и вывода соответсвующих изображений
@@ -82,56 +82,56 @@ def option_input(*args, message = False):
     _type = tk.StringVar()
 
     def select_img_and_message():
-        if c.get('config') == None:
-            c['config'] = {}
+        if metadata_cyl.get('config') == None:
+            metadata_cyl['config'] = {}
 
         if _type.get() == direction[0] :
             out_gor_1(window).grid(row = 4, column=0)# , column = 0, columnspan= 1)
             dif_gor_1(window).grid(row = 4, column=1)
-            c['config']['direction'] = 'p1'
+            metadata_cyl['config']['direction'] = 'p1'
 
         elif _type.get() == direction[1]:
             in_gor_1(window).grid(row = 4, column=0)
             gor_2(window).grid(row = 4, column=1)
-            c['config']['direction'] = 'p2'
+            metadata_cyl['config']['direction'] = 'p2'
 
         if _type.get() == dif_or_no[0]:
             out_gor_1(window).grid(row = 4, column=0)
 
         elif _type.get() == dif_or_no[1]:
             dif_gor_1(window).grid(row = 4, column=0)
-            c['config']['direction'] = 'p1_diff'
+            metadata_cyl['config']['direction'] = 'p1_diff'
 
 
         if _type.get() == arrangement[0]:
-            c['config']['arrangement']="horizontal movement"
+            metadata_cyl['config']['arrangement']="horizontal movement"
 
-            if c.get('config').get('direction') == 'p1' :
+            if metadata_cyl.get('config').get('direction') == 'p1' :
                 out_gor_1(window).grid(row = 4, column=0)
 
-            elif c.get('config').get('direction') == 'p1_diff' :
+            elif metadata_cyl.get('config').get('direction') == 'p1_diff' :
                 dif_gor_1(window).grid(row = 4, column=0)
 
-            elif c.get('config').get('direction') == 'p2' :
+            elif metadata_cyl.get('config').get('direction') == 'p2' :
                 in_gor_1(window).grid(row = 4, column=0)
 
         elif _type.get() == arrangement[1]:
-            c['config']['arrangement'] = "vertical movement"
+            metadata_cyl['config']['arrangement'] = "vertical movement"
 
-            if c.get('config').get('direction') == 'p1' :
+            if metadata_cyl.get('config').get('direction') == 'p1' :
                 ver_1_p1(window).grid(row = 4, column=0)
 
-            elif  c.get('config').get('direction') == 'p1_diff' :
+            elif  metadata_cyl.get('config').get('direction') == 'p1_diff' :
                 dif_ver_1(window).grid(row = 4, column=0)
 
-            elif c.get('config').get('direction') == 'p2' :
+            elif metadata_cyl.get('config').get('direction') == 'p2' :
                 ver_1_p2(window).grid(row = 4, column=0)
 
-        if message:
+        if from_config:
             lbl_text = 'Петя'
             for key in args:
                 if _type.get() == config.get(key):
-                    lbl_text = 'Будет рассчитан параметр\n{:*^110}'.format(messages.get(key))
+                    lbl_text = 'Будет рассчитан параметр\n{:*^110}'.format(name_par.get(key))
                     break
                 else:
                     lbl_text = 'NNNNNNNNNNNNNNNNNo'
@@ -139,7 +139,7 @@ def option_input(*args, message = False):
             label.grid(row=5,column = 0)
 
 
-    if message:
+    if from_config:
         for option_key  in sorted(args):
             radio = tk.Radiobutton(window, text = config.get(option_key),
                                    value = config.get(option_key),
@@ -188,7 +188,7 @@ def clicked_main_menu( lbl_result,message = False, **kwargs):
 
     def clicked_():
         options_keys = (option_key for option_key in kwargs.keys())
-        option = option_input(*options_keys, message = message)
+        option = option_input(*options_keys, from_config= message)
         for key, funk in kwargs.items():
             if option == config.get(key):
                 if type(funk) is FunctionType:

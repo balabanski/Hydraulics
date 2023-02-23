@@ -1,11 +1,10 @@
 # coding=utf-8
 from Cylinder.parameters import  file_name
-from Cylinder.options import   main_window, font,btn_master, clicked_main_menu, select_img_from_config
+from Cylinder.options import   main_window, font,btn_master, clicked_main_menu, create_img_from_config
 from Cylinder.cylinder import *
 import tkinter as tk
 import json
 
-#---------переопределить file_name
 
 main_window.title("Расчет параметров цилиндра")
 
@@ -80,7 +79,7 @@ lbl_speed_v.grid(column=1, row=5)
 btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт фактической скорости',
                   font=(font[0], 12),
                   command = clicked_main_menu(lbl_speed_v,
-                                              message= True,
+                                              from_config= True,
                                               v1 = v1, v2 = v2),
                   **btn_master)
 btn_speed_v.grid(column=0, row=5)
@@ -90,7 +89,7 @@ lbl_speed_v_theoretic.grid(column=1, row=6)
 btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт теоретической скорости',
                   font=(font[0], 12),
                   command = clicked_main_menu(lbl_speed_v_theoretic,
-                                              message= True,
+                                              from_config= True,
                                               v1_t = v1_t, v1_t_diff = v1_t_diff, v2_t = v2_t),
                   **btn_master)
 btn_speed_v.grid(column=0, row=6)
@@ -101,7 +100,7 @@ lbl_flow_Q.grid(column=1, row=7)
 btn_flow_Q = tk.Button(main_window, text='Q(л/мин) - расчёт требуемого(фактического) расхода',
                   font=(font[0], 12),
                   command = clicked_main_menu(lbl_flow_Q,
-                                              message= True,
+                                              from_config= True,
                                               Q1 = Q1,Q2 = Q2,Q1_diff = Q1_diff),
                   **btn_master)
 btn_flow_Q.grid(column=0, row=7)
@@ -113,8 +112,8 @@ lbl_force_P.grid(column=1, row=12)
 btn_force_P = tk.Button(main_window, text='P(кН) - расчёт требуемого усилия',
                 font=(font[0], 12),
                 command = clicked_main_menu(lbl_force_P,
-                                            message= True,
-                                            P1= P1, P2 = P2),
+                                            from_config= True,
+                                            P1= P1, P2 = P2, P1_diff = P1_diff),
                 **btn_master)
 btn_force_P.grid(column=0, row=12)
 
@@ -125,14 +124,21 @@ btn_pressure_p = tk.Button(main_window, text='вычисление требуе�
                                '(без учета потерь трения)',
                   font=(font[0], 12),
                   command = clicked_main_menu(lbl_pressure_p,
-                                              message= True,
+                                              from_config= True,
                                               p1= p1,p1_dif = p1_dif, p2 = p2),
                   **btn_master)
 btn_pressure_p.grid(column=0, row=17)
 
 
-
-
+lbl_V = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_V.grid(column = 1, row = 19)
+btn_V = tk.Button(main_window, text = "V(л.)- вычисление объёма",
+                  font=(font[0], 12),
+                  command = clicked_main_menu(lbl_V,
+                                              from_name_par = True,
+                                              V1= V1, V1_diff= V1_diff,V2= V2),
+                  **btn_master)
+btn_V.grid(column=0, row=19)
 
 def click_F1():
     par = F1()
@@ -160,6 +166,6 @@ btn_area_F2.grid(column=0, row=23)
 lbl_area_F2 = tk.Label(main_window, text='результат', font=(font[0], 12))
 lbl_area_F2.grid(column=1, row=23)
 
-select_img_from_config()
+create_img_from_config()
 
 main_window.mainloop()

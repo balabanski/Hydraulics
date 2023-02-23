@@ -1,7 +1,7 @@
 import tkinter as tk
 from types import FunctionType
 from pathlib import Path
-from Cylinder.parameters import metadata_cyl,  btn_master, font, name_par,w_file
+from Cylinder.parameters import metadata_cyl,  btn_master, font, name_par,w_file, parameter_input
 
 main_window = tk.Tk()
 
@@ -23,6 +23,7 @@ config = {
     "Q1_diff": dif_or_no[1],
     "P1": direction[0],
     "P2": direction[1],
+    "P1_diff": dif_or_no[1],
 
     }
 
@@ -46,7 +47,7 @@ ver_1_p1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verdaus_
 ver_1_p2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verhdein_p2.gif')))
 
 
-def select_img_from_config():
+def create_img_from_config():
     if metadata_cyl.get('config') != None:
         if metadata_cyl.get('config').get('direction') == 'p1':
             if metadata_cyl.get('config').get('arrangement') == "vertical movement":
@@ -68,7 +69,7 @@ def select_img_from_config():
 
 
 
-def option_input(*args, from_config = False):
+def option_input(*args, from_config = False, from_name_par = False):
     """
     создаем окно верхнего уровня (поверх основного)
     -для выбора опции и вывода соответсвующих изображений
@@ -81,7 +82,7 @@ def option_input(*args, from_config = False):
 
     _type = tk.StringVar()
 
-    def select_img_and_message():
+    def select_img_from_type_and_message():
         if metadata_cyl.get('config') == None:
             metadata_cyl['config'] = {}
 
@@ -128,41 +129,73 @@ def option_input(*args, from_config = False):
                 ver_1_p2(window).grid(row = 4, column=0)
 
         if from_config:
-            lbl_text = 'Петя'
+            lbl_text = None
             for key in args:
                 if _type.get() == config.get(key):
                     lbl_text = 'Будет рассчитан параметр\n{:*^110}'.format(name_par.get(key))
                     break
                 else:
-                    lbl_text = 'NNNNNNNNNNNNNNNNNo'
+                    lbl_text = '!!!параметр не определён'
             label = tk.Label(window, text = lbl_text, font=(font[0], 12),)
             label.grid(row=5,column = 0)
 
 
     if from_config:
+        def set_type_from_config(type):
+            if metadata_cyl['config']['direction'] == 'p1':
+                type.set(direction[0])
+            elif metadata_cyl['config']['direction'] == 'p1_diff':
+                type.set(dif_or_no[1])
+            elif metadata_cyl['config']['direction'] == 'p2':
+                type.set(direction[1])
+
+
         for option_key  in sorted(args):
             radio = tk.Radiobutton(window, text = config.get(option_key),
                                    value = config.get(option_key),
                                    variable = _type,
-                                   command = select_img_and_message ,
+                                   command = select_img_from_type_and_message ,
                                    font=(font[0], 12),)
             radio.grid()
-        _type.set(config.get(sorted(args)[0]))
+        try:
+            set_type_from_config(type= _type)
+        except:
+            _type.set(config.get(sorted(args)[0]))
 
-    else:
-        for option  in args:
-            radio = tk.Radiobutton(window, text = option,
-                                   value = option,
+    elif from_name_par:
+        for option_key  in args:
+            radio = tk.Radiobutton(window, text = name_par.get(option_key),
+                                   value = option_key,
                                    variable = _type,
-                                   command = select_img_and_message ,
                                    font=(font[0], 12),)
             radio.grid()
         _type.set(args[0])
-    select_img_and_message()
+
+    else:
+        def set_type_from_config(type,args = args):
+            if metadata_cyl['config']['arrangement'] == "horizontal movement":
+                type.set(args[0])
+            elif metadata_cyl['config']['arrangement'] == "vertical movement":
+                type.set(args[1])
+
+        for option_key  in args:
+            radio = tk.Radiobutton(window, text = option_key,
+                                   value = option_key,
+                                   variable = _type,
+                                   command = select_img_from_type_and_message ,
+                                   font=(font[0], 12),)
+            radio.grid()
+        try:
+            set_type_from_config(type= _type)
+        except:
+            _type.set(args[0])
+
+    select_img_from_type_and_message()
+
 
     def clicked():
         w_file()
-        select_img_from_config()
+        create_img_from_config()
         window.destroy()
 
     button = tk.Button(window, text=' подтвердить выбор',
@@ -173,11 +206,10 @@ def option_input(*args, from_config = False):
 
     window.grab_set()
     window.wait_window()
-
     return _type.get()
 
 
-def clicked_main_menu( lbl_result,message = False, **kwargs):
+def clicked_main_menu( lbl_result,from_config = False, from_name_par = False, **kwargs):
     """
     функция фабрики закрытия
     -для возможности выбора вариантов исполнения чего-либо
@@ -188,13 +220,25 @@ def clicked_main_menu( lbl_result,message = False, **kwargs):
 
     def clicked_():
         options_keys = (option_key for option_key in kwargs.keys())
-        option = option_input(*options_keys, from_config= message)
+        print('options_keys : ', options_keys)
+        option = option_input(*options_keys, from_config= from_config, from_name_par= from_name_par)
+
         for key, funk in kwargs.items():
-            if option == config.get(key):
-                if type(funk) is FunctionType:
-                    par = funk()
-                    lbl_result.configure(text=par)
-                else:
-                    lbl_result.configure(text='это не фунция')
+            if from_config:
+                if option == config.get(key):
+                    if type(funk) is FunctionType:
+                        par = funk()
+                        lbl_result.configure(text=par)
+                    else:
+                        lbl_result.configure(text='это не фунция')
+                    break
+            elif from_name_par:
+                if option == key:
+                    if type(funk) is FunctionType:
+                        par = funk()
+                        lbl_result.configure(text=par)
+                    else:
+                        lbl_result.configure(text='это не фунция')
+                    break
 
     return clicked_

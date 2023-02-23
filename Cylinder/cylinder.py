@@ -115,7 +115,7 @@ def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
         F = func_F()
         Q = parameter_input(key_Q)
         v = v_theoretic(F, Q)
-        metadata_cyl[key_v] = v
+        metadata_cyl[key_v] = round(v, 2)
         w_file()
         return v
     return _v_theoretic_with_dict
@@ -179,8 +179,9 @@ def func_P_with_dict(key_P):
         w_file()
         return _P
     return _P_with_dict
-# функции фабрики закрытия - для вызова ввести   NameFunc()
+
 P1  = func_P_with_dict('P1')
+P1_diff = func_P_with_dict('P1_diff')
 P2  = func_P_with_dict('P2')
 
 

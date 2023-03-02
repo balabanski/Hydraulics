@@ -181,7 +181,7 @@ def func_P_with_dict(key_P):
     return _P_with_dict
 
 P1  = func_P_with_dict('P1')
-P1_diff = func_P_with_dict('P1_diff')
+P1_diff = func_P_with_dict('P1')
 P2  = func_P_with_dict('P2')
 
 
@@ -199,6 +199,7 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
         F = func_F()
         options = ('ввести значение усилия', 'вычислить значение усилия')
         var_P = option_input(*options)
+        _P = None
         if var_P == options[0]:
            parameter_input(key_P)
            _P = metadata_cyl.get(key_P,0)
@@ -225,8 +226,7 @@ def selection_D_and_d():
     определения диаметра штока
     '''
 
-    var_p = option_input(*direction)
-    var_p1 = None
+    var_p = option_input(dif_or_no[1], *direction )
     key_p = None
     key_P = None
 
@@ -235,11 +235,9 @@ def selection_D_and_d():
     if not nomogramma_compiled :
         nomogramma_compiled = insert_image(nomogramma_path)
 
-    if var_p == direction[0]:
+    if var_p == direction[0] or var_p == dif_or_no[1]:
         key_p = 'p1'
         key_P = 'P1'
-        var_p1=option_input(*dif_or_no)
-
     elif var_p == direction[1]:
         key_p = 'p2'
         key_P = 'P2'
@@ -253,40 +251,38 @@ def selection_D_and_d():
     elif var_P == options_P[1]:
         P = func_P_with_dict(key_P)()
         metadata_cyl[key_P]=P
-        w_file()
         P=parameter_input(key_P, message= 'в результате вычисления')
 
     message_for_d1 = 'В соответствии с заданным усилием при выдвижении ' \
                      'штока {}кН min значение параметра\n'.format(metadata_cyl.get('P1'))
 
-
-    arg_for_d2 = dict(reference = 'задаём диаметр штока d2 исходя из заданной нагрузки '
-                                 '{} (кН) и длины штока {} (мм) по номогррамме.'
-                                 '\n'.format(metadata_cyl.get('P1',metadata_cyl.get('P2')),
-                                             metadata_cyl.get('L1',metadata_cyl.get('L2'))) + reference_for_d2,
+    _reference = 'задаём диаметр штока d2 исходя из усилия выдвижения ' \
+                                 '{} (кН) и условной длины штока (ход поршня определён {}(мм)) по номогррамме.' \
+                                 '\n'.format(metadata_cyl.get('P1'),
+                                             metadata_cyl.get('L1',metadata_cyl.get('L2')))
+    arg_for_d2 = dict(reference = _reference + reference_for_d2,
                       image_compiled = nomogramma_compiled)
 
     F = P*100/p   #  определяем требуемую площадь см2(Н/см2==10Bar
 
-    if var_p == direction[0] and var_p1 == dif_or_no[0]:
+    if var_p == direction[0]:
         d = sqrt(F * 100 / 0.785)
         metadata_cyl['d1'] = d
-        w_file()
+
         d = parameter_input('d1',
                             message= message_for_d1,
                             reference= reference_for_d1
                             )
         parameter_input('d2', **arg_for_d2)
 
-    elif var_p == direction[0] and var_p1 == dif_or_no[1]:
+    elif var_p  == dif_or_no[1]:
         d = sqrt(F * 100 / 0.785)
         metadata_cyl['d2'] = d
-        w_file()
+
         d = parameter_input('d2',
                             message= 'при дифференциальной схеме рабочей площадью '
                                      'является площадь штока.\n'+ message_for_d1,
-                            reference= reference_for_d2,
-                            image_compiled = nomogramma_compiled)
+                                    **arg_for_d2)
 
 
     elif var_p == direction[1]:
@@ -308,5 +304,6 @@ def selection_D_and_d():
         parameter_input('d1',
                         message= msg_for_d2,
                         reference= reference_for_d1)
+    w_file()
     return 'диаметр поршня d1 = {}\n диаметр штока d2 = {}'.format(metadata_cyl.get('d1'), metadata_cyl.get('d2'))
 

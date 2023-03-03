@@ -1,9 +1,9 @@
 from math import sqrt
 from pathlib import Path
-from Cylinder.options import metadata_cyl, name_par, w_file,\
-    option_input,insert_image, arrangement, direction, dif_or_no
-from Cylinder.parameters import parameter_input, \
-    reference_for_d1, reference_for_d2
+from Cylinder.parameters import parameter_input, metadata_cyl, name_par, \
+    w_file, reference_for_d1, reference_for_d2
+from Cylinder.options import  option_input, insert_image, arrangement, direction, dif_or_no
+
 
 
 # функция для расчета площади поршня  (см2)
@@ -20,7 +20,10 @@ def F_ring(d, d2):
 
 def func_F_with_JSON_file( key_d, *args):
     def _F_with_JSON_file():
-        parameter_input(key_d, reference = reference_for_d1)# ввод параметра и перезапись файла
+        if key_d == 'd1':
+            parameter_input(key_d, reference = reference_for_d1)# ввод параметра и перезапись файла
+        else:
+            parameter_input(key_d, reference = reference_for_d2)
         d = metadata_cyl.get(key_d, 0)
         if len(args)==0:
             f=F_circle(d)
@@ -78,17 +81,26 @@ V1 = func_V_wiht_JSON_file(V1, "V1", "L1", "d1")
 '''объём штоковой полости'''
 V2 = func_V_wiht_JSON_file(V2, "V2", "L2", "d1", "d2")
 
+# теоретическое время хода поршня  (с)------------------------------------------
+def t_theor(Q, L, F):
+    t_theor = F * L *6 / (Q * 1000)
+    return t_theor
+
+
+
+
+
 
 # функция для расчета  теоретической  скорости  (м/с)
 # _Q(л/мин)_F(см2)
-def v_theoretic(F, Q):
+def v_theor(F, Q):
     v = Q  / (F * 6)
     return v
 
 
 # функция для расчета  фактиеской скорости  (м/с)
 # _L-ход(мм)
-def v(L, t ):
+def v_fact(L, t ):
     v_par=L/(t * 1000)
     v_par= round(v_par,3)
     return v_par
@@ -106,15 +118,15 @@ def func_v_fact_with_dict(func_v, key_L, key_t, key_v):
         return v
     return _v_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
-v1  = func_v_fact_with_dict(v,  "L1",  "t1","v1")
-v2 = func_v_fact_with_dict(v, "L2", "t2", "v2")
+v1  = func_v_fact_with_dict(v_fact,  "L1",  "t1_fact","v1")
+v2 = func_v_fact_with_dict(v_fact, "L2", "t2_fact", "v2")
 
 
 def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
     def _v_theoretic_with_dict():
         F = func_F()
         Q = parameter_input(key_Q)
-        v = v_theoretic(F, Q)
+        v = v_theor(F, Q)
         metadata_cyl[key_v] = round(v, 2)
         w_file()
         return v

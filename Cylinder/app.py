@@ -120,7 +120,7 @@ btn_force_P.grid(column=0, row=12)
 
 lbl_pressure_p = tk.Label(main_window, text='результат', font=(font[0], 12))
 lbl_pressure_p.grid(column=1, row=17)
-btn_pressure_p = tk.Button(main_window, text='вычисление требуемого давления'
+btn_pressure_p = tk.Button(main_window, text='p(Bar) -расчет требуемого давления'
                                '(без учета потерь трения)',
                   font=(font[0], 12),
                   command = clicked_main_menu(lbl_pressure_p,
@@ -140,31 +140,25 @@ btn_V = tk.Button(main_window, text = "V(л.)- вычисление объёма
                   **btn_master)
 btn_V.grid(column=0, row=19)
 
-def click_F1():
-    par = F1()
-    lbl_area_F1.configure(text = par)
-    lbl_area_F2.configure(text = F_ring(metadata_cyl.get('d1',0), metadata_cyl.get('d2',0)))
-
-btn_area_F1 = tk.Button(main_window, text='{}'.format(name_par['F1']),
-                  font=(font[0], 12), command = click_F1, **btn_master)
-btn_area_F1.grid(column=0, row=22)
-
-lbl_area_F1 = tk.Label(main_window, text='результат', font=(font[0], 12))
-lbl_area_F1.grid(column=1, row=22)
 
 
+lbl_area_F = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_area_F.grid(column=1, row=22)
+btn_area_F = tk.Button(main_window, text='F(см2)- расчет площадей',
+                  font=(font[0], 12),
+                  command = clicked_main_menu(lbl_area_F,
+                                              from_name_par = True,
+                                              F1= F1, F1_diff= F_diff, F2= F2),
+                  **btn_master)
+btn_area_F.grid(column=0, row=22)
 
-def click_F2():
-    par = F2()
-    lbl_area_F2.configure(text = par)
-    lbl_area_F1.configure(text = F_circle(metadata_cyl.get('d1',0)))
 
-btn_area_F2 = tk.Button(main_window, text='{}'.format(name_par['F2']),
-                  font=(font[0], 12), command = click_F2, **btn_master)
-btn_area_F2.grid(column=0, row=23)
 
-lbl_area_F2 = tk.Label(main_window, text='результат', font=(font[0], 12))
-lbl_area_F2.grid(column=1, row=23)
+
+
+
+
+
 
 create_img_from_config()
 

@@ -15,11 +15,14 @@ name_par = {
     "L2": 'L2(мм)- ход поршня при втягивании штока ',
     "F1": 'F1 (см2) -площадь поршня ',
     "F2": 'F2 (см2) -пплощадь кольцевого сечения',
+    "F1_diff": 'F1_diff (см2) -площадь штока (при дифференциальной схеме)',
     "V1": 'V1 (л)- объём поршневой полости',
     "V2": 'V2 (л)- объём штоковой полости',
     "V1_diff": 'V1_diff (л)- при дифференц.семе подключения- требуемый объём масла',
-    "t1": 't1 (сек)-время выдвижения штока',
-    "t2": 't2 (сек)-время втягивания штока',
+    "t1_fact": 't1 (сек)-время выдвижения штока(фактическое)',
+    "t2_fact": 't2 (сек)-время втягивания штока (фактическое)',
+    "t1_theor": 't1 (сек)-время выдвижения штока(теоретическое)',
+    "t2_theor": 't2 (сек)-время втягивания штока(теоретическое)',
     "v1": "v1 (м/сек)-скорость при выдвижении штока ",
     "v2": "v2 (м/сек)-скорость при втягивании штока ",
     "v1_t": "v1_t (м/сек)-скорость теоретическая при выдвижении штока ",
@@ -40,21 +43,10 @@ name_par = {
 
 }
 
-
-# запись
-def w_file():
-    with open(file_name, 'w')as file:
-        json.dump(metadata_cyl, file, sort_keys=True, indent=4)
+initial_dir_cyl = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
 
 
-# чтение
-def r_file():
-    global metadata_cyl
-    with open(file_name, 'r') as file:
-        metadata_cyl  = json.load(file)#получаю словарь с внешнего файла
-
-
-def file_name_input():
+def file_name_input(initial_dir):
     window = tk.Tk()
     title_text = 'открыть или создать файл для хранения параметров'
     lbl_text_error = 'Для работы необходимо ' + title_text
@@ -64,27 +56,27 @@ def file_name_input():
     tk.Label(window, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
     lbl_error = tk.Label(window, text=lbl_text_error, font=(font[0], 12), **btn_master)
 
-    options = dict(initialdir=str(Path(Path.cwd(), 'Cylinder', 'JsonFiles')),
+    options = dict(initialdir= initial_dir,
                    defaultextension=".json",
                    filetypes=[("JSON files", "*.json"),
                               ("TXT files", "*.txt"),
                               ("All files", "*.*")])
 
     def click_save():
-        global file_name
-        file_name = filedialog.asksaveasfilename(title='СОЗДАТЬ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
+        global _file_name
+        _file_name = filedialog.asksaveasfilename(title='СОЗДАТЬ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
                                                  **options)
-        if file_name:
-            w_file()
+        if _file_name:
+            w_file(_file_name)
             window.destroy()
         else:
             lbl_error.grid(row=2, column=0)
 
     def click_open():
-        global file_name
-        file_name = filedialog.askopenfilename(title='ОТКРЫТЬ СУЩЕСТВУЮЩИЙ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
+        global _file_name
+        _file_name = filedialog.askopenfilename(title='ОТКРЫТЬ СУЩЕСТВУЮЩИЙ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
                                                **options)
-        if file_name:
+        if _file_name:
             window.destroy()
         else:
             lbl_error.grid(row=2, column=0)
@@ -97,10 +89,23 @@ def file_name_input():
     btn_create.grid(row=1, column=1)
 
     window.mainloop()
-    return file_name
+    return _file_name
 
 #открываю или создаю файл для хранения параметров
-file_name = file_name_input()
+file_name = file_name_input(initial_dir_cyl)
+
+# запись
+def w_file(file = file_name):
+    with open(file, 'w')as file:
+        json.dump(metadata_cyl, file, sort_keys=True, indent=4)
+
+
+# чтение
+def r_file(file = file_name):
+    global metadata_cyl
+    with open(file, 'r') as file:
+        metadata_cyl  = json.load(file)#получаю словарь с внешнего файла
+
 #получаю словарь с внешнего файла
 r_file()
 
@@ -141,7 +146,7 @@ def parameter_input(key, message = None, reference = None, image_compiled = None
         try:
             par = float(ent.get())
             metadata_cyl[key] = par
-            w_file()  # перезаписываю файл
+            w_file(file_name)  # перезаписываю файл
         except:
             par = metadata_cyl.get(key, 0)
         window_.destroy()

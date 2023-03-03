@@ -1,7 +1,7 @@
 import tkinter as tk
 from types import FunctionType
 from pathlib import Path
-from Cylinder.parameters import metadata_cyl,  btn_master, font, name_par,w_file, parameter_input
+from Cylinder.parameters import file_name, metadata_cyl,  btn_master, font, name_par,w_file
 
 main_window = tk.Tk()
 
@@ -38,14 +38,15 @@ def insert_image(image_path):
     img_compiled = tk.PhotoImage(file = image_path)
     return create_img
 
+dir_images_for_cyl = str(Path(Path.cwd(), 'Cylinder', 'images'))
 
-out_gor_1=insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordausP.gif')))
-dif_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'dif_ zylhordausP.gif')))
-dif_ver_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'dif_ ver_zylhordausP.gif')))
-in_gor_1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhordeinM.gif')))
-gor_2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zylhorgausP.gif')))
-ver_1_p1 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verdaus_p1.gif')))
-ver_1_p2 = insert_image(str(Path(Path.cwd(), 'Cylinder', 'images', 'zyl_Verhdein_p2.gif')))
+out_gor_1=insert_image(dir_images_for_cyl + '\zylhordausP.gif')
+dif_gor_1 = insert_image(dir_images_for_cyl + '\dif_ zylhordausP.gif')
+dif_ver_1 = insert_image(dir_images_for_cyl + '\dif_ ver_zylhordausP.gif')
+in_gor_1 = insert_image(dir_images_for_cyl + '\zylhordeinM.gif')
+gor_2 = insert_image(dir_images_for_cyl + '\zylhorgausP.gif')
+ver_1_p1 = insert_image(dir_images_for_cyl + '\zyl_Verdaus_p1.gif')
+ver_1_p2 = insert_image(dir_images_for_cyl + '\zyl_Verhdein_p2.gif')
 
 
 def create_img_from_config():
@@ -195,7 +196,7 @@ def option_input(*args, from_config = False, from_name_par = False):
 
 
     def clicked():
-        w_file()
+        w_file(file_name)
         create_img_from_config()
         window.destroy()
 

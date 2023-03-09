@@ -43,7 +43,7 @@ def change_param():
         metadata_cyl.clear()
         for key, val in _param.items():
             metadata_cyl[key ]= val
-        w_file()
+        w_to_file()#-------------------------------------
         get_all_param()
     except:
         txt_param.delete(0.0, 100.100)
@@ -58,9 +58,9 @@ btn_change_parameters.grid(column=1, row=0)
 
 
 
-
 def clicked_selection_d():
     lbl_diameter_selection_d.configure(text=selection_D_and_d())
+
 
 btn_diameter_selection_d = tk.Button(main_window,
                                      text='подбор диаметра поршня и штока исходя из:'
@@ -74,13 +74,14 @@ lbl_diameter_selection_d = tk.Label(main_window, text='результат',
                   font=(font[0], 12))
 lbl_diameter_selection_d.grid(column=1, row=2)
 
+
 lbl_speed_v = tk.Label(main_window, text='результат', font=(font[0], 12))
 lbl_speed_v.grid(column=1, row=5)
 btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт фактической скорости',
                   font=(font[0], 12),
                   command = clicked_main_menu(lbl_speed_v,
                                               from_config= True,
-                                              v1 = v1, v2 = v2),
+                                              v1 = v1, v1_diff=v1_diff, v2 = v2),
                   **btn_master)
 btn_speed_v.grid(column=0, row=5)
 

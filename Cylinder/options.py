@@ -1,7 +1,7 @@
 import tkinter as tk
 from types import FunctionType
 from pathlib import Path
-from Cylinder.parameters import file_name, metadata_cyl,  btn_master, font, name_par,w_file
+from Cylinder.parameters import metadata_cyl,  btn_master, font, name_par,w_to_file
 
 main_window = tk.Tk()
 
@@ -13,6 +13,7 @@ arrangement = ( 'горизонтальное расположение цили�
 config = {
     "v1": direction[0],
     "v2": direction[1],
+    "v1_diff": dif_or_no[1],
     'v1_t': direction[0],
     'v1_t_diff': dif_or_no[1],
     'v2_t': direction[1],
@@ -141,17 +142,14 @@ def option_input(*args, from_config = False, from_name_par = False):
             label = tk.Label(window, text = lbl_text, font=(font[0], 12),)
             label.grid(row=5,column = 0)
 
-
-    if from_config:
-        def set_type_from_config(type):
+    def set_type_from_config(type):
             if metadata_cyl['config']['direction'] == 'p1':
                 type.set(direction[0])
             elif metadata_cyl['config']['direction'] == 'p1_diff':
                 type.set(dif_or_no[1])
             elif metadata_cyl['config']['direction'] == 'p2':
                 type.set(direction[1])
-
-
+    if from_config:
         for option_key  in sorted(args):
             radio = tk.Radiobutton(window, text = config.get(option_key),
                                    value = config.get(option_key),
@@ -174,15 +172,9 @@ def option_input(*args, from_config = False, from_name_par = False):
         _type.set(args[0])
 
     else:
-        def set_type_from_config(type,args = args):
-            if metadata_cyl['config']['arrangement'] == "horizontal movement":
-                type.set(args[0])
-            elif metadata_cyl['config']['arrangement'] == "vertical movement":
-                type.set(args[1])
-
-        for option_key  in args:
-            radio = tk.Radiobutton(window, text = option_key,
-                                   value = option_key,
+        for option  in args:
+            radio = tk.Radiobutton(window, text = option,
+                                   value = option,
                                    variable = _type,
                                    command = select_img_from_type_and_message ,
                                    font=(font[0], 12),)
@@ -196,7 +188,7 @@ def option_input(*args, from_config = False, from_name_par = False):
 
 
     def clicked():
-        w_file(file_name)
+        w_to_file()
         create_img_from_config()
         window.destroy()
 
@@ -222,7 +214,7 @@ def clicked_main_menu( lbl_result,from_config = False, from_name_par = False, **
 
     def clicked_():
         options_keys = (option_key for option_key in kwargs.keys())
-        print('options_keys : ', options_keys)
+        print('options_keys : ', options_keys)#--------------------------
         option = option_input(*options_keys, from_config= from_config, from_name_par= from_name_par)
 
         for key, funk in kwargs.items():
@@ -242,5 +234,6 @@ def clicked_main_menu( lbl_result,from_config = False, from_name_par = False, **
                     else:
                         lbl_result.configure(text='это не фунция')
                     break
+        w_to_file()
 
     return clicked_

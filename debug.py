@@ -2,7 +2,7 @@
 def debug(func):
     def _debug(*args, **kwargs):
         result = func(*args, **kwargs)
-        print ("{} :\n(args :{}, kwargs :{}, result:{}, type:{}". format(func.__name__,
+        print ("{} :\n\t(args :{}, \n\t kwargs :{}, \n\t result:{}, \n\t type:{}". format(func.__name__,
                                                                                args,
                                                                                kwargs,
                                                                                result,

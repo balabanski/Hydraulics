@@ -1,7 +1,7 @@
 import tkinter as tk
-from types import FunctionType
 from pathlib import Path
-from Cylinder.parameters import metadata_cyl,  btn_master, font, name_par,w_to_file
+from Cylinder.parameters import metadata_cyl, name_par_cyl
+from utils.options import insert_image, option_input, clicked_main_menu
 
 main_window = tk.Tk()
 
@@ -10,7 +10,7 @@ dif_or_no = ('обычная схема подключения(штоковая 
              'выдвижение штока(дифференциальная схема подлючения)')
 arrangement = ( 'горизонтальное расположение цилиндра', 'вертикальное расположение цилиндра\n либо расчет исходя из приведённой массы')
 
-config = {
+config_cyl = {
     "v1": direction[0],
     "v2": direction[1],
     "v1_diff": dif_or_no[1],
@@ -26,18 +26,8 @@ config = {
     "P1": direction[0],
     "P2": direction[1],
     "P1_diff": dif_or_no[1],
-
     }
 
-def insert_image(image_path):
-    def create_img(root, height = None, width = None, columnspan = None):
-
-        canvas = tk.Canvas(root, height = height, width = width)  #height = 550, width = 1050
-        canvas.create_image(0, 0, anchor = 'nw', image = img_compiled)
-        return canvas
-
-    img_compiled = tk.PhotoImage(file = image_path)
-    return create_img
 
 dir_images_for_cyl = str(Path(Path.cwd(), 'Cylinder', 'images'))
 
@@ -71,169 +61,71 @@ def create_img_from_config():
                 in_gor_1(main_window).grid(row = 1, column=1)
 
 
+def _img_from_type_cyl(window_, type):
+    if metadata_cyl.get('config') == None:
+        metadata_cyl['config'] = {}
 
-def option_input(*args, from_config = False, from_name_par = False):
-    """
-    создаем окно верхнего уровня (поверх основного)
-    -для выбора опции и вывода соответсвующих изображений
-    -для вывода пояснительного сообщения
+    if type.get() == direction[0] :
+        out_gor_1(window_).grid(row = 4, column=0)# , column = 0, columnspan= 1)
+        dif_gor_1(window_).grid(row = 4, column=1)
+        metadata_cyl['config']['direction'] = 'p1'
 
-    """
-    window = tk.Toplevel()
-    title_text = "ввод варианта"
-    window.title(title_text)
+    elif type.get() == direction[1]:
+        in_gor_1(window_).grid(row = 4, column=0)
+        gor_2(window_).grid(row = 4, column=1)
+        metadata_cyl['config']['direction'] = 'p2'
 
-    _type = tk.StringVar()
+    if type.get() == dif_or_no[0]:
+        out_gor_1(window_).grid(row = 4, column=0)
 
-    def select_img_from_type_and_message():
-        if metadata_cyl.get('config') == None:
-            metadata_cyl['config'] = {}
+    elif type.get() == dif_or_no[1]:
+        dif_gor_1(window_).grid(row = 4, column=0)
+        metadata_cyl['config']['direction'] = 'p1_diff'
 
-        if _type.get() == direction[0] :
-            out_gor_1(window).grid(row = 4, column=0)# , column = 0, columnspan= 1)
-            dif_gor_1(window).grid(row = 4, column=1)
-            metadata_cyl['config']['direction'] = 'p1'
+    if type.get() == arrangement[0]:
+        metadata_cyl['config']['arrangement']="horizontal movement"
 
-        elif _type.get() == direction[1]:
-            in_gor_1(window).grid(row = 4, column=0)
-            gor_2(window).grid(row = 4, column=1)
-            metadata_cyl['config']['direction'] = 'p2'
+        if metadata_cyl.get('config').get('direction') == 'p1' :
+            out_gor_1(window_).grid(row = 4, column=0)
 
-        if _type.get() == dif_or_no[0]:
-            out_gor_1(window).grid(row = 4, column=0)
+        elif metadata_cyl.get('config').get('direction') == 'p1_diff' :
+            dif_gor_1(window_).grid(row = 4, column=0)
 
-        elif _type.get() == dif_or_no[1]:
-            dif_gor_1(window).grid(row = 4, column=0)
-            metadata_cyl['config']['direction'] = 'p1_diff'
+        elif metadata_cyl.get('config').get('direction') == 'p2' :
+            in_gor_1(window_).grid(row = 4, column=0)
 
+    elif type.get() == arrangement[1]:
+        metadata_cyl['config']['arrangement'] = "vertical movement"
 
-        if _type.get() == arrangement[0]:
-            metadata_cyl['config']['arrangement']="horizontal movement"
+        if metadata_cyl.get('config').get('direction') == 'p1' :
+            ver_1_p1(window_).grid(row = 4, column=0)
 
-            if metadata_cyl.get('config').get('direction') == 'p1' :
-                out_gor_1(window).grid(row = 4, column=0)
+        elif  metadata_cyl.get('config').get('direction') == 'p1_diff' :
+            dif_ver_1(window_).grid(row = 4, column=0)
 
-            elif metadata_cyl.get('config').get('direction') == 'p1_diff' :
-                dif_gor_1(window).grid(row = 4, column=0)
-
-            elif metadata_cyl.get('config').get('direction') == 'p2' :
-                in_gor_1(window).grid(row = 4, column=0)
-
-        elif _type.get() == arrangement[1]:
-            metadata_cyl['config']['arrangement'] = "vertical movement"
-
-            if metadata_cyl.get('config').get('direction') == 'p1' :
-                ver_1_p1(window).grid(row = 4, column=0)
-
-            elif  metadata_cyl.get('config').get('direction') == 'p1_diff' :
-                dif_ver_1(window).grid(row = 4, column=0)
-
-            elif metadata_cyl.get('config').get('direction') == 'p2' :
-                ver_1_p2(window).grid(row = 4, column=0)
-
-        if from_config:
-            lbl_text = None
-            for key in args:
-                if _type.get() == config.get(key):
-                    lbl_text = 'Будет рассчитан параметр\n{:*^110}'.format(name_par.get(key))
-                    break
-                else:
-                    lbl_text = '!!!параметр не определён'
-            label = tk.Label(window, text = lbl_text, font=(font[0], 12),)
-            label.grid(row=5,column = 0)
-
-    def set_type_from_config(type):
-            if metadata_cyl['config']['direction'] == 'p1':
-                type.set(direction[0])
-            elif metadata_cyl['config']['direction'] == 'p1_diff':
-                type.set(dif_or_no[1])
-            elif metadata_cyl['config']['direction'] == 'p2':
-                type.set(direction[1])
-    if from_config:
-        for option_key  in sorted(args):
-            radio = tk.Radiobutton(window, text = config.get(option_key),
-                                   value = config.get(option_key),
-                                   variable = _type,
-                                   command = select_img_from_type_and_message ,
-                                   font=(font[0], 12),)
-            radio.grid()
-        try:
-            set_type_from_config(type= _type)
-        except:
-            _type.set(config.get(sorted(args)[0]))
-
-    elif from_name_par:
-        for option_key  in args:
-            radio = tk.Radiobutton(window, text = name_par.get(option_key),
-                                   value = option_key,
-                                   variable = _type,
-                                   font=(font[0], 12),)
-            radio.grid()
-        _type.set(args[0])
-
-    else:
-        for option  in args:
-            radio = tk.Radiobutton(window, text = option,
-                                   value = option,
-                                   variable = _type,
-                                   command = select_img_from_type_and_message ,
-                                   font=(font[0], 12),)
-            radio.grid()
-        try:
-            set_type_from_config(type= _type)
-        except:
-            _type.set(args[0])
-
-    select_img_from_type_and_message()
+        elif metadata_cyl.get('config').get('direction') == 'p2' :
+            ver_1_p2(window_).grid(row = 4, column=0)
 
 
-    def clicked():
-        w_to_file()
-        create_img_from_config()
-        window.destroy()
-
-    button = tk.Button(window, text=' подтвердить выбор',
-                    command=clicked,
-                    font=(font[0], 12),
-                    **btn_master)
-    button.grid(row=7,column = 0)
-
-    window.grab_set()
-    window.wait_window()
-    return _type.get()
+def set_type_from_config(type):
+    if metadata_cyl['config']['direction'] == 'p1':
+        type.set(direction[0])
+    elif metadata_cyl['config']['direction'] == 'p1_diff':
+        type.set(dif_or_no[1])
+    elif metadata_cyl['config']['direction'] == 'p2':
+        type.set(direction[1])
 
 
-def clicked_main_menu( lbl_result,from_config = False, from_name_par = False, **kwargs):
-    """
-    функция фабрики закрытия
-    -для возможности выбора вариантов исполнения чего-либо
-    -для вычисления и вывода полученного результата
-    :param lbl_result: виджета для отображения результата
-    :param kwargs: ключ - это имя параметра, значение - соответствующая функция
-    """
 
-    def clicked_():
-        options_keys = (option_key for option_key in kwargs.keys())
-        print('options_keys : ', options_keys)#--------------------------
-        option = option_input(*options_keys, from_config= from_config, from_name_par= from_name_par)
+# экземпляр функции option_input (for cylinder)
+option_input_cyl = option_input(func_img_from_type= _img_from_type_cyl,
+                                func_create_img_from_config= create_img_from_config,
+                                func_set_type_from_config= set_type_from_config,
+                                config_json= config_cyl,
+                                name_par_json= name_par_cyl,
+                                )
 
-        for key, funk in kwargs.items():
-            if from_config:
-                if option == config.get(key):
-                    if type(funk) is FunctionType:
-                        par = funk()
-                        lbl_result.configure(text=par)
-                    else:
-                        lbl_result.configure(text='это не фунция')
-                    break
-            elif from_name_par:
-                if option == key:
-                    if type(funk) is FunctionType:
-                        par = funk()
-                        lbl_result.configure(text=par)
-                    else:
-                        lbl_result.configure(text='это не фунция')
-                    break
-        w_to_file()
 
-    return clicked_
+
+# экземпляр функции clicked_main_menu (for cylinder)
+clicked_main_menu_cyl = clicked_main_menu(option_input_cyl,config_cyl)

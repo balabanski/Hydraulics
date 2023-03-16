@@ -10,7 +10,7 @@ btn_master = dict(bg='#000000', activebackground='#555555',
 
 metadata_cyl = {}
 
-name_par = {
+name_par_cyl = {
     "d1": 'd1 (мм)-диаметр поршня ',
     "d2": 'd2 (мм)-диаметр штока ',
     "L1": 'L1(мм)- ход поршня при выдвижении штока ',
@@ -69,8 +69,8 @@ reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм)
 reference_for_d2 = 'ДЛЯ СПРАВКИ:типовые диаметры штока 12, 14, 18, 22(25), 28' \
                    '(32), 36(40), 45(50), 56, 63, 70, 80, 90, 100, 140, 180, ' \
                    '220 мм\n'
-
+# экземпляр функции parameter_input
 parameter_cyl_input = parameter_input(metadata = metadata_cyl,
-                                    _name_par = name_par,
+                                    _name_par = name_par_cyl,
                                     _func_write = w_to_file
                                     )

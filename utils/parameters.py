@@ -1,4 +1,3 @@
-__author__ = 'Vanya'
 import tkinter as tk
 import json
 from tkinter import filedialog

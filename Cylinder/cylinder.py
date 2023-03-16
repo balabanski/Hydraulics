@@ -1,8 +1,8 @@
 from math import sqrt
 from pathlib import Path
-from Cylinder.parameters import  metadata_cyl, name_par, parameter_cyl_input,\
+from Cylinder.parameters import  metadata_cyl, name_par_cyl, parameter_cyl_input,\
     w_to_file, reference_for_d1, reference_for_d2
-from Cylinder.options import  option_input, insert_image, arrangement, direction, dif_or_no
+from Cylinder.options import  option_input_cyl, insert_image, arrangement, direction, dif_or_no
 
 
 
@@ -86,12 +86,10 @@ def t_theor(Q, L, F):
     t_theor = F * L *6 / (Q * 1000)
     return t_theor
 
-
-
-
-
+'''
 from debug import debug
 @debug
+'''
 # функция для расчета  теоретической  скорости  (м/с)
 # _Q(л/мин)_F(см2)
 def v_theor(F, Q):
@@ -172,7 +170,7 @@ def P(m, a=0.2, g=0.0):
 def func_P_with_dict(key_P):
     def _P_with_dict():
         _P = 0
-        var_P = option_input(*arrangement)
+        var_P = option_input_cyl(*arrangement)
         parameter_cyl_input(key = 'm')
         m = metadata_cyl.get('m',0)
         parameter_cyl_input(key = 'a')
@@ -208,15 +206,14 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
     def _p_with_dict():
         F = func_F()
         options = ('ввести значение усилия', 'вычислить значение усилия')
-        var_P = option_input(*options)
+        var_P = option_input_cyl(*options, from_config= True)
         _P = None
         if var_P == options[0]:
            parameter_cyl_input(key = key_P)
            _P = metadata_cyl.get(key_P,0)
         elif var_P == options[1]:
             _P = func_P()
-        else:
-            print('че то не так - не задана опция давления , var_P == {}'.format(var_P))
+
         _p = p(_P, F)
         metadata_cyl[key_p] = _p
         return _p
@@ -235,7 +232,7 @@ def selection_D_and_d():
     определения диаметра штока
     '''
 
-    var_p = option_input(dif_or_no[1], *direction )
+    var_p = option_input_cyl(dif_or_no[1], *direction)
     key_p = None
     key_P = None
 
@@ -254,7 +251,7 @@ def selection_D_and_d():
     p = parameter_cyl_input(key = key_p)
     P = None
     options_P = ('ввести значение усилия', 'вычислить значение усилия')
-    var_P= option_input(*options_P)
+    var_P= option_input_cyl(*options_P)
     if var_P == options_P[0]:
         P=parameter_cyl_input(key = key_P)
     elif var_P == options_P[1]:
@@ -299,14 +296,14 @@ def selection_D_and_d():
         d = sqrt(( F * 100  / 0.786 ) + d2**2)
         msg_for_d2 = 'если диаметр штока определён значением {} мм и\n{} опрелен' \
                      ' значением {}кН, ' \
-                     'то min значение'.format(metadata_cyl.get('d2'), name_par.get('P2'), metadata_cyl.get('P2'))
+                     'то min значение'.format(metadata_cyl.get('d2'), name_par_cyl.get('P2'), metadata_cyl.get('P2'))
 
         if metadata_cyl.get('P2') < metadata_cyl.get('P1',0) and d < metadata_cyl['d1']:
             d1 = metadata_cyl.get('d1')
             metadata_cyl['d1'] = d
             msg_for_d2 = 'ВНИМАНИЕ:\nтак как {} БОЛЬШЕ чем {}\n ' \
                         'то необходимо учесть ранее заданный d1(мм)- диаметр поршня,' \
-                        'равный {}\n\n'.format(name_par.get('P1'), name_par.get('P2') , d1) + msg_for_d2
+                        'равный {}\n\n'.format(name_par_cyl.get('P1'), name_par_cyl.get('P2') , d1) + msg_for_d2
         else:
             metadata_cyl['d1'] = d
 

@@ -1,7 +1,7 @@
 from math import sqrt
 from pathlib import Path
 from Cylinder.parameters import  metadata_cyl, name_par_cyl, parameter_cyl_input,\
-    w_to_file, reference_for_d1, reference_for_d2
+    w_to_file_cyl, reference_for_d1, reference_for_d2
 from Cylinder.options import  option_input_cyl, insert_image, arrangement, direction, dif_or_no
 
 
@@ -310,6 +310,6 @@ def selection_D_and_d():
         parameter_cyl_input(key = 'd1',
                         message= msg_for_d2,
                         reference= reference_for_d1)
-    w_to_file()
+    w_to_file_cyl()
     return 'диаметр поршня d1 = {}\n диаметр штока d2 = {}'.format(metadata_cyl.get('d1'), metadata_cyl.get('d2'))
 

@@ -14,7 +14,7 @@ def w_metadata_to_file(path_file, metadata):
         with open(path_file, 'w')as file:
             json.dump(metadata, file, sort_keys=True, indent=4)
     return _w_file
-w_to_file = None
+
 
 # чтение
 def r_from_file_to_metadata(path_file):

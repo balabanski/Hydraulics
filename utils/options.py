@@ -1,5 +1,5 @@
 import tkinter as tk
-from Cylinder.parameters import  btn_master, font, w_to_file
+from utils.parameters import  btn_master, font
 from types import FunctionType
 
 def insert_image(image_path):
@@ -24,6 +24,7 @@ from debug import debug
 def option_input(func_img_from_type=None,
                  func_create_img_from_config= None,
                  func_set_type_from_config= None,
+                 func_write_to_file= None,
                  config_json= None,
                  name_par_json= None,
                  ):
@@ -89,7 +90,7 @@ def option_input(func_img_from_type=None,
                 _type.set(args[0])
 
         def clicked():
-            w_to_file()
+            func_write_to_file()
             func_create_img_from_config()
             window.destroy()
 
@@ -107,7 +108,7 @@ def option_input(func_img_from_type=None,
 
 
 
-def clicked_main_menu(funk_option_input, config_json ):
+def clicked_main_menu(funk_option_input, func_write_to_file, config_json ):
     """
     функция фабрики закрытия
     -для возможности выбора вариантов исполнения чего-либо
@@ -138,7 +139,7 @@ def clicked_main_menu(funk_option_input, config_json ):
                         else:
                             lbl_result.configure(text='это не фунция')
                         break
-            w_to_file()
+            func_write_to_file()
         return clicked_
     return _clicked_main_menu
 

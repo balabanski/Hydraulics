@@ -4,9 +4,6 @@ from utils.parameters import file_name_input, r_from_file_to_metadata,\
 
 from pathlib import Path
 
-font = ['Arial Bold']
-btn_master = dict(bg='#000000', activebackground='#555555',
-                  fg='#ffffff', activeforeground='#ffffff')
 
 metadata_cyl = {}
 
@@ -60,7 +57,7 @@ r_from_file = r_from_file_to_metadata(path_file=file_name)
 metadata_cyl = r_from_file()
 
 # экземпляр функции w_metadata_to_file
-w_to_file = w_metadata_to_file(path_file=file_name, metadata= metadata_cyl)
+w_to_file_cyl = w_metadata_to_file(path_file=file_name, metadata= metadata_cyl)
 
 
 reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм) цилиндров(поршня)\n25, ' \
@@ -72,5 +69,5 @@ reference_for_d2 = 'ДЛЯ СПРАВКИ:типовые диаметры што
 # экземпляр функции parameter_input
 parameter_cyl_input = parameter_input(metadata = metadata_cyl,
                                     _name_par = name_par_cyl,
-                                    _func_write = w_to_file
+                                    _func_write = w_to_file_cyl
                                     )

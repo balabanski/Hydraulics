@@ -1,16 +1,16 @@
 # coding=utf-8
 from Cylinder.parameters import  file_name
 from utils.parameters import font,btn_master
-from Cylinder.options import   main_window, clicked_main_menu_cyl, create_img_from_config
+from Cylinder.options import   main_window_cyl, clicked_main_menu_cyl, create_img_from_config
 from Cylinder.cylinder import *
 import tkinter as tk
 import json
 
 
-main_window.title("Расчет параметров цилиндра")
+main_window_cyl.title("Расчет параметров цилиндра")
 
 
-txt_param = tk.Text(main_window, width=50, height=12, font=(font[0], 12))
+txt_param = tk.Text(main_window_cyl, width=50, height=12, font=(font[0], 12))
 txt_param.grid(column=0, row=1)
 
 error_open_file_message = '\nне задан файл для хранения параметров\n'
@@ -27,13 +27,13 @@ def get_all_param():
 
 if file_name:
     txt_param.insert(0.0,'\nпараметры загружены \n для просмотра жми кнопку "параметры"\n')
-    main_window.title (file_name)
+    main_window_cyl.title (file_name)
 
 else:
     txt_param.insert(0.0, error_open_file_message)
 
 
-btn_all_parameters = tk.Button(main_window, text="Отобразить параметры", font=(font[0], 12),
+btn_all_parameters = tk.Button(main_window_cyl, text="Отобразить параметры", font=(font[0], 12),
                command = get_all_param, **btn_master)
 btn_all_parameters.grid(column=0, row=0)
 
@@ -44,7 +44,7 @@ def change_param():
         metadata_cyl.clear()
         for key, val in _param.items():
             metadata_cyl[key ]= val
-        w_to_file()#-------------------------------------
+        w_to_file_cyl()#-------------------------------------
         get_all_param()
     except:
         txt_param.delete(0.0, 100.100)
@@ -53,7 +53,7 @@ def change_param():
 
 
 
-btn_change_parameters = tk.Button(main_window, text="Редактировать & сохранить", font=(font[0], 12),
+btn_change_parameters = tk.Button(main_window_cyl, text="Редактировать & сохранить", font=(font[0], 12),
                command = change_param, **btn_master)
 btn_change_parameters.grid(column=1, row=0)
 
@@ -65,7 +65,7 @@ btn_change_parameters.grid(column=1, row=0)
 def clicked_selection_d():
     lbl_diameter_selection_d.configure(text=selection_D_and_d())
 
-btn_diameter_selection_d = tk.Button(main_window,
+btn_diameter_selection_d = tk.Button(main_window_cyl,
                                      text='подбор диаметра поршня и штока исходя из:'
                                           '\n\t-выбранной конфигурации работы цилиндра \n\t-заданного давления и силы ',
                                      font=(font[0], 12),
@@ -73,14 +73,14 @@ btn_diameter_selection_d = tk.Button(main_window,
                                      **btn_master)
 
 btn_diameter_selection_d.grid(column=0, row=2)
-lbl_diameter_selection_d = tk.Label(main_window, text='результат',
+lbl_diameter_selection_d = tk.Label(main_window_cyl, text='результат',
                   font=(font[0], 12))
 lbl_diameter_selection_d.grid(column=1, row=2)
 
 # - расчёт фактической скорости-----------------------------------------------
-lbl_speed_v = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_speed_v = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
 lbl_speed_v.grid(column=1, row=5)
-btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт фактической скорости',
+btn_speed_v = tk.Button(main_window_cyl, text='v(м/сек) - расчёт фактической скорости',
                   font=(font[0], 12),
                   command = clicked_main_menu_cyl(lbl_speed_v,
                                               from_config= True,
@@ -90,9 +90,9 @@ btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт факт�
 btn_speed_v.grid(column=0, row=5)
 
 #  - расчёт теоретической скорости---------------------------------------------
-lbl_speed_v_theoretic = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_speed_v_theoretic = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
 lbl_speed_v_theoretic.grid(column=1, row=6)
-btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт теоретической скорости',
+btn_speed_v = tk.Button(main_window_cyl, text='v(м/сек) - расчёт теоретической скорости',
                   font=(font[0], 12),
                   command = clicked_main_menu_cyl(lbl_speed_v_theoretic,
                                               from_config= True,
@@ -102,9 +102,9 @@ btn_speed_v = tk.Button(main_window, text='v(м/сек) - расчёт теор�
 btn_speed_v.grid(column=0, row=6)
 
 # - расчёт требуемого(фактического) расхода----------------------------
-lbl_flow_Q = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_flow_Q = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
 lbl_flow_Q.grid(column=1, row=7)
-btn_flow_Q = tk.Button(main_window, text='Q(л/мин) - расчёт требуемого(фактического) расхода',
+btn_flow_Q = tk.Button(main_window_cyl, text='Q(л/мин) - расчёт требуемого(фактического) расхода',
                   font=(font[0], 12),
                   command = clicked_main_menu_cyl(lbl_flow_Q,
                                               from_config= True,
@@ -115,9 +115,9 @@ btn_flow_Q.grid(column=0, row=7)
 
 
 # - расчёт требуемого усилия------------------------------------------
-lbl_force_P = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_force_P = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
 lbl_force_P.grid(column=1, row=12)
-btn_force_P = tk.Button(main_window, text='P(кН) - расчёт требуемого усилия',
+btn_force_P = tk.Button(main_window_cyl, text='P(кН) - расчёт требуемого усилия',
                 font=(font[0], 12),
                 command = clicked_main_menu_cyl(lbl_force_P,
 
@@ -129,9 +129,9 @@ btn_force_P.grid(column=0, row=12)
 
 
 # -расчет требуемого давления--------------------------------------------
-lbl_pressure_p = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_pressure_p = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
 lbl_pressure_p.grid(column=1, row=17)
-btn_pressure_p = tk.Button(main_window, text='p(Bar) -расчет требуемого давления'
+btn_pressure_p = tk.Button(main_window_cyl, text='p(Bar) -расчет требуемого давления'
                                '(без учета потерь трения)',
                   font=(font[0], 12),
                   command = clicked_main_menu_cyl(lbl_pressure_p,
@@ -143,9 +143,9 @@ btn_pressure_p = tk.Button(main_window, text='p(Bar) -расчет требуе�
 btn_pressure_p.grid(column=0, row=17)
 
 # - вычисление объёма---------------------------------------------------
-lbl_V = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_V = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
 lbl_V.grid(column = 1, row = 19)
-btn_V = tk.Button(main_window, text = "V(л.)- вычисление объёма",
+btn_V = tk.Button(main_window_cyl, text = "V(л.)- вычисление объёма",
                   font=(font[0], 12),
                   command = clicked_main_menu_cyl(lbl_V,
                                               from_name_par = True,
@@ -155,9 +155,9 @@ btn_V.grid(column=0, row=19)
 
 
 # - расчет площадей--------------------------------------------------
-lbl_area_F = tk.Label(main_window, text='результат', font=(font[0], 12))
+lbl_area_F = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
 lbl_area_F.grid(column=1, row=22)
-btn_area_F = tk.Button(main_window, text='F(см2)- расчет площадей',
+btn_area_F = tk.Button(main_window_cyl, text='F(см2)- расчет площадей',
                   font=(font[0], 12),
                   command = clicked_main_menu_cyl(lbl_area_F,
                                               from_name_par = True,
@@ -175,4 +175,4 @@ btn_area_F.grid(column=0, row=22)
 
 create_img_from_config()
 
-main_window.mainloop()
+main_window_cyl.mainloop()

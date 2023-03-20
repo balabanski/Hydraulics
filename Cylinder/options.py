@@ -1,9 +1,9 @@
 import tkinter as tk
 from pathlib import Path
-from Cylinder.parameters import metadata_cyl, name_par_cyl
+from Cylinder.parameters import metadata_cyl, name_par_cyl, w_to_file_cyl
 from utils.options import insert_image, option_input, clicked_main_menu
 
-main_window = tk.Tk()
+main_window_cyl = tk.Tk()
 
 direction = ('выдвижение штока (давление в поршневой полости)', 'втягивание штока (давление в штоковой полости)')
 dif_or_no = ('обычная схема подключения(штоковая и поршневая полости разделены)',
@@ -44,21 +44,21 @@ def create_img_from_config():
     if metadata_cyl.get('config') != None:
         if metadata_cyl.get('config').get('direction') == 'p1':
             if metadata_cyl.get('config').get('arrangement') == "vertical movement":
-               ver_1_p1(main_window).grid(row = 1, column=1)
+               ver_1_p1(main_window_cyl).grid(row = 1, column=1)
             else:
-                out_gor_1(main_window).grid(row = 1, column=1)
+                out_gor_1(main_window_cyl).grid(row = 1, column=1)
 
         elif metadata_cyl.get('config').get('direction') == 'p1_diff':
             if metadata_cyl.get('config').get('arrangement') == "vertical movement":
-               dif_ver_1(main_window).grid(row = 1, column=1)
+               dif_ver_1(main_window_cyl).grid(row = 1, column=1)
             else:
-                dif_gor_1(main_window).grid(row = 1, column=1)
+                dif_gor_1(main_window_cyl).grid(row = 1, column=1)
 
         elif metadata_cyl.get('config').get('direction') == 'p2':
             if metadata_cyl.get('config').get('arrangement') == "vertical movement":
-               ver_1_p2(main_window).grid(row = 1, column=1)
+               ver_1_p2(main_window_cyl).grid(row = 1, column=1)
             else:
-                in_gor_1(main_window).grid(row = 1, column=1)
+                in_gor_1(main_window_cyl).grid(row = 1, column=1)
 
 
 def _img_from_type_cyl(window_, type):
@@ -121,6 +121,7 @@ def set_type_from_config(type):
 option_input_cyl = option_input(func_img_from_type= _img_from_type_cyl,
                                 func_create_img_from_config= create_img_from_config,
                                 func_set_type_from_config= set_type_from_config,
+                                func_write_to_file= w_to_file_cyl,
                                 config_json= config_cyl,
                                 name_par_json= name_par_cyl,
                                 )
@@ -128,4 +129,6 @@ option_input_cyl = option_input(func_img_from_type= _img_from_type_cyl,
 
 
 # экземпляр функции clicked_main_menu (for cylinder)
-clicked_main_menu_cyl = clicked_main_menu(option_input_cyl,config_cyl)
+clicked_main_menu_cyl = clicked_main_menu(funk_option_input= option_input_cyl,
+                                          func_write_to_file= w_to_file_cyl,
+                                          config_json= config_cyl)

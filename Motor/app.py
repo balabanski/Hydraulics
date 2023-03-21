@@ -22,7 +22,6 @@ def click_main_menu(label, func):
         w_to_file_mot()
     return _click_main_menu
 
-
 # расчёт рабочего объёма---------------------------------------------
 lbl_V = tk.Label(main_window_mot, text='результат', font=(font[0], 12))
 lbl_V.grid(column=1, row=6)

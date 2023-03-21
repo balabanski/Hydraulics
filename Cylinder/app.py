@@ -44,7 +44,7 @@ btn_speed_v = tk.Button(main_window_cyl, text='v(м/сек) - расчёт фа�
                   command = clicked_main_menu_cyl(lbl_speed_v,
                                               from_config= True,
                                               message= True,
-                                              v1 = v1, v1_diff=v1_diff, v2 = v2),
+                                              v1_fact = v1_fact, v1_diff_f=v1_diff_f, v2_fact = v2_fact),
                   **btn_master)
 btn_speed_v.grid(column=0, row=5)
 
@@ -56,7 +56,7 @@ btn_speed_v = tk.Button(main_window_cyl, text='v(м/сек) - расчёт те�
                   command = clicked_main_menu_cyl(lbl_speed_v_theoretic,
                                               from_config= True,
                                               message= True,
-                                              v1_t = v1_t, v1_t_diff = v1_t_diff, v2_t = v2_t),
+                                              v1 = v1, v1_diff = v1_diff, v2 = v2),
                   **btn_master)
 btn_speed_v.grid(column=0, row=6)
 

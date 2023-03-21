@@ -145,5 +145,8 @@ app/.local
 Cylinder/primer.py
 __pycache__/*
 JsonFiles/*
+/Cylinder/JsonFiles/
+/Motor/JsonFiles/
+/Pump/JsonFiles/
 1_testing_file.json
 Read_w

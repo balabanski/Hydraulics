@@ -116,9 +116,9 @@ def func_v_fact_with_dict(func_v, key_L, key_t, key_v):
         return v
     return _v_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
-v1  = func_v_fact_with_dict(v_fact,  "L1",  "t1_fact","v1")
-v2 = func_v_fact_with_dict(v_fact, "L2", "t2_fact", "v2")
-v1_diff = func_v_fact_with_dict(v_fact,  "L1",  "t1_fact","v1")
+v1_fact  = func_v_fact_with_dict(v_fact,  "L1",  "t1_fact","v1_fact")
+v2_fact = func_v_fact_with_dict(v_fact, "L2", "t2_fact", "v2_fact")
+v1_diff_f = func_v_fact_with_dict(v_fact,  "L1",  "t1_fact","v1_diff_f")
 
 
 def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
@@ -129,9 +129,9 @@ def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
         metadata_cyl[key_v] = round(v, 2)
         return v
     return _v_theoretic_with_dict
-v1_t = func_v_theoretic_with_dict(F1, 'Q1', 'v1_t')
-v1_t_diff = func_v_theoretic_with_dict(F_diff, 'Q1_diff', 'v1_t_diff')
-v2_t = func_v_theoretic_with_dict(F2, 'Q2', 'v2_t')
+v1 = func_v_theoretic_with_dict(F1, 'Q1', 'v1')
+v1_diff = func_v_theoretic_with_dict(F_diff, 'Q1_diff', 'v1_diff')
+v2 = func_v_theoretic_with_dict(F2, 'Q2', 'v2')
 
 
 #функция для вычисления требуемого(фактического) расхода (л/мин)
@@ -157,7 +157,7 @@ def func_Q_with_dict(func_F, funk_Q, funk_v, key_v, key_q):
 # функции фабрики закрытия - для вызова ввести   NameFunc()
 Q1 = func_Q_with_dict(F1,Q, v1, 'v1','Q1') # требуемый расход при выдвижении штока
 Q2 = func_Q_with_dict(F2,Q, v2, 'v2','Q2') # требуемый расход при втягивании штока
-Q1_diff = func_Q_with_dict(F_diff,Q, v1, 'v1','Q1') # (при дифференциальной схеме)требуемый расход при выдвижении штока
+Q1_diff = func_Q_with_dict(F_diff,Q, v1, 'v1_diff','Q1') # (при дифференциальной схеме)требуемый расход при выдвижении штока
 
 
 # сила (кН)   (m = тн, а=м/с2)

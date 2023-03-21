@@ -29,4 +29,17 @@ btn_cyl = tk.Button(main_window, text='ГИДРОМОТОР',
 btn_cyl.grid(column=1, row=1)
 
 
+
+def click_pump():
+    main_window.destroy()
+    import Pump.app
+
+btn_cyl = tk.Button(main_window, text='ГИДРОНАСОС',
+                font=(font[0], 12),
+                command = click_pump,
+                **btn_master)
+btn_cyl.grid(column=2, row=1)
+
+
+
 main_window.mainloop()

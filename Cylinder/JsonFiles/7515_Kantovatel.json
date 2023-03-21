@@ -1,0 +1,13 @@
+{
+    "L1": 750.0,
+    "P1": 40.0,
+    "a": 0.2,
+    "config": {
+        "arrangement": "vertical movement",
+        "direction": "p1"
+    },
+    "d1": 100.0,
+    "d2": 70.0,
+    "m": 4.0,
+    "p1": 50.9
+}

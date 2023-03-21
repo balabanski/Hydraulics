@@ -143,7 +143,7 @@ cython_debug/
 Cylinder/__pycache__/parameters.cpython-34.pyc
 app/.local
 Cylinder/primer.py
-Cylinder/__pycache__/
-Cylinder/JsonFiles/
+__pycache__/*
+JsonFiles/*
 1_testing_file.json
 Read_w

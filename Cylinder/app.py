@@ -1,62 +1,21 @@
 # coding=utf-8
-from Cylinder.parameters import  file_name
+from Cylinder.parameters import  file_name_cyl
 from utils.parameters import font,btn_master
 from Cylinder.options import   main_window_cyl, clicked_main_menu_cyl, create_img_from_config
 from Cylinder.cylinder import *
 import tkinter as tk
-import json
+from utils._app import get_all_parameters
 
 
 main_window_cyl.title("Расчет параметров цилиндра")
 
 
-txt_param = tk.Text(main_window_cyl, width=50, height=12, font=(font[0], 12))
-txt_param.grid(column=0, row=1)
+get_all_parameters_cyl= get_all_parameters(main_window = main_window_cyl,
+                                           file_name = file_name_cyl,
+                                           metadata = metadata_cyl,
+                                           func_w_to_file = w_to_file_cyl,)
 
-error_open_file_message = '\nне задан файл для хранения параметров\n'
-
-def get_all_param():
-    txt_param.delete(0.0,100.100)
-    if file_name:
-        with open(file_name, 'r') as file:
-            c_read = file.read()
-        txt_param.insert(0.0, c_read)
-    else:
-        txt_param.insert(0.0, error_open_file_message)
-
-
-if file_name:
-    txt_param.insert(0.0,'\nпараметры загружены \n для просмотра жми кнопку "параметры"\n')
-    main_window_cyl.title (file_name)
-
-else:
-    txt_param.insert(0.0, error_open_file_message)
-
-
-btn_all_parameters = tk.Button(main_window_cyl, text="Отобразить параметры", font=(font[0], 12),
-               command = get_all_param, **btn_master)
-btn_all_parameters.grid(column=0, row=0)
-
-def change_param():
-    try:
-        new_param = txt_param.get(0.0, 100.100)
-        _param = json.loads(new_param.replace("'", '"'))
-        metadata_cyl.clear()
-        for key, val in _param.items():
-            metadata_cyl[key ]= val
-        w_to_file_cyl()#-------------------------------------
-        get_all_param()
-    except:
-        txt_param.delete(0.0, 100.100)
-        txt_param.insert(0.0,'ошибка синтаксиса файла json(запятые, двоеточия)\n'
-                             'побробуйте еще')
-
-
-
-btn_change_parameters = tk.Button(main_window_cyl, text="Редактировать & сохранить", font=(font[0], 12),
-               command = change_param, **btn_master)
-btn_change_parameters.grid(column=1, row=0)
-
+get_all_parameters_cyl()
 
 
 # подбор диаметра поршня и штока исходя из:------------------------------------

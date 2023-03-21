@@ -45,19 +45,19 @@ name_par_cyl = {
 
 initial_dir_cyl = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
 #открываю или создаю файл для хранения параметров
-file_name = file_name_input(initial_dir_cyl, metadata= metadata_cyl)
+file_name_cyl = file_name_input(initial_dir_cyl, metadata= metadata_cyl)
 
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file = r_from_file_to_metadata(path_file=file_name)
+r_from_file = r_from_file_to_metadata(path_file=file_name_cyl)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
 metadata_cyl = r_from_file()
 
 # экземпляр функции w_metadata_to_file
-w_to_file_cyl = w_metadata_to_file(path_file=file_name, metadata= metadata_cyl)
+w_to_file_cyl = w_metadata_to_file(path_file=file_name_cyl, metadata= metadata_cyl)
 
 
 reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм) цилиндров(поршня)\n25, ' \

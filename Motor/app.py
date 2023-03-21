@@ -1,59 +1,19 @@
 from Motor.parameters import file_name_mot, w_to_file_mot, metadata_mot
 from Motor.motor import V, n, Q, p, M, P
 import tkinter as tk
-import json
 from utils.parameters import font, btn_master
-
+from utils._app import get_all_parameters
 
 
 main_window_mot = tk.Tk()
 main_window_mot.title('расчет параметров гидромотора')
 
-txt_param = tk.Text(main_window_mot, width=50, height=12, font=(font[0], 12))
-txt_param.grid(column=0, row=1)
+get_all_parameters_mot= get_all_parameters(main_window = main_window_mot,
+                                           file_name = file_name_mot,
+                                           metadata = metadata_mot,
+                                           func_w_to_file = w_to_file_mot,)
 
-error_open_file_message = '\nне задан файл для хранения параметров\n'
-
-def get_all_param():
-    txt_param.delete(0.0,100.100)
-    if file_name_mot:
-        with open(file_name_mot, 'r') as file:
-            c_read = file.read()
-        txt_param.insert(0.0, c_read)
-    else:
-        txt_param.insert(0.0, error_open_file_message)
-
-
-if file_name_mot:
-    txt_param.insert(0.0,'\nпараметры загружены \n для просмотра жми кнопку "параметры"\n')
-    main_window_mot.title (file_name_mot)
-
-else:
-    txt_param.insert(0.0, error_open_file_message)
-
-
-btn_all_parameters = tk.Button(main_window_mot, text="Отобразить параметры", font=(font[0], 12),
-               command = get_all_param, **btn_master)
-btn_all_parameters.grid(column=0, row=0)
-
-def change_param():
-    try:
-        new_param = txt_param.get(0.0, 100.100)
-        _param = json.loads(new_param.replace("'", '"'))
-        metadata_mot.clear()
-        for key, val in _param.items():
-            metadata_mot[key ]= val
-        w_to_file_mot()
-        get_all_param()
-    except:
-        txt_param.delete(0.0, 100.100)
-        txt_param.insert(0.0,'ошибка синтаксиса файла json(запятые, двоеточия)\n'
-                             'побробуйте еще')
-
-btn_change_parameters = tk.Button(main_window_mot, text="Редактировать & сохранить", font=(font[0], 12),
-               command = change_param, **btn_master)
-btn_change_parameters.grid(column=1, row=0)
-
+get_all_parameters_mot()
 
 
 def click_main_menu(label, func):

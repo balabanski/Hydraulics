@@ -1,0 +1,14 @@
+{
+    "L1": 200.0,
+    "P1": 0,
+    "P2": 98.0,
+    "V1_diff": 0.16,
+    "config": {
+        "arrangement": "vertical movement",
+        "direction": "p1"
+    },
+    "d1": 63.0,
+    "d2": 32.0,
+    "m": 10.0,
+    "p2": 423.4
+}

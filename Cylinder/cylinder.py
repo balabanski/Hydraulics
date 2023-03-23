@@ -105,20 +105,24 @@ def v_fact(L, t ):
     return v_par
 
 
-def func_v_fact_with_dict(func_v, key_L, key_t, key_v):
+def func_v_fact_with_dict(func_v, func_F, key_L, key_t, key_v):
     def _v_with_dict():
-        parameter_cyl_input(key = key_L)
-        parameter_cyl_input(key = key_t)
-        L = metadata_cyl.get(key_L, 0)
-        t = metadata_cyl.get(key_t, 0)
+        def Q(F, v, n_ob = 0.95):
+            Q=F *v * 6 / n_ob   # л/мин
+            q=round(Q,2)
+            return q
+        L = parameter_cyl_input(key = key_L)
+        t = parameter_cyl_input(key = key_t)
+        F=func_F()
         v=func_v(L, t)
+        Q = Q(F, v, n_ob = 0.95)
         metadata_cyl[key_v] = v
-        return v
+        return '{} = {}ceк.\n{} = {}м/сек\nQ = {}л/мин'.format(key_t, t, key_v, v, Q)
     return _v_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
-v1_fact  = func_v_fact_with_dict(v_fact,  "L1",  "t1_fact","v1_fact")
-v2_fact = func_v_fact_with_dict(v_fact, "L2", "t2_fact", "v2_fact")
-v1_diff_f = func_v_fact_with_dict(v_fact,  "L1",  "t1_fact","v1_diff_f")
+v1_fact  = func_v_fact_with_dict(v_fact, F1, "L1", "t1_fact", "v1_fact")
+v2_fact = func_v_fact_with_dict(v_fact, F2, "L2", "t2_fact", "v2_fact")
+v1_diff_f = func_v_fact_with_dict(v_fact, F_diff, "L1", "t1_fact", "v1_diff_f")
 
 
 def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
@@ -206,7 +210,7 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
     def _p_with_dict():
         F = func_F()
         options = ('ввести значение усилия', 'вычислить значение усилия')
-        var_P = option_input_cyl(*options, from_config= True)
+        var_P = option_input_cyl(*options)
         _P = None
         if var_P == options[0]:
            parameter_cyl_input(key = key_P)

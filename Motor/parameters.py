@@ -21,11 +21,11 @@ file_name_mot = file_name_input(initial_dir_mot, metadata= metadata_mot)
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file = r_from_file_to_metadata(path_file=file_name_mot)
+r_from_file_mot = r_from_file_to_metadata(path_file=file_name_mot)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
-metadata_mot = r_from_file()
+metadata_mot = r_from_file_mot()
 
 # экземпляр функции w_metadata_to_file
 w_to_file_mot = w_metadata_to_file(path_file=file_name_mot, metadata= metadata_mot)

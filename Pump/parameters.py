@@ -21,11 +21,11 @@ file_name_pump = file_name_input(initial_dir_mot, metadata= metadata_pump)
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file = r_from_file_to_metadata(path_file=file_name_pump)
+r_from_file_pump = r_from_file_to_metadata(path_file=file_name_pump)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
-metadata_pump = r_from_file()
+metadata_pump = r_from_file_pump()
 
 # экземпляр функции w_metadata_to_file
 w_to_file_pump = w_metadata_to_file(path_file=file_name_pump, metadata= metadata_pump)

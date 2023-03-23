@@ -1,19 +1,22 @@
 # coding=utf-8
-from Cylinder.parameters import  file_name_cyl
+from Cylinder.parameters import  file_name_cyl, r_from_file_cyl, w_to_file_cyl
 from utils.parameters import font,btn_master
 from Cylinder.options import   main_window_cyl, clicked_main_menu_cyl, create_img_from_config
-from Cylinder.cylinder import *
+from Cylinder.cylinder import metadata_cyl, selection_D_and_d,\
+    v1, v1_diff, v2, Q1, Q2, Q1_diff, P1, P2, P1_diff, p1, p2, p1_dif, V1_diff, V1, V2, F_diff, F1, F2,\
+    v1_fact, v1_diff_f, v2_fact
+
 import tkinter as tk
 from utils._app import get_all_parameters
 
 
 main_window_cyl.title("Расчет параметров цилиндра")
 
-
 get_all_parameters_cyl= get_all_parameters(main_window = main_window_cyl,
                                            file_name = file_name_cyl,
                                            metadata = metadata_cyl,
-                                           func_w_to_file = w_to_file_cyl,)
+                                           func_w_to_file = w_to_file_cyl,
+                                           func_read_from_file_to_metadata= r_from_file_cyl,)
 
 get_all_parameters_cyl()
 
@@ -23,6 +26,7 @@ get_all_parameters_cyl()
 #    -заданного давления и силы
 def clicked_selection_d():
     lbl_diameter_selection_d.configure(text=selection_D_and_d())
+    w_to_file_cyl()
 
 btn_diameter_selection_d = tk.Button(main_window_cyl,
                                      text='подбор диаметра поршня и штока исходя из:'
@@ -36,17 +40,6 @@ lbl_diameter_selection_d = tk.Label(main_window_cyl, text='результат',
                   font=(font[0], 12))
 lbl_diameter_selection_d.grid(column=1, row=2)
 
-# - расчёт фактической скорости-----------------------------------------------
-lbl_speed_v = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
-lbl_speed_v.grid(column=1, row=5)
-btn_speed_v = tk.Button(main_window_cyl, text='v(м/сек) - расчёт фактической скорости',
-                  font=(font[0], 12),
-                  command = clicked_main_menu_cyl(lbl_speed_v,
-                                              from_config= True,
-                                              message= True,
-                                              v1_fact = v1_fact, v1_diff_f=v1_diff_f, v2_fact = v2_fact),
-                  **btn_master)
-btn_speed_v.grid(column=0, row=5)
 
 #  - расчёт теоретической скорости---------------------------------------------
 lbl_speed_v_theoretic = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
@@ -79,7 +72,6 @@ lbl_force_P.grid(column=1, row=12)
 btn_force_P = tk.Button(main_window_cyl, text='P(кН) - расчёт требуемого усилия',
                 font=(font[0], 12),
                 command = clicked_main_menu_cyl(lbl_force_P,
-
                                             from_config= True,
                                             message= True,
                                             P1= P1, P2 = P2, P1_diff = P1_diff),
@@ -94,7 +86,6 @@ btn_pressure_p = tk.Button(main_window_cyl, text='p(Bar) -расчет треб�
                                '(без учета потерь трения)',
                   font=(font[0], 12),
                   command = clicked_main_menu_cyl(lbl_pressure_p,
-
                                               from_config= True,
                                               message= True,
                                               p1= p1,p1_dif = p1_dif, p2 = p2),
@@ -125,11 +116,18 @@ btn_area_F = tk.Button(main_window_cyl, text='F(см2)- расчет площа�
 btn_area_F.grid(column=0, row=22)
 
 
-
-
-
-
-
+# - расчёт фактической скорости-----------------------------------------------
+lbl_speed_v = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
+lbl_speed_v.grid(column=1, row=24)
+btn_speed_v = tk.Button(main_window_cyl, text='фактические t(время)-v(скорость) хода поршня\n'
+                                              'и расчетная подача Q',
+                  font=(font[0], 12),
+                  command = clicked_main_menu_cyl(lbl_speed_v,
+                                              from_config= True,
+                                              message= True,
+                                              v1_fact = v1_fact, v1_diff_f=v1_diff_f, v2_fact = v2_fact),
+                  **btn_master)
+btn_speed_v.grid(column=0, row=24)
 
 
 create_img_from_config()

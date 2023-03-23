@@ -1,7 +1,6 @@
-from Pump.parameters import file_name_pump, w_to_file_pump, metadata_pump
+from Pump.parameters import file_name_pump, w_to_file_pump, metadata_pump, r_from_file_pump
 from Pump.pump import V, Q, P
 import tkinter as tk
-import json
 from utils.parameters import font, btn_master
 from utils._app import get_all_parameters
 
@@ -13,7 +12,9 @@ main_window_pump.title('расчет параметров гидронасоса
 get_all_parameters_pump= get_all_parameters(main_window = main_window_pump,
                                            file_name = file_name_pump,
                                            metadata = metadata_pump,
-                                           func_w_to_file = w_to_file_pump,)
+                                           func_w_to_file = w_to_file_pump,
+                                           func_read_from_file_to_metadata= r_from_file_pump,
+                                           )
 
 get_all_parameters_pump()
 

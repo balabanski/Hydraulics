@@ -7,7 +7,8 @@ import json
 def get_all_parameters(main_window = None,
                        file_name = None,
                        metadata = None,
-                       func_w_to_file = None,):
+                       func_w_to_file = None,
+                       func_read_from_file_to_metadata= None,):
     def _get_all_parameters():
         txt_param = tk.Text(main_window, width=50, height=12, font=(font[0], 12))
         txt_param.grid(column=0, row=1)
@@ -44,6 +45,7 @@ def get_all_parameters(main_window = None,
                 for key, val in _param.items():
                     metadata[key ]= val
                 func_w_to_file()
+                func_read_from_file_to_metadata()
                 get_all_param()
             except:
                 txt_param.delete(0.0, 100.100)

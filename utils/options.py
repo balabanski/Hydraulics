@@ -24,7 +24,6 @@ from debug import debug
 def option_input(func_img_from_type=None,
                  func_create_img_from_config= None,
                  func_set_type_from_config= None,
-                 func_write_to_file= None,
                  config_json= None,
                  name_par_json= None,
                  ):
@@ -90,7 +89,6 @@ def option_input(func_img_from_type=None,
                 _type.set(args[0])
 
         def clicked():
-            func_write_to_file()
             func_create_img_from_config()
             window.destroy()
 
@@ -116,7 +114,9 @@ def clicked_main_menu(funk_option_input, func_write_to_file, config_json ):
     :param lbl_result: виджета для отображения результата
     :param kwargs: ключ - это имя параметра, значение - соответствующая функция
     """
-    def _clicked_main_menu(lbl_result, from_config = False, message = False,  from_name_par = False, **kwargs):
+    def _clicked_main_menu(lbl_result,
+                           from_config = False, message = False,  from_name_par = False,
+                           **kwargs):
         def clicked_():
             options_keys = (option_key for option_key in kwargs.keys())
             #print('options_keys : ', *options_keys)-*-после

@@ -121,7 +121,6 @@ def set_type_from_config(type):
 option_input_cyl = option_input(func_img_from_type= _img_from_type_cyl,
                                 func_create_img_from_config= create_img_from_config,
                                 func_set_type_from_config= set_type_from_config,
-                                func_write_to_file= w_to_file_cyl,
                                 config_json= config_cyl,
                                 name_par_json= name_par_cyl,
                                 )

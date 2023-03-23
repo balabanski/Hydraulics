@@ -50,11 +50,11 @@ file_name_cyl = file_name_input(initial_dir_cyl, metadata= metadata_cyl)
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file = r_from_file_to_metadata(path_file=file_name_cyl)
+r_from_file_cyl = r_from_file_to_metadata(path_file=file_name_cyl)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
-metadata_cyl = r_from_file()
+metadata_cyl = r_from_file_cyl()
 
 # экземпляр функции w_metadata_to_file
 w_to_file_cyl = w_metadata_to_file(path_file=file_name_cyl, metadata= metadata_cyl)

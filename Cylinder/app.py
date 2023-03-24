@@ -4,7 +4,7 @@ from utils.parameters import font,btn_master
 from Cylinder.options import   main_window_cyl, clicked_main_menu_cyl, create_img_from_config
 from Cylinder.cylinder import metadata_cyl, selection_D_and_d,\
     v1, v1_diff, v2, Q1, Q2, Q1_diff, P1, P2, P1_diff, p1, p2, p1_dif, V1_diff, V1, V2, F_diff, F1, F2,\
-    v1_fact, v1_diff_f, v2_fact
+    v1_fact, v1_diff_f, v2_fact, t1, t2, t1_diff
 
 import tkinter as tk
 from utils._app import get_all_parameters
@@ -91,6 +91,22 @@ btn_pressure_p = tk.Button(main_window_cyl, text='p(Bar) -расчет треб�
                                               p1= p1,p1_dif = p1_dif, p2 = p2),
                   **btn_master)
 btn_pressure_p.grid(column=0, row=17)
+
+
+# -расчетное время хода поршня--------------------------------------------
+lbl_time_t = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))
+lbl_time_t.grid(column=1, row=18)
+btn_time_t = tk.Button(main_window_cyl, text='t(сек.) -расчетное время хода поршня',
+                  font=(font[0], 12),
+                  command = clicked_main_menu_cyl(lbl_time_t,
+                                              from_config= True,
+                                              message= True,
+                                              t1= t1, t1_diff = t1_diff, t2 = t2),
+                  **btn_master)
+btn_time_t.grid(column=0, row=18)
+
+
+
 
 # - вычисление объёма---------------------------------------------------
 lbl_V = tk.Label(main_window_cyl, text='результат', font=(font[0], 12))

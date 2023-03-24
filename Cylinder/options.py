@@ -26,6 +26,9 @@ config_cyl = {
     "P1": direction[0],
     "P2": direction[1],
     "P1_diff": dif_or_no[1],
+    "t1": direction[0],
+    "t2": direction[1],
+    "t1_diff": dif_or_no[1],
     }
 
 

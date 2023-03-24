@@ -82,7 +82,7 @@ V2 = func_V_wiht_JSON_file(_V2, "V2", "L2", "d1", "d2")
 
 
 # теоретическое время хода поршня  (с)------------------------------------------
-def t_theor(Q, L, F):
+def t_theor_(Q, L, F):
     t_theor = F * L *6 / (Q * 1000)
     return t_theor
 
@@ -90,6 +90,20 @@ def t_theor(Q, L, F):
 from debug import debug
 @debug
 '''
+def t_teor(func_F, key_Q, key_L, key_t):
+    def _t_teor():
+        Q= parameter_cyl_input(key_Q)
+        L= parameter_cyl_input(key_L)
+        F= func_F()
+        _t= round(t_theor_(Q, L, F), 1)
+        metadata_cyl[key_t] = _t
+        return _t
+    return _t_teor
+
+t1= t_teor(F1, 'Q1', 'L1', 't1')
+t2= t_teor(F2, 'Q2', 'L2', 't2')
+t1_diff= (F_diff, 'Q_diff', 'L1', 't1_diff')
+
 # функция для расчета  теоретической  скорости  (м/с)
 # _Q(л/мин)_F(см2)
 def v_theor(F, Q):

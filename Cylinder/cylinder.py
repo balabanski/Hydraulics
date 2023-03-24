@@ -21,17 +21,15 @@ def F_ring(d, d2):
 def func_F_with_JSON_file( key_d, *args):
     def _F_with_JSON_file():
         if key_d == 'd1':
-            parameter_cyl_input(key_d, reference = reference_for_d1)# ввод параметра и перезапись файла
+            d = parameter_cyl_input(key_d, reference = reference_for_d1)# ввод параметра и перезапись файла
         else:
-            parameter_cyl_input(key_d, reference = reference_for_d2)
-        d = metadata_cyl.get(key_d, 0)
+            d = parameter_cyl_input(key_d, reference = reference_for_d2)
         if len(args)==0:
             f=F_circle(d)
             return f
         if len(args)==1:
             key_d2 = args[0]
-            parameter_cyl_input(key_d2, reference = reference_for_d2)
-            d2 = metadata_cyl.get(key_d2, 0)
+            d2 = parameter_cyl_input(key_d2, reference = reference_for_d2)
             f = F_ring(d, d2)
             return f
     return _F_with_JSON_file
@@ -82,8 +80,8 @@ V2 = func_V_wiht_JSON_file(_V2, "V2", "L2", "d1", "d2")
 
 
 # теоретическое время хода поршня  (с)------------------------------------------
-def t_theor_(Q, L, F):
-    t_theor = F * L *6 / (Q * 1000)
+def t_theor_(Q, L, F, n_ob = 0.95):
+    t_theor = F * L *6 / (Q * n_ob * 1000)
     return t_theor
 
 '''
@@ -104,11 +102,6 @@ t1= t_teor(F1, 'Q1', 'L1', 't1')
 t2= t_teor(F2, 'Q2', 'L2', 't2')
 t1_diff= (F_diff, 'Q_diff', 'L1', 't1_diff')
 
-# функция для расчета  теоретической  скорости  (м/с)
-# _Q(л/мин)_F(см2)
-def v_theor(F, Q):
-    v = Q  / (F * 6)
-    return v
 
 
 # функция для расчета  фактиеской скорости  (м/с)
@@ -119,30 +112,36 @@ def v_fact(L, t ):
     return v_par
 
 
-def func_v_fact_with_dict(func_v, func_F, key_L, key_t, key_v):
+def func_v_fact_with_dict( func_F, key_L, key_t, key_v):
     def _v_with_dict():
         def Q(F, v, n_ob = 0.95):
             Q=F *v * 6 / n_ob   # л/мин
             q=round(Q,2)
             return q
-        L = parameter_cyl_input(key = key_L)
-        t = parameter_cyl_input(key = key_t)
+        L = parameter_cyl_input(key_L)
+        t = parameter_cyl_input(key_t)
         F=func_F()
-        v=func_v(L, t)
-        Q = Q(F, v, n_ob = 0.95)
+        v=v_fact(L, t)
+        Q = Q(F, v)
         metadata_cyl[key_v] = v
         return '{} = {}ceк.\n{} = {}м/сек\nQ = {}л/мин'.format(key_t, t, key_v, v, Q)
     return _v_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
-v1_fact  = func_v_fact_with_dict(v_fact, F1, "L1", "t1_fact", "v1_fact")
-v2_fact = func_v_fact_with_dict(v_fact, F2, "L2", "t2_fact", "v2_fact")
-v1_diff_f = func_v_fact_with_dict(v_fact, F_diff, "L1", "t1_fact", "v1_diff_f")
+v1_fact  = func_v_fact_with_dict(F1, "L1", "t1_fact", "v1_fact")
+v2_fact = func_v_fact_with_dict(F2, "L2", "t2_fact", "v2_fact")
+v1_diff_f = func_v_fact_with_dict(F_diff, "L1", "t1_fact", "v1_diff_f")
 
+
+# функция для расчета  теоретической  скорости  (м/с)
+# _Q(л/мин)_F(см2)
+def v_theor(F, Q, n_ob=0.95):
+    v = Q  / (F * 6 * n_ob)
+    return v
 
 def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
     def _v_theoretic_with_dict():
         F = func_F()
-        Q = parameter_cyl_input(key = key_Q)
+        Q = parameter_cyl_input(key_Q)
         v = v_theor(F, Q)
         metadata_cyl[key_v] = round(v, 2)
         return v
@@ -160,27 +159,23 @@ def Q(F, v, n_ob = 0.95):
     return q
 
 
-def func_Q_with_dict(func_F, funk_Q, funk_v, key_v, key_q):
+def func_Q_with_dict(func_F, funk_v, key_v, key_q):
     def Q_with_dict():
         F = func_F()
-        parameter_cyl_input(key = key_v)
-        v = metadata_cyl.get(key_v,0)
-        if v == 0:
-            funk_v()
-            v = metadata_cyl.get(key_v)
-        q=funk_Q(F, v, n_ob = 0.95)
-        metadata_cyl[key_q]=q
-        return q
+        v = parameter_cyl_input(key_v)
+        _Q= Q(F, v, n_ob = 0.95)
+        metadata_cyl[key_q]=_Q
+        return _Q
     return Q_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
-Q1 = func_Q_with_dict(F1,Q, v1, 'v1','Q1') # требуемый расход при выдвижении штока
-Q2 = func_Q_with_dict(F2,Q, v2, 'v2','Q2') # требуемый расход при втягивании штока
-Q1_diff = func_Q_with_dict(F_diff,Q, v1, 'v1_diff','Q1') # (при дифференциальной схеме)требуемый расход при выдвижении штока
+Q1 = func_Q_with_dict(F1, v1, 'v1','Q1') # требуемый расход при выдвижении штока
+Q2 = func_Q_with_dict(F2, v2, 'v2','Q2') # требуемый расход при втягивании штока
+Q1_diff = func_Q_with_dict(F_diff, v1, 'v1_diff','Q1') # (при дифференциальной схеме)требуемый расход при выдвижении штока
 
 
 # сила (кН)   (m = тн, а=м/с2)
-def P(m, a=0.2, g=0.0):
-    _P= a * m + (g * m)
+def P(m, g, a=0.1,):
+    _P= m *(a + g)
     return _P             # кН
 
 
@@ -189,19 +184,15 @@ def func_P_with_dict(key_P):
     def _P_with_dict():
         _P = 0
         var_P = option_input_cyl(*arrangement)
-        parameter_cyl_input(key = 'm')
-        m = metadata_cyl.get('m',0)
-        parameter_cyl_input(key = 'a')
-        _a = metadata_cyl.get('a',0)
-
+        m = parameter_cyl_input('m')
+        _a = parameter_cyl_input('a')
+        g= None
         if var_P == arrangement[0]:
-            _P=round(P(m, _a), 2)
-
+            g = 0
         elif var_P == arrangement[1]:
-            _P=round(P(m, a=_a, g=9.8), 2)
+            g= 9.8
+        _P=round(P(m, g, _a), 2)
 
-        else:
-            print('че то не так - не задана опция давления , var_P == {}'.format(var_P))
         metadata_cyl[key_P] = _P
         return _P
     return _P_with_dict
@@ -227,8 +218,7 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
         var_P = option_input_cyl(*options)
         _P = None
         if var_P == options[0]:
-           parameter_cyl_input(key = key_P)
-           _P = metadata_cyl.get(key_P,0)
+            _P = parameter_cyl_input(key_P)
         elif var_P == options[1]:
             _P = func_P()
 
@@ -266,12 +256,12 @@ def selection_D_and_d():
         key_p = 'p2'
         key_P = 'P2'
 
-    p = parameter_cyl_input(key = key_p)
+    p = parameter_cyl_input(key_p)
     P = None
     options_P = ('ввести значение усилия', 'вычислить значение усилия')
     var_P= option_input_cyl(*options_P)
     if var_P == options_P[0]:
-        P=parameter_cyl_input(key = key_P)
+        P=parameter_cyl_input(key_P)
     elif var_P == options_P[1]:
         P = func_P_with_dict(key_P)()
         metadata_cyl[key_P]=P

@@ -34,13 +34,13 @@ config_cyl = {
 
 dir_images_for_cyl = str(Path(Path.cwd(), 'Cylinder', 'images'))
 
-out_gor_1=insert_image(dir_images_for_cyl + '\zylhordausP.gif')
-dif_gor_1 = insert_image(dir_images_for_cyl + '\dif_ zylhordausP.gif')
-dif_ver_1 = insert_image(dir_images_for_cyl + '\dif_ ver_zylhordausP.gif')
-in_gor_1 = insert_image(dir_images_for_cyl + '\zylhordeinM.gif')
-gor_2 = insert_image(dir_images_for_cyl + '\zylhorgausP.gif')
-ver_1_p1 = insert_image(dir_images_for_cyl + '\zyl_Verdaus_p1.gif')
-ver_1_p2 = insert_image(dir_images_for_cyl + '\zyl_Verhdein_p2.gif')
+out_gor_1=insert_image(dir_images_for_cyl + '//zylhordausP.gif')
+dif_gor_1 = insert_image(dir_images_for_cyl + '//dif_ zylhordausP.gif')
+dif_ver_1 = insert_image(dir_images_for_cyl + '//dif_ ver_zylhordausP.gif')
+in_gor_1 = insert_image(dir_images_for_cyl + '//zylhordeinM.gif')
+gor_2 = insert_image(dir_images_for_cyl + '//zylhorgausP.gif')
+ver_1_p1 = insert_image(dir_images_for_cyl + '//zyl_Verdaus_p1.gif')
+ver_1_p2 = insert_image(dir_images_for_cyl + '//zyl_Verhdein_p2.gif')
 
 
 def create_img_from_config():

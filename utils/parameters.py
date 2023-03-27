@@ -120,11 +120,12 @@ def parameter_input(metadata, _name_par, _func_write):
             ent.grid(column=1, row=0)
             btn = tk.Button(window_, text=' подтвердить запись',
                             command=clicked,
-                            font=(font[0], 12))
+                            font=(font[0], 12),
+                            **btn_master)
             btn.grid(column=0, row=1)
 
             window_.grab_set()
             window_.wait_window()  #запускает локальный цикл событий, который
-                                    # завершается после уничтожения окна
+                                   # завершается после уничтожения окна
             return par
     return _parameter_input

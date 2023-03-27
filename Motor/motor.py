@@ -1,7 +1,5 @@
 
-from Motor.parameters import  metadata_mot, parameter_mot_input,\
-    w_to_file_mot
-
+from Motor.parameters import  metadata_mot, parameter_mot_input
 
 
 # Рабочий объём V(см3)
@@ -21,7 +19,6 @@ def V ():
     n = parameter_mot_input('n')
     V_ = _V(Q,n)
     metadata_mot['V']= round(V_, 2)
-    w_to_file_mot()
     return V_
 
 
@@ -41,7 +38,6 @@ def n():
     V = parameter_mot_input('V')
     n_ = _n(Q,V)
     metadata_mot['n']= round(n_, 1)
-    w_to_file_mot()
     return n_
 
 
@@ -61,7 +57,6 @@ def Q():
     n= parameter_mot_input('n')
     Q_= _Q(V, n)
     metadata_mot['Q']= Q_
-    w_to_file_mot()
     return Q_
 
 
@@ -76,7 +71,6 @@ def p():
     M= parameter_mot_input('M')
     p_= _p(V, M)
     metadata_mot['p']= round(p_, 1)
-    w_to_file_mot()
     return p_
 
 
@@ -97,7 +91,6 @@ def M():
     V= parameter_mot_input('V')
     M_= _M(p, V)
     metadata_mot['M']= round(M_, 1)
-    w_to_file_mot()
     return M_
     
 # мощность  ведомого вала P (кВт)
@@ -110,7 +103,6 @@ def P():
     Q= parameter_mot_input('Q')
     P_= _P(p, Q)
     metadata_mot['P']= round(P_, 1)
-    w_to_file_mot()
     return P_
 
 

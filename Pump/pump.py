@@ -1,5 +1,5 @@
-from Pump.parameters import  metadata_pump, parameter_pump_input,\
-    w_to_file_pump
+from Pump.parameters import  metadata_pump, parameter_pump_input
+
 
 # рабочий объём V(см3)
 def _V(Q, n= 1500, n_ob=0.95 ):
@@ -11,7 +11,6 @@ def V ():
     n = parameter_pump_input('n')
     V_ = _V(Q,n)
     metadata_pump['V']= V_
-    w_to_file_pump()
     return V_
 
 
@@ -26,7 +25,6 @@ def Q():
     n= parameter_pump_input('n')
     Q_= _Q(V, n)
     metadata_pump['Q']= Q_
-    w_to_file_pump()
     return Q_
 
 
@@ -41,5 +39,4 @@ def P():
     Q= parameter_pump_input('Q')
     P_= _P(p, Q)
     metadata_pump['P']= P_
-    w_to_file_pump()
     return P_

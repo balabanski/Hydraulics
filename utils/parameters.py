@@ -26,7 +26,7 @@ def r_from_file_to_metadata(path_file):
 
 
 
-def file_name_input(initial_dir, metadata):
+def file_id_input(initial_files, metadata):
     window = tk.Tk()
     title_text = 'открыть или создать файл для хранения параметров'
     lbl_text_error = 'Для работы необходимо ' + title_text
@@ -36,27 +36,27 @@ def file_name_input(initial_dir, metadata):
     tk.Label(window, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
     lbl_error = tk.Label(window, text=lbl_text_error, font=(font[0], 12), **btn_master)
 
-    options = dict(initialdir= initial_dir,
+    options = dict(initialdir= initial_files,
                    defaultextension=".json",
                    filetypes=[("JSON files", "*.json"),
                               ("TXT files", "*.txt"),
                               ("All files", "*.*")])
 
     def click_save():
-        global _file_name
-        _file_name = filedialog.asksaveasfilename(title='СОЗДАТЬ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
-                                                 **options)
-        if _file_name:
-            w_metadata_to_file(path_file=_file_name, metadata=metadata)()
+        global _file_id
+        _file_id = filedialog.asksaveasfilename(title='СОЗДАТЬ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
+                                                **options)
+        if _file_id:
+            w_metadata_to_file(path_file=_file_id, metadata=metadata)()
             window.destroy()
         else:
             lbl_error.grid(row=2, column=0)
 
     def click_open():
-        global _file_name
-        _file_name = filedialog.askopenfilename(title='ОТКРЫТЬ СУЩЕСТВУЮЩИЙ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
-                                               **options)
-        if _file_name:
+        global _file_id
+        _file_id = filedialog.askopenfilename(title='ОТКРЫТЬ СУЩЕСТВУЮЩИЙ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
+                                              **options)
+        if _file_id:
             window.destroy()
         else:
             lbl_error.grid(row=2, column=0)
@@ -69,7 +69,8 @@ def file_name_input(initial_dir, metadata):
     btn_create.grid(row=1, column=1)
 
     window.mainloop()
-    return _file_name
+    print('return _file_id_______________', _file_id)
+    return _file_id
 
 
 # ввод запрашиваемых значений и перезапись файла

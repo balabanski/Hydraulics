@@ -1,4 +1,4 @@
-from utils.parameters import file_name_input, r_from_file_to_metadata,\
+from utils.parameters import file_id_input, r_from_file_to_metadata,\
                             w_metadata_to_file, parameter_input
 
 
@@ -43,21 +43,21 @@ name_par_cyl = {
 
 }
 
-initial_dir_cyl = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
+init_list_files = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
 #открываю или создаю файл для хранения параметров
-file_name_cyl = file_name_input(initial_dir_cyl, metadata= metadata_cyl)
+file_id_cyl = file_id_input(init_list_files, metadata= metadata_cyl)
 
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file_cyl = r_from_file_to_metadata(path_file=file_name_cyl)
+r_from_file_cyl = r_from_file_to_metadata(path_file=file_id_cyl)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
 metadata_cyl = r_from_file_cyl()
 
 # экземпляр функции w_metadata_to_file
-w_to_file_cyl = w_metadata_to_file(path_file=file_name_cyl, metadata= metadata_cyl)
+w_to_file_cyl = w_metadata_to_file(path_file=file_id_cyl, metadata= metadata_cyl)
 
 
 reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм) цилиндров(поршня)\n25, ' \

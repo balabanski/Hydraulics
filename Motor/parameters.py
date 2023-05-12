@@ -1,5 +1,5 @@
 from pathlib import Path
-from utils.parameters import file_name_input, r_from_file_to_metadata,\
+from utils.parameters import file_id_input, r_from_file_to_metadata,\
                             w_metadata_to_file, parameter_input
 
 metadata_mot = {}
@@ -16,7 +16,7 @@ name_par_mot = {
 
 initial_dir_mot = str(Path(Path.cwd(), 'Motor', 'JsonFiles'))
 #открываю или создаю файл для хранения параметров
-file_name_mot = file_name_input(initial_dir_mot, metadata= metadata_mot)
+file_name_mot = file_id_input(initial_dir_mot, metadata= metadata_mot)
 
 
 

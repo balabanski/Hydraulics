@@ -1,5 +1,5 @@
 # coding=utf-8
-from Cylinder.parameters import  file_name_cyl, r_from_file_cyl, w_to_file_cyl
+from Cylinder.parameters import  file_id_cyl, r_from_file_cyl, w_to_file_cyl
 from utils.parameters import font,btn_master
 from Cylinder.options import   main_window_cyl, clicked_main_menu_cyl, create_img_from_config
 from Cylinder.cylinder import metadata_cyl, selection_D_and_d,\
@@ -13,10 +13,10 @@ from utils._app import get_all_parameters
 main_window_cyl.title("Расчет параметров цилиндра")
 
 get_all_parameters_cyl= get_all_parameters(main_window = main_window_cyl,
-                                           file_name = file_name_cyl,
+                                           file_name = file_id_cyl,
                                            metadata = metadata_cyl,
                                            func_w_to_file = w_to_file_cyl,
-                                           func_read_from_file_to_metadata= r_from_file_cyl,)
+                                           func_read_from_file_to_metadata= r_from_file_cyl, )
 
 get_all_parameters_cyl()
 

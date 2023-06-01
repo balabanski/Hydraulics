@@ -1,11 +1,11 @@
-from utils.parameters import file_id_input, r_from_file_to_metadata,\
-                            w_metadata_to_file, parameter_input
+from utils.parameters import file_id_input, get_metadata_from_file,\
+                            update_file, parameter_input
 
 
 from pathlib import Path
 
 
-metadata_cyl = {}
+metadata = {}
 
 name_par_cyl = {
     "d1": 'd1 (мм)-диаметр поршня ',
@@ -45,20 +45,19 @@ name_par_cyl = {
 
 init_list_files = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
 #открываю или создаю файл для хранения параметров
-file_id_cyl = file_id_input(init_list_files, metadata= metadata_cyl)
+file_id = file_id_input(init_list_files, metadata= metadata)
 
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file_cyl = r_from_file_to_metadata(path_file=file_id_cyl)
+r_from_file_func = get_metadata_from_file(path_file=file_id)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
-metadata_cyl = r_from_file_cyl()
+metadata = r_from_file_func()
 
 # экземпляр функции w_metadata_to_file
-w_to_file_cyl = w_metadata_to_file(path_file=file_id_cyl, metadata= metadata_cyl)
-
+w_metadata_to_file_func = update_file(path_file=file_id)
 
 reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм) цилиндров(поршня)\n25, ' \
                        '32, 40, 50, 63(65), 80, 100, 125, 140, 160, 180, 200,250, ' \
@@ -67,7 +66,7 @@ reference_for_d2 = 'ДЛЯ СПРАВКИ:типовые диаметры што
                    '(32), 36(40), 45(50), 56, 63, 70, 80, 90, 100, 140, 180, ' \
                    '220 мм\n'
 # экземпляр функции parameter_input
-parameter_cyl_input = parameter_input(metadata = metadata_cyl,
-                                    _name_par = name_par_cyl,
-                                    _func_write = w_to_file_cyl
-                                    )
+parameter_cyl_input = parameter_input(metadata = metadata,
+                                      _name_par = name_par_cyl,
+                                      _func_write = w_metadata_to_file_func
+                                      )

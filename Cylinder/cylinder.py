@@ -1,7 +1,7 @@
 from math import sqrt
 from pathlib import Path
-from Cylinder.parameters import  metadata_cyl, name_par_cyl, parameter_cyl_input,\
-    w_to_file_cyl, reference_for_d1, reference_for_d2
+from Cylinder.parameters import  metadata, name_par_cyl, parameter_cyl_input,\
+    w_metadata_to_file_func, reference_for_d1, reference_for_d2
 from Cylinder.options import  option_input_cyl, insert_image, arrangement, direction, dif_or_no
 
 
@@ -64,7 +64,7 @@ def func_V_wiht_JSON_file(func, key_V, key_L, *keys_d):
             args.append(par)
         L = parameter_cyl_input(key_L)
         V=func(L, *args)
-        metadata_cyl[key_V]=round(V,2)
+        metadata[key_V]=round(V, 2)
         return V
     return _V_wiht_JSON_file
 
@@ -94,7 +94,7 @@ def t_teor(func_F, key_Q, key_L, key_t):
         L= parameter_cyl_input(key_L)
         F= func_F()
         _t= round(t_theor_(Q, L, F), 1)
-        metadata_cyl[key_t] = _t
+        metadata[key_t] = _t
         return _t
     return _t_teor
 
@@ -123,7 +123,7 @@ def func_v_fact_with_dict( func_F, key_L, key_t, key_v):
         F=func_F()
         v=v_fact(L, t)
         Q = Q(F, v)
-        metadata_cyl[key_v] = v
+        metadata[key_v] = v
         return '{} = {}ceк.\n{} = {}м/сек\nQ = {}л/мин'.format(key_t, t, key_v, v, Q)
     return _v_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
@@ -143,7 +143,7 @@ def func_v_theoretic_with_dict(func_F, key_Q,  key_v):
         F = func_F()
         Q = parameter_cyl_input(key_Q)
         v = v_theor(F, Q)
-        metadata_cyl[key_v] = round(v, 2)
+        metadata[key_v] = round(v, 2)
         return v
     return _v_theoretic_with_dict
 v1 = func_v_theoretic_with_dict(F1, 'Q1', 'v1')
@@ -164,7 +164,7 @@ def func_Q_with_dict(func_F, funk_v, key_v, key_q):
         F = func_F()
         v = parameter_cyl_input(key_v)
         _Q= Q(F, v, n_ob = 0.95)
-        metadata_cyl[key_q]=_Q
+        metadata[key_q]=_Q
         return _Q
     return Q_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
@@ -193,7 +193,7 @@ def func_P_with_dict(key_P):
             g= 9.8
         _P=round(P(m, g, _a), 2)
 
-        metadata_cyl[key_P] = _P
+        metadata[key_P] = _P
         return _P
     return _P_with_dict
 
@@ -223,7 +223,7 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
             _P = func_P()
 
         _p = p(_P, F)
-        metadata_cyl[key_p] = _p
+        metadata[key_p] = _p
         return _p
     return _p_with_dict
 # функции фабрики закрытия - для вызова ввести   NameFunc()
@@ -264,16 +264,16 @@ def selection_D_and_d():
         P=parameter_cyl_input(key_P)
     elif var_P == options_P[1]:
         P = func_P_with_dict(key_P)()
-        metadata_cyl[key_P]=P
+        metadata[key_P]=P
         P=parameter_cyl_input(key = key_P, message= 'в результате вычисления')
 
     message_for_d1 = 'В соответствии с заданным усилием при выдвижении ' \
-                     'штока {}кН min значение параметра\n'.format(metadata_cyl.get('P1'))
+                     'штока {}кН min значение параметра\n'.format(metadata.get('P1'))
 
     _reference = 'задаём диаметр штока d2 исходя из усилия выдвижения ' \
                                  '{} (кН) и условной длины штока (ход поршня определён {}(мм)) по номогррамме.' \
-                                 '\n'.format(metadata_cyl.get('P1'),
-                                             metadata_cyl.get('L1',metadata_cyl.get('L2')))
+                                 '\n'.format(metadata.get('P1'),
+                                             metadata.get('L1', metadata.get('L2')))
     arg_for_d2 = dict(reference = _reference + reference_for_d2,
                       image_compiled = nomogramma_compiled)
 
@@ -281,7 +281,7 @@ def selection_D_and_d():
 
     if var_p == direction[0]:
         d = sqrt(F * 100 / 0.785)
-        metadata_cyl['d1'] = d
+        metadata['d1'] = d
 
         d = parameter_cyl_input(key = 'd1',
                             message= message_for_d1,
@@ -291,7 +291,7 @@ def selection_D_and_d():
 
     elif var_p  == dif_or_no[1]:
         d = sqrt(F * 100 / 0.785)
-        metadata_cyl['d2'] = d
+        metadata['d2'] = d
 
         d = parameter_cyl_input(key = 'd2',
                             message= 'при дифференциальной схеме рабочей площадью '
@@ -304,20 +304,20 @@ def selection_D_and_d():
         d = sqrt(( F * 100  / 0.786 ) + d2**2)
         msg_for_d2 = 'если диаметр штока определён значением {} мм и\n{} опрелен' \
                      ' значением {}кН, ' \
-                     'то min значение'.format(metadata_cyl.get('d2'), name_par_cyl.get('P2'), metadata_cyl.get('P2'))
+                     'то min значение'.format(metadata.get('d2'), name_par_cyl.get('P2'), metadata.get('P2'))
 
-        if metadata_cyl.get('P2') < metadata_cyl.get('P1',0) and d < metadata_cyl['d1']:
-            d1 = metadata_cyl.get('d1')
-            metadata_cyl['d1'] = d
+        if metadata.get('P2') < metadata.get('P1', 0) and d < metadata['d1']:
+            d1 = metadata.get('d1')
+            metadata['d1'] = d
             msg_for_d2 = 'ВНИМАНИЕ:\nтак как {} БОЛЬШЕ чем {}\n ' \
                         'то необходимо учесть ранее заданный d1(мм)- диаметр поршня,' \
                         'равный {}\n\n'.format(name_par_cyl.get('P1'), name_par_cyl.get('P2') , d1) + msg_for_d2
         else:
-            metadata_cyl['d1'] = d
+            metadata['d1'] = d
 
         parameter_cyl_input(key = 'd1',
                         message= msg_for_d2,
                         reference= reference_for_d1)
-    w_to_file_cyl()
-    return 'диаметр поршня d1 = {}\n диаметр штока d2 = {}'.format(metadata_cyl.get('d1'), metadata_cyl.get('d2'))
+    w_metadata_to_file_func(_metadata=metadata)
+    return 'диаметр поршня d1 = {}\n диаметр штока d2 = {}'.format(metadata.get('d1'), metadata.get('d2'))
 

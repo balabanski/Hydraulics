@@ -106,7 +106,7 @@ def option_input(func_img_from_type=None,
 
 
 
-def clicked_main_menu(funk_option_input, func_write_to_file, config_json ):
+def clicked_main_menu(metadata, funk_option_input, func_write_to_file, config_json ):
     """
     функция фабрики закрытия
     -для возможности выбора вариантов исполнения чего-либо
@@ -139,7 +139,7 @@ def clicked_main_menu(funk_option_input, func_write_to_file, config_json ):
                         else:
                             lbl_result.configure(text='это не фунция')
                         break
-            func_write_to_file()
+            func_write_to_file(_metadata=metadata)
         return clicked_
     return _clicked_main_menu
 

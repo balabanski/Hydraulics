@@ -20,7 +20,7 @@ get_all_parameters_mot()
 def click_main_menu(label, func):
     def _click_main_menu():
         label.configure(text = func())
-        w_to_file_mot()
+        w_to_file_mot(_metadata= metadata_mot)
     return _click_main_menu
 
 # расчёт рабочего объёма---------------------------------------------

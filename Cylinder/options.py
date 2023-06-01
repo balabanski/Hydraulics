@@ -1,6 +1,6 @@
 import tkinter as tk
 from pathlib import Path
-from Cylinder.parameters import metadata_cyl, name_par_cyl, w_to_file_cyl
+from Cylinder.parameters import metadata, name_par_cyl, w_metadata_to_file_func
 from utils.options import insert_image, option_input, clicked_main_menu
 
 main_window_cyl = tk.Tk()
@@ -44,78 +44,78 @@ ver_1_p2 = insert_image(dir_images_for_cyl + '//zyl_Verhdein_p2.gif')
 
 
 def create_img_from_config():
-    if metadata_cyl.get('config') != None:
-        if metadata_cyl.get('config').get('direction') == 'p1':
-            if metadata_cyl.get('config').get('arrangement') == "vertical movement":
+    if metadata.get('config') != None:
+        if metadata.get('config').get('direction') == 'p1':
+            if metadata.get('config').get('arrangement') == "vertical movement":
                ver_1_p1(main_window_cyl).grid(row = 1, column=1)
             else:
                 out_gor_1(main_window_cyl).grid(row = 1, column=1)
 
-        elif metadata_cyl.get('config').get('direction') == 'p1_diff':
-            if metadata_cyl.get('config').get('arrangement') == "vertical movement":
+        elif metadata.get('config').get('direction') == 'p1_diff':
+            if metadata.get('config').get('arrangement') == "vertical movement":
                dif_ver_1(main_window_cyl).grid(row = 1, column=1)
             else:
                 dif_gor_1(main_window_cyl).grid(row = 1, column=1)
 
-        elif metadata_cyl.get('config').get('direction') == 'p2':
-            if metadata_cyl.get('config').get('arrangement') == "vertical movement":
+        elif metadata.get('config').get('direction') == 'p2':
+            if metadata.get('config').get('arrangement') == "vertical movement":
                ver_1_p2(main_window_cyl).grid(row = 1, column=1)
             else:
                 in_gor_1(main_window_cyl).grid(row = 1, column=1)
 
 
 def _img_from_type_cyl(window_, type):
-    if metadata_cyl.get('config') == None:
-        metadata_cyl['config'] = {}
+    if metadata.get('config') == None:
+        metadata['config'] = {}
 
     if type.get() == direction[0] :
         out_gor_1(window_).grid(row = 4, column=0)# , column = 0, columnspan= 1)
         dif_gor_1(window_).grid(row = 4, column=1)
-        metadata_cyl['config']['direction'] = 'p1'
+        metadata['config']['direction'] = 'p1'
 
     elif type.get() == direction[1]:
         in_gor_1(window_).grid(row = 4, column=0)
         gor_2(window_).grid(row = 4, column=1)
-        metadata_cyl['config']['direction'] = 'p2'
+        metadata['config']['direction'] = 'p2'
 
     if type.get() == dif_or_no[0]:
         out_gor_1(window_).grid(row = 4, column=0)
 
     elif type.get() == dif_or_no[1]:
         dif_gor_1(window_).grid(row = 4, column=0)
-        metadata_cyl['config']['direction'] = 'p1_diff'
+        metadata['config']['direction'] = 'p1_diff'
 
     if type.get() == arrangement[0]:
-        metadata_cyl['config']['arrangement']="horizontal movement"
+        metadata['config']['arrangement']= "horizontal movement"
 
-        if metadata_cyl.get('config').get('direction') == 'p1' :
+        if metadata.get('config').get('direction') == 'p1' :
             out_gor_1(window_).grid(row = 4, column=0)
 
-        elif metadata_cyl.get('config').get('direction') == 'p1_diff' :
+        elif metadata.get('config').get('direction') == 'p1_diff' :
             dif_gor_1(window_).grid(row = 4, column=0)
 
-        elif metadata_cyl.get('config').get('direction') == 'p2' :
+        elif metadata.get('config').get('direction') == 'p2' :
             in_gor_1(window_).grid(row = 4, column=0)
 
     elif type.get() == arrangement[1]:
-        metadata_cyl['config']['arrangement'] = "vertical movement"
+        metadata['config']['arrangement'] = "vertical movement"
 
-        if metadata_cyl.get('config').get('direction') == 'p1' :
+        if metadata.get('config').get('direction') == 'p1' :
             ver_1_p1(window_).grid(row = 4, column=0)
 
-        elif  metadata_cyl.get('config').get('direction') == 'p1_diff' :
+        elif  metadata.get('config').get('direction') == 'p1_diff' :
             dif_ver_1(window_).grid(row = 4, column=0)
 
-        elif metadata_cyl.get('config').get('direction') == 'p2' :
+        elif metadata.get('config').get('direction') == 'p2' :
             ver_1_p2(window_).grid(row = 4, column=0)
 
 
 def set_type_from_config(type):
-    if metadata_cyl['config']['direction'] == 'p1':
+    if metadata['config']['direction'] == 'p1':
         type.set(direction[0])
-    elif metadata_cyl['config']['direction'] == 'p1_diff':
+    elif metadata['config']['direction'] == 'p1_diff':
         type.set(dif_or_no[1])
-    elif metadata_cyl['config']['direction'] == 'p2':
+    elif metadata['config']['direction'] == 'p2':
         type.set(direction[1])
 
 
@@ -131,6 +131,7 @@ option_input_cyl = option_input(func_img_from_type= _img_from_type_cyl,
 
 
 # экземпляр функции clicked_main_menu (for cylinder)
-clicked_main_menu_cyl = clicked_main_menu(funk_option_input= option_input_cyl,
-                                          func_write_to_file= w_to_file_cyl,
+clicked_main_menu_cyl = clicked_main_menu(metadata= metadata,
+                                          funk_option_input= option_input_cyl,
+                                          func_write_to_file= w_metadata_to_file_func,
                                           config_json= config_cyl)

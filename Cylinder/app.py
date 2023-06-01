@@ -1,8 +1,8 @@
 # coding=utf-8
-from Cylinder.parameters import  file_id_cyl, r_from_file_cyl, w_to_file_cyl
+from Cylinder.parameters import  file_id, r_from_file_func, w_metadata_to_file_func
 from utils.parameters import font,btn_master
 from Cylinder.options import   main_window_cyl, clicked_main_menu_cyl, create_img_from_config
-from Cylinder.cylinder import metadata_cyl, selection_D_and_d,\
+from Cylinder.cylinder import metadata, selection_D_and_d,\
     v1, v1_diff, v2, Q1, Q2, Q1_diff, P1, P2, P1_diff, p1, p2, p1_dif, V1_diff, V1, V2, F_diff, F1, F2,\
     v1_fact, v1_diff_f, v2_fact, t1, t2, t1_diff
 
@@ -13,10 +13,10 @@ from utils._app import get_all_parameters
 main_window_cyl.title("Расчет параметров цилиндра")
 
 get_all_parameters_cyl= get_all_parameters(main_window = main_window_cyl,
-                                           file_name = file_id_cyl,
-                                           metadata = metadata_cyl,
-                                           func_w_to_file = w_to_file_cyl,
-                                           func_read_from_file_to_metadata= r_from_file_cyl, )
+                                           file_name = file_id,
+                                           metadata = metadata,
+                                           func_w_to_file = w_metadata_to_file_func,
+                                           func_read_from_file_to_metadata= r_from_file_func, )
 
 get_all_parameters_cyl()
 
@@ -26,7 +26,7 @@ get_all_parameters_cyl()
 #    -заданного давления и силы
 def clicked_selection_d():
     lbl_diameter_selection_d.configure(text=selection_D_and_d())
-    w_to_file_cyl()
+    w_metadata_to_file_func(_metadata=metadata)
 
 btn_diameter_selection_d = tk.Button(main_window_cyl,
                                      text='подбор диаметра поршня и штока исходя из:'

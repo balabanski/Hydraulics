@@ -1,6 +1,6 @@
 from pathlib import Path
-from utils.parameters import file_id_input, r_from_file_to_metadata,\
-                            w_metadata_to_file, parameter_input
+from utils.parameters import file_id_input, get_metadata_from_file,\
+                            update_file, parameter_input
 
 metadata_pump = {}
 
@@ -21,14 +21,14 @@ file_name_pump = file_id_input(initial_dir_mot, metadata= metadata_pump)
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file_pump = r_from_file_to_metadata(path_file=file_name_pump)
+r_from_file_pump = get_metadata_from_file(path_file=file_name_pump)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
 metadata_pump = r_from_file_pump()
 
 # экземпляр функции w_metadata_to_file
-w_to_file_pump = w_metadata_to_file(path_file=file_name_pump, metadata= metadata_pump)
+w_to_file_pump = update_file(path_file=file_name_pump)
 
 parameter_pump_input = parameter_input(metadata = metadata_pump,
                                     _name_par = name_par_pump,

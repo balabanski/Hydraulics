@@ -22,7 +22,7 @@ get_all_parameters_pump()
 def click_main_menu(label, func):
     def _click_main_menu():
         label.configure(text = func())
-        w_to_file_pump()
+        w_to_file_pump(_metadata= metadata_pump)
     return _click_main_menu
 
 # расчёт рабочего объёма---------------------------------------------

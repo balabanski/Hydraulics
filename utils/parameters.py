@@ -9,15 +9,15 @@ btn_master = dict(bg='#000000', activebackground='#555555',
 
 
 # запись
-def w_metadata_to_file(path_file, metadata):
-    def _w_file():
+def update_file(path_file):
+    def _w_file(_metadata):
         with open(path_file, 'w')as file:
-            json.dump(metadata, file, sort_keys=True, indent=4)
+            json.dump(_metadata, file, sort_keys=True, indent=4)
     return _w_file
 
 
 # чтение
-def r_from_file_to_metadata(path_file):
+def get_metadata_from_file(path_file):
     def _r_file():
         with open(path_file, 'r') as file:
             metadata  = json.load(file)#получаю словарь с внешнего файла
@@ -47,7 +47,7 @@ def file_id_input(initial_files, metadata):
         _file_id = filedialog.asksaveasfilename(title='СОЗДАТЬ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
                                                 **options)
         if _file_id:
-            w_metadata_to_file(path_file=_file_id, metadata=metadata)()
+            update_file(path_file=_file_id)(_metadata=metadata)
             window.destroy()
         else:
             lbl_error.grid(row=2, column=0)

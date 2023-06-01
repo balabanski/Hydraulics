@@ -18,9 +18,13 @@ def get_all_parameters(main_window = None,
         def get_all_param():
             txt_param.delete(0.0,100.100)
             if file_name:
+                c_read = json.dumps(metadata, sort_keys=True, indent=4)
+                txt_param.insert(0.0, c_read)
+                '''
                 with open(file_name, 'r') as file:
                     c_read = file.read()
                 txt_param.insert(0.0, c_read)
+                '''
             else:
                 txt_param.insert(0.0, error_open_file_message)
 

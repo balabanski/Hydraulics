@@ -1,6 +1,6 @@
 from pathlib import Path
-from utils.parameters import file_id_input, r_from_file_to_metadata,\
-                            w_metadata_to_file, parameter_input
+from utils.parameters import file_id_input, get_metadata_from_file,\
+                            update_file, parameter_input
 
 metadata_mot = {}
 
@@ -21,14 +21,14 @@ file_name_mot = file_id_input(initial_dir_mot, metadata= metadata_mot)
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file_mot = r_from_file_to_metadata(path_file=file_name_mot)
+r_from_file_mot = get_metadata_from_file(path_file=file_name_mot)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла
 metadata_mot = r_from_file_mot()
 
 # экземпляр функции w_metadata_to_file
-w_to_file_mot = w_metadata_to_file(path_file=file_name_mot, metadata= metadata_mot)
+w_to_file_mot = update_file(path_file=file_name_mot)
 
 parameter_mot_input = parameter_input(metadata = metadata_mot,
                                     _name_par = name_par_mot,

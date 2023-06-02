@@ -5,7 +5,7 @@ from repositories import SelectFiles
 from pathlib import Path
 
 
-metadata = {}
+
 
 name_par_cyl = {
     "d1": 'd1 (мм)-диаметр поршня ',

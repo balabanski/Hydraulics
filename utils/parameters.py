@@ -1,7 +1,6 @@
 import tkinter as tk
 import json
 from repositories import SelectFiles
-from tkinter import filedialog
 from sqlmodel import Session, select, col
 from db.session import engine
 from models import File
@@ -38,54 +37,8 @@ def get_metadata_from_file(file_id):
         return _metadata
     return _get_metadata
 # ------------------for file_id_input------------------------------------------
-'''
-def file_id_input(initial_files, metadata):
-    window = tk.Tk()
-    title_text = 'открыть или создать файл для хранения параметров'
-    lbl_text_error = 'Для работы необходимо ' + title_text
-    lbl_text_message = lbl_text_error + '\nвыбери вариант'
-
-    window.title(title_text)
-    tk.Label(window, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
-    lbl_error = tk.Label(window, text=lbl_text_error, font=(font[0], 12), **btn_master)
-
-    options = dict(initialdir= initial_files,
-                   defaultextension=".json",
-                   filetypes=[("JSON files", "*.json"),
-                              ("TXT files", "*.txt"),
-                              ("All files", "*.*")])
-
-    def click_save():
-        global _file_id
-        _file_id = filedialog.asksaveasfilename(title='СОЗДАТЬ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
-                                                **options)
-        if _file_id:
-            update_file(path_file=_file_id)(_metadata=metadata)
-            window.destroy()
-        else:
-            lbl_error.grid(row=2, column=0)
-
-    def click_open():
-        global _file_id
-        _file_id = filedialog.askopenfilename(title='ОТКРЫТЬ СУЩЕСТВУЮЩИЙ ФАЙЛ ДЛЯ ХРАНЕНИЯ ПАРАМЕТРОВ',
-                                              **options)
-        if _file_id:
-            window.destroy()
-        else:
-            lbl_error.grid(row=2, column=0)
-
-    btn_open = tk.Button(window, text='открыть файл', font=(font[0], 12),
-                         command=click_open, **btn_master)
-    btn_open.grid(row=1, column=0)
-    btn_create = tk.Button(window, text='создать файл', font=(font[0], 12),
-                           command=click_save, **btn_master)
-    btn_create.grid(row=1, column=1)
-
-    window.mainloop()
-    print('return _file_id_______________', _file_id)
-    return _file_id
-'''
  #---------------------------------------------------
+file_id = None
 def get_id_from_file(_file_id):
     global file_id
     def _get_id():
@@ -96,7 +49,7 @@ def get_id_from_file(_file_id):
         return file_id
     return _get_id
 # ---------------------------------------------------
-file_id=None###########################################################
+
 def file_id_input():
     global file_id
 

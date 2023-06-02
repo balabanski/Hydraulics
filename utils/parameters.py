@@ -1,13 +1,16 @@
 import tkinter as tk
 import json
+from repositories import SelectFiles
 from tkinter import filedialog
-
+from sqlmodel import Session, select, col
+from db.session import engine
+from models import File
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#555555',
                   fg='#ffffff', activeforeground='#ffffff')
 
-
+init_list_files = SelectFiles.all()
 # запись
 def update_file(path_file):
     def _w_file(_metadata):
@@ -17,15 +20,25 @@ def update_file(path_file):
 
 
 # чтение
+'''
 def get_metadata_from_file(path_file):
     def _r_file():
         with open(path_file, 'r') as file:
             metadata  = json.load(file)#получаю словарь с внешнего файла
         return metadata
     return _r_file
+'''
 
-
-
+def get_metadata_from_file(file_id):
+    def _get_metadata():
+        with Session(engine) as session:
+            _metadata = session.exec(select(File.meta_data).where(col(File.id) == file_id)).first()
+            print('meta___data2222_________________', _metadata)
+        #window_.destroy()
+        return _metadata
+    return _get_metadata
+# ------------------for file_id_input------------------------------------------
+'''
 def file_id_input(initial_files, metadata):
     window = tk.Tk()
     title_text = 'открыть или создать файл для хранения параметров'
@@ -71,7 +84,49 @@ def file_id_input(initial_files, metadata):
     window.mainloop()
     print('return _file_id_______________', _file_id)
     return _file_id
+'''
+ #---------------------------------------------------
+def get_id_from_file(_file_id):
+    global file_id
+    def _get_id():
+        global file_id
+        file_id = _file_id
+        print('def get_id_from_file(file_id):________________________', file_id)
+        #window_.destroy()
+        return file_id
+    return _get_id
+# ---------------------------------------------------
+file_id=None###########################################################
+def file_id_input():
+    global file_id
 
+    window_ = tk.Tk()
+    var=tk.IntVar()
+
+    title_text = 'открыть или создать файл для хранения параметров'
+    lbl_text_error = 'Для работы необходимо ' + title_text
+    lbl_text_message = lbl_text_error + '\nвыбери вариант'
+
+    window_.title(title_text)
+    tk.Label(window_, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
+    lbl_error = tk.Label(window_, text=lbl_text_error, font=(font[0], 12), **btn_master)
+
+    _row = 2
+    for id, name in init_list_files:
+        _row+=_row
+        print('list_files___________________________________', init_list_files)
+        tk.Button(window_,
+                  text=name,
+                  command=get_id_from_file(_file_id=id),
+                  **btn_master).grid(column=0, row=_row)
+    tk.Button(window_,
+              text='ОТКРЫТЬ',
+              command=lambda :window_.destroy(),
+              **btn_master).grid(column=0, row=1000)
+    print('_id_id_id_id_id_id1111-------------------------', file_id)
+    window_.mainloop()
+    print('_id_id_id_id_id_id2222-------------------------', file_id)
+    return file_id
 
 # ввод запрашиваемых значений и перезапись файла
 def parameter_input(metadata, _name_par, _func_write):

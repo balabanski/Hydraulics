@@ -1,7 +1,7 @@
 from utils.parameters import file_id_input, get_metadata_from_file,\
                             update_file, parameter_input
 
-
+from repositories import SelectFiles
 from pathlib import Path
 
 
@@ -43,14 +43,16 @@ name_par_cyl = {
 
 }
 
-init_list_files = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
+#init_list_files = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
+from utils.parameters import init_list_files
+#init_list_files = SelectFiles.all()
 #открываю или создаю файл для хранения параметров
-file_id = file_id_input(init_list_files, metadata= metadata)
+file_id = file_id_input()
 
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file_func = get_metadata_from_file(path_file=file_id)
+r_from_file_func = get_metadata_from_file(file_id=file_id)
 
 
 #переопределяю переменную-получаю словарь с внешнего файла

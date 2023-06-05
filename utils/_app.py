@@ -1,6 +1,7 @@
 from utils.parameters import font, btn_master
 import tkinter as tk
 import json
+from schemas import IFileUpdateSchema
 
 
 
@@ -48,7 +49,7 @@ def get_all_parameters(main_window = None,
                 metadata.clear()
                 for key, val in _param.items():
                     metadata[key ]= val
-                func_w_to_file()
+                func_w_to_file(file=IFileUpdateSchema(meta_data=metadata))
                 func_read_from_file_to_metadata()
                 get_all_param()
             except:

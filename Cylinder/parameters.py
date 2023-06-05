@@ -1,7 +1,7 @@
 from utils.parameters import file_id_input, get_metadata_from_file,\
                             update_file, parameter_input
 
-from repositories import SelectFiles, FileRepository
+from repositories.my__init__ import SelectFiles, FileRepository
 from pathlib import Path
 
 

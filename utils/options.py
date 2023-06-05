@@ -1,7 +1,7 @@
 import tkinter as tk
 from utils.parameters import  btn_master, font
 from types import FunctionType
-from schemas import FileUpdateSchema
+from schemas.file import IFileUpdateSchema
 
 def insert_image(image_path):
     def create_img(root, height = None, width = None, columnspan = None):
@@ -140,7 +140,7 @@ def clicked_main_menu(metadata, funk_option_input, func_write_to_file, config_js
                         else:
                             lbl_result.configure(text='это не фунция')
                         break
-            func_write_to_file(file=FileUpdateSchema(meta_data=metadata))
+            func_write_to_file(file=IFileUpdateSchema(meta_data=metadata))
         return clicked_
     return _clicked_main_menu
 

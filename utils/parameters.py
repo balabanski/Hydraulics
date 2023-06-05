@@ -1,6 +1,6 @@
 import tkinter as tk
 import json
-from repositories import SelectFiles
+from repositories.my__init__ import SelectFiles
 from sqlmodel import Session, select, col
 from db.session import engine
 from models import File

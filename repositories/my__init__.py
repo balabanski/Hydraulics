@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from models import File
-from schemas import FileUpdateSchema
+from schemas import IFileUpdateSchema
 from db.session import engine
 from repositories.base import BaseRepository
 
@@ -9,7 +9,7 @@ class FileRepository(BaseRepository):
     _model = File
     @classmethod
     def update_file(self, file_id:int):
-        def _update(file:FileUpdateSchema):
+        def _update(file:IFileUpdateSchema):
             with Session(engine) as session:
                 db_file = session.get(self._model, file_id)
                 if not db_file:

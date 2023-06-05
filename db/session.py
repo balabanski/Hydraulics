@@ -13,6 +13,18 @@ sqlite_url = f"sqlite:///"+ settings.SQLITE_FILE_NAME
 
 engine = create_engine(sqlite_url, echo=True)
 
+# надо переделать
+'''
+engine = create_async_engine(
+    settings.POSTGRES_URL,
+    echo=settings.DEBUG,
+    future=True,
+    pool_size=settings.POOL_SIZE,
+    pool_pre_ping=True,
+    max_overflow=settings.MAX_OVERFLOW,
+)
+'''
+
 
 
 

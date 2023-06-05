@@ -4,6 +4,8 @@ from init_db import *
 #from sqlmodel import Session
 from db.session import engine
 import tkinter as tk
+from repositories.my__init__ import SelectFiles
+from repositories.my__init__ import FileRepository
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#555555',
@@ -12,7 +14,7 @@ btn_master = dict(bg='#000000', activebackground='#555555',
 metadata_={}
 #metadata_={'config': {'direction': 'p1', 'arrangement': 'vertical movement'}, 'm': 25.0, 'a': 1.0, 'P1': 270.0}
 #_________________________SelectFiles_________________________________________________
-from repositories import SelectFiles
+
 
 def select_dir_of_user():
     with Session(engine) as session:
@@ -80,12 +82,12 @@ def file_id_input():
 
 #--------------------------------w_metadata_to_file------------------------------------------------------------
 #________________________updade file___________________________________________________
-from schemas import FileUpdateSchema
+from schemas import IFileUpdateSchema
 
 
 def update_file(file_id:int):
     _model=File
-    def _update(file:FileUpdateSchema) -> FileUpdateSchema:
+    def _update(file:IFileUpdateSchema) -> IFileUpdateSchema:
         with Session(engine) as session:
             db_file = session.get(_model, file_id)
             if not db_file:
@@ -100,10 +102,8 @@ def update_file(file_id:int):
         return db_file
     return _update
 
-from repositories import FileRepository
 
 
-from repositories import FileRepository
 
 async def main() ->None:
     #metadata=get_metadata_from_file(1)()
@@ -119,7 +119,7 @@ async def main() ->None:
     metadata["app"] = "w_metadata_to_file_func"
     #metadata.pop('app')
 
-    w_metadata_to_file_func(file=FileUpdateSchema(meta_data=metadata))
+    w_metadata_to_file_func(file=IFileUpdateSchema(meta_data=metadata))
 
 
 

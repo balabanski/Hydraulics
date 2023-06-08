@@ -1,7 +1,8 @@
 import tkinter as tk
 from pathlib import Path
-from Cylinder.parameters import metadata, name_par_cyl, w_metadata_to_file_func
+from Cylinder.parameters import metadata, name_par_cyl, file_id
 from utils.options import insert_image, option_input, clicked_main_menu
+
 
 main_window_cyl = tk.Tk()
 
@@ -133,5 +134,5 @@ option_input_cyl = option_input(func_img_from_type= _img_from_type_cyl,
 # экземпляр функции clicked_main_menu (for cylinder)
 clicked_main_menu_cyl = clicked_main_menu(metadata= metadata,
                                           funk_option_input= option_input_cyl,
-                                          func_write_to_file= w_metadata_to_file_func,
+                                          file_name=file_id,
                                           config_json= config_cyl)

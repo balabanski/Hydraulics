@@ -1,55 +1,63 @@
 from models import *
+
 from db.session import engine
+from sqlmodel import SQLModel, select, Session
+
+import asyncio
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker
+import logging
+logger: logging.Logger = logging.getLogger(__name__)
+from schemas.file import IFileUpdateSchema
 
 #-----------------------------create_db_and_tables---------------------------------------------
-def create_db_and_tables():
+async def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
+async def async_session():
+    SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    print('SessionLocal__________', SessionLocal)
 
+    async with SessionLocal() as s:
+        async with engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.create_all)
 
+        #yield s
+        print('SessionLocal after yield__________', SessionLocal)
+    '''
+    async with engine.begin() as conn:
+        #await conn.run_sync(SQLModel.metadata.drop_all)
+        await conn.run_sync(SQLModel.metadata.create_all)
+    '''
+    await engine.dispose()
 
+async def init_models():
+    with engine.begin() as conn:
+        #conn.run_sync(SQLModel.metadata.drop_all)
+        conn.run_sync(SQLModel.metadata.create_all)
+
+#asyncio.run(init_models())
 #---------------------------------select_dir_and_file----------------------------------------------
+
 async def select_dir_and_file() -> None:
-    with Session(engine) as session:
-        results = session.exec(select(Directory.name, File.name).where(File.directory).where(User.id==1)).all()
+    async with AsyncSession(engine) as session:
+        _results = await session.execute(select(Directory.name, File.name).where(File.directory).where(User.id==1))
+        results=_results.all()
 
-        print(results)
+        print('results------------------------------------------------------', results)
+        return results
 
-async def select_file() -> None:
-    pass
 
-async def get_metadata_from_db(name_file) -> None:
-    with Session(engine) as session:
-        try:
-            file_id = session.exec(select(File.id).where(col(File.name) == name_file)).one()
-            print('file_id------------------------', file_id)
-        except:
-            print('ошибочка вышла: нет такого файла или их больше одного')
-        results = session.exec(select(File.meta_data).where(col(File.id) == file_id)).first()
-        print(results)
+# --------------------------get_metadata_from_file-------------------------------------------
+
+async def get_metadata(func, file_id):
+    await func(file_id)
 
 
 #________________________updade file___________________________________________________
-class FileUpdate(SQLModel):
-    name: Optional[str]=None
-    meta_data: Optional[Dict]=None
-    user_id: Optional[int] = None
-    directory_id: Optional[int] = Field(default=None)
 
 
-def update_file(file_id: int, file:FileUpdate):
-    with Session(engine) as session:
-        db_file = session.get(File, file_id)
-        if not db_file:
-            print("File not_not found")
-            #raise HTTPException(status_code=404, detail="Hero not found")
-        file_data = file.dict(exclude_unset=True)
-        for key, value in file_data.items():
-            setattr(db_file, key, value)
-        session.add(db_file)
-        session.commit()
-        session.refresh(db_file)
-        return db_file
 
 
 #_________________________create user_________________________________________________
@@ -60,71 +68,48 @@ def create_user(name: str):
         session.commit()
 
 #_________________________create file_________________________________________________
-def create_file(name: str, user_id=None, directory_id=None):
-    with Session(engine) as session:
+'''
+async def create_file(name: str, user_id=None, directory_id=None):
+    async with AsyncSession(engine) as session:
         file = File(name=name, user_id =user_id, directory_id=directory_id)
         session.add(file)
-        session.commit()
+        await session.commit()
+'''
 
-#________________________updade file___________________________________________________
-class FileUpdate(SQLModel):
-    name: Optional[str]=None
-    meta_data: Optional[Dict]=None
-    user_id: Optional[int] = None
-    directory_id: Optional[int] = Field(default=None)
+'''
+async def create_file(file: IFileCreateSchema):
+    logger.info(f"Inserting new object[{file.__class__.__name__}]")
+    async with AsyncSession(engine) as session:
+        new_file=File(name=file.name, user_id=file.user_id,directory_id=file.directory_id, meta_data=file.meta_data)
+        session.add(new_file)
+        await session.commit()
+'''
 
-
-def update_file(file_id: int, file:FileUpdate):
-    with Session(engine) as session:
-        db_file = session.get(File, file_id)
-        if not db_file:
-            print("File not_not found")
-            #raise HTTPException(status_code=404, detail="Hero not found")
-        file_data = file.dict(exclude_unset=True)
-        for key, value in file_data.items():
-            setattr(db_file, key, value)
-        session.add(db_file)
-        session.commit()
-        session.refresh(db_file)
-        return db_file
-
-#____________________________create file in directory____________________________________________________________
-def create_file_in_directory(file: File):
-    with Session(engine) as session:
-        db_file = session.add(file)
-        file_data=file.dict()
-        print('file_data______________', file_data)
-        session.commit()
-
-        print('db_file________', db_file, 'type(db_file)_________', type(db_file))
-        return db_file
+from repositories.file import update_file, create_file
 
 
 #___________________________delete file_______________________________________________________________________
-def delete_file(file_id: int):
-    with Session(engine) as session:
-        file = session.get(File, file_id)
+async def delete_file(file_id: int):
+    async with AsyncSession(engine) as session:
+        file = await session.get(File, file_id)
         if not file:
             print("File not_not found")
             #raise HTTPException(status_code=404, detail="Hero not found")
-        session.delete(file)
-        session.commit()
+        await session.delete(file)
+        await session.commit()
         return {"ok": True}
 
 
-async def main() -> None:
-    #logger.info("Creating initial data")
-    #create_db_and_tables()
-    #await create_init_data()
-    #await select_dir_and_file()
-    #await get_metadata_from_db(name_file= "Prestel_main")
-    update_file(6,FileUpdate(meta_data={'value': 'Petiusha'}))
-    #create_file_in_directory(File(name='cyl_for Sacha', directory_id=2, meta_data={'p1':250}))
-    #create_user("Petya")
-    #create_file('file_userPetya', 2)
-    #delete_file(9)
 
-    #logger.info("Initial data created")
+async def main() -> None:
+    logger.info("Creating initial data")
+    #await async_session()
+
+    #await FileRepository.update_file(2, file=IFileUpdateSchema(meta_data={'meta': 'update2'})) # НЕ РАБОТАЕТ
+    await update_file(2, file=IFileUpdateSchema(meta_data={'meta': 'update3'}))
+
+
+
 
 
 if __name__ == "__main__":

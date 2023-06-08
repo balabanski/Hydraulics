@@ -4,6 +4,7 @@ from pydantic import Field
 from models.files import FileBase, File
 
 
+
 class IFileUpdateSchema(FileBase):
     name: Optional[str]=None
     meta_data: Dict

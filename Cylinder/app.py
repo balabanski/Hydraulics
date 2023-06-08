@@ -7,7 +7,12 @@ from Cylinder.cylinder import metadata, selection_D_and_d,\
     v1_fact, v1_diff_f, v2_fact, t1, t2, t1_diff
 
 import tkinter as tk
+import asyncio
+from schemas import IFileUpdateSchema
+from repositories.file import update_file
+
 from utils._app import get_all_parameters
+
 
 
 main_window_cyl.title("Расчет параметров цилиндра")
@@ -15,8 +20,7 @@ main_window_cyl.title("Расчет параметров цилиндра")
 get_all_parameters_cyl= get_all_parameters(main_window = main_window_cyl,
                                            file_name = file_id,
                                            metadata = metadata,
-                                           func_w_to_file = w_metadata_to_file_func,
-                                           func_read_from_file_to_metadata= r_from_file_func, )
+                                           )
 
 get_all_parameters_cyl()
 
@@ -26,7 +30,8 @@ get_all_parameters_cyl()
 #    -заданного давления и силы
 def clicked_selection_d():
     lbl_diameter_selection_d.configure(text=selection_D_and_d())
-    w_metadata_to_file_func(_metadata=metadata)
+    asyncio.run(update_file(file_id=file_id, file=IFileUpdateSchema(meta_data=metadata)))
+
 
 btn_diameter_selection_d = tk.Button(main_window_cyl,
                                      text='подбор диаметра поршня и штока исходя из:'

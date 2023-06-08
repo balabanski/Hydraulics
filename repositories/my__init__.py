@@ -2,16 +2,17 @@ from sqlmodel import Session, select
 from models import File
 from schemas import IFileUpdateSchema
 from db.session import engine
-from repositories.base import BaseRepository
+#from repositories.base import BaseRepository
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 
-
-class FileRepository(BaseRepository):
+#class FileRepository(BaseRepository):
+class FileRepository():
     _model = File
     @classmethod
-    def update_file(self, file_id:int):
-        def _update(file:IFileUpdateSchema):
-            with Session(engine) as session:
-                db_file = session.get(self._model, file_id)
+    async def update_file(self, file_id:int, file:IFileUpdateSchema):
+            with AsyncSession(engine) as session:
+                db_file = await session.get(self._model, file_id)
                 if not db_file:
                     print("File not_not found")
                     #raise HTTPException(status_code=404, detail="Hero not found")
@@ -19,23 +20,26 @@ class FileRepository(BaseRepository):
                 for key, value in file_data.items():
                     setattr(db_file, key, value)
                 session.add(db_file)
-                session.commit()
-                session.refresh(db_file)
+                await session.commit()
+                await session.refresh(db_file)
             return db_file
-        return _update
+
 
 
 class SelectFiles():
-    session = Session(engine)
+    #session=sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     @classmethod
-    def all(cls):
-        with  cls.session:
-            files = cls.session.exec(select(File.id, File.name)).all()
+    async def all(cls) -> None:
+        async with  AsyncSession(engine) as session:
+            coroutine_files = await session.execute(select(File.id, File.name))
+            files= coroutine_files.all()
             print(' files ----', files)
             return files
     @classmethod
-    def list_id_name_from_user_id(cls):
-        with cls.session:
-            files = cls.session.exec(select(File.id, File.name).where(File.user_id==1)).all()
+    async def list_id_name_from_user_id(cls):
+        async with  AsyncSession(engine) as session:
+            coroutine_files = await session.execute(select(File.id, File.name).where(File.user_id==1))
+            files = coroutine_files.all()
             print(' files ----', files)
             return files
+

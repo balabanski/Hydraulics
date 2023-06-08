@@ -2,14 +2,14 @@ from utils.parameters import font, btn_master
 import tkinter as tk
 import json
 from schemas import IFileUpdateSchema
-
+import asyncio
+from repositories.file import update_file
 
 
 def get_all_parameters(main_window = None,
                        file_name = None,
                        metadata = None,
-                       func_w_to_file = None,
-                       func_read_from_file_to_metadata= None,):
+                       ):
     def _get_all_parameters():
         txt_param = tk.Text(main_window, width=50, height=12, font=(font[0], 12))
         txt_param.grid(column=0, row=1)
@@ -21,11 +21,6 @@ def get_all_parameters(main_window = None,
             if file_name:
                 c_read = json.dumps(metadata, sort_keys=True, indent=4)
                 txt_param.insert(0.0, c_read)
-                '''
-                with open(file_name, 'r') as file:
-                    c_read = file.read()
-                txt_param.insert(0.0, c_read)
-                '''
             else:
                 txt_param.insert(0.0, error_open_file_message)
 
@@ -49,8 +44,13 @@ def get_all_parameters(main_window = None,
                 metadata.clear()
                 for key, val in _param.items():
                     metadata[key ]= val
-                func_w_to_file(file=IFileUpdateSchema(meta_data=metadata))
-                func_read_from_file_to_metadata()
+                print('!!!___Сигнал____!!!__________asyncio.run(func_w_to_file')
+                coroutine = update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata))
+                print('coroutine------------', coroutine)
+                asyncio.run(coroutine)
+
+                print('!!!___Сигнал____!!!__________AFTER__asyncio.run(func_w_to_file')
+
                 get_all_param()
             except:
                 txt_param.delete(0.0, 100.100)

@@ -1,43 +1,33 @@
 import tkinter as tk
 import json
-from repositories.my__init__ import SelectFiles
+#from repositories.my__init__ import SelectFiles
 from sqlmodel import Session, select, col
 from db.session import engine
 from models import File
+import asyncio
+from sqlalchemy.ext.asyncio import AsyncSession
+from repositories.file import update_file, SelectFiles
+from schemas.file import IFileUpdateSchema
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#555555',
                   fg='#ffffff', activeforeground='#ffffff')
 
-init_list_files = SelectFiles.all()
-# запись
-def update_file(path_file):
-    def _w_file(_metadata):
-        with open(path_file, 'w')as file:
-            json.dump(_metadata, file, sort_keys=True, indent=4)
-    return _w_file
+init_list_files = asyncio.run(SelectFiles.all())
+
+
 
 
 # чтение
-'''
-def get_metadata_from_file(path_file):
-    def _r_file():
-        with open(path_file, 'r') as file:
-            metadata  = json.load(file)#получаю словарь с внешнего файла
-        return metadata
-    return _r_file
-'''
-
-def get_metadata_from_file(file_id):
-    def _get_metadata():
-        with Session(engine) as session:
-            _metadata = session.exec(select(File.meta_data).where(col(File.id) == file_id)).first()
-            print('meta___data2222_________________', _metadata)
-        #window_.destroy()
-        return _metadata
-    return _get_metadata
+async def get_metadata_from_file(file_id):
+    async with AsyncSession(engine) as session:
+        _metadata = await session.execute(select(File.meta_data).where(col(File.id) == file_id))
+        metadata = _metadata.first()
+        print('meta___data2222_________________', metadata)
+    #window_.destroy()
+    return metadata
 # ------------------for file_id_input------------------------------------------
- #---------------------------------------------------
+
 file_id = None
 def get_id_from_file(_file_id):
     global file_id
@@ -82,7 +72,7 @@ def file_id_input():
     return file_id
 
 # ввод запрашиваемых значений и перезапись файла
-def parameter_input(metadata, _name_par, _func_write):
+def parameter_input(metadata, _name_par, file_name):
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
@@ -114,8 +104,10 @@ def parameter_input(metadata, _name_par, _func_write):
                 try:
                     par = float(ent.get())
                     metadata[key] = par
-                    _func_write()
+                    print('!!!!!____Сигнал______func_write()')
+                    asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
                 except:
+                    print('!!!!!____Сигнал______ХРЕН ТЕБЕ func_write()')
                     par = metadata.get(key, 0)
                 window_.destroy()
                 return par

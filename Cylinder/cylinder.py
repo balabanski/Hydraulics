@@ -318,6 +318,5 @@ def selection_D_and_d():
         parameter_cyl_input(key = 'd1',
                         message= msg_for_d2,
                         reference= reference_for_d1)
-    w_metadata_to_file_func(_metadata=metadata)
     return 'диаметр поршня d1 = {}\n диаметр штока d2 = {}'.format(metadata.get('d1'), metadata.get('d2'))
 

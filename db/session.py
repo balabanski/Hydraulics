@@ -1,27 +1,26 @@
 from typing import AsyncGenerator
 
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
 from sqlalchemy.orm import sessionmaker
-
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from core.config import settings
-from sqlmodel import Field, SQLModel, Session, create_engine, select, Relationship, Column, DateTime, text, JSON
+from sqlmodel import Field, SQLModel, Session,  create_engine, select, Relationship, Column, DateTime, text, JSON
 
 
+sqlite_url = f"sqlite+aiosqlite:///"+ settings.SQLITE_FILE_NAME
 
-sqlite_url = f"sqlite:///"+ settings.SQLITE_FILE_NAME
-
-engine = create_engine(sqlite_url, echo=True)
+engine = create_async_engine(sqlite_url, echo=settings.DEBUG)
 
 # надо переделать
 '''
-engine = create_async_engine(
-    settings.POSTGRES_URL,
+engine = create_engine(
+    settings.postgresql_url,
     echo=settings.DEBUG,
     future=True,
-    pool_size=settings.POOL_SIZE,
+    pool_size=settings.SQLALCHEMY_POOL_SIZE,
     pool_pre_ping=True,
-    max_overflow=settings.MAX_OVERFLOW,
+    max_overflow=settings.SQLALCHEMY_MAX_OVERFLOW,
 )
 '''
 

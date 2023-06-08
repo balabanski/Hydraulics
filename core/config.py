@@ -1,6 +1,6 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any
 import secrets
-from pydantic import AnyHttpUrl, PostgresDsn, BaseSettings, AnyUrl, validator
+from pydantic import AnyHttpUrl, PostgresDsn, BaseSettings, AnyUrl, validator, Field, SecretStr
 import os
 from pathlib import Path
 
@@ -23,7 +23,8 @@ class DevelopmentSettings(BaseSettings):
 
     # Postgres
     POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
+    #POSTGRES_PASSWORD: SecretStr =environ.get('POSTGRES_PASSWORD', "db_password")
+    POSTGRES_PASSWORD: str = "db_password"
     POSTGRES_SERVER: str
     POSTGRES_PORT: str
     POSTGRES_DB: str = "db"
@@ -37,6 +38,7 @@ class DevelopmentSettings(BaseSettings):
 
 
     # SQLAlchemy
+    DEBUG: bool = Field(default=True, env="DEBUG")
     SQLALCHEMY_POOL_SIZE: int = 20
     SQLALCHEMY_POOL_RECYCLE: int = 1200
     SQLALCHEMY_POOL_TIMEOUT: int = 5
@@ -53,18 +55,26 @@ class DevelopmentSettings(BaseSettings):
             return [item.strip() for item in cors_origins.split(",")]
         return cors_origins
 
-
+    '''
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, str]) -> str:
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
-            scheme="postgresql",
+            scheme="postgresql+asyncpg",
             user=values.get("POSTGRES_USER"),
             password=values.get("POSTGRES_PASSWORD"),
             host=values.get("POSTGRES_SERVER") + ":" + values.get("POSTGRES_PORT"),
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
+    '''
+    @property
+    def postgresql_url(self) -> str:
+        """
+        строки легче конкатенировать, чем парсить!
+        Это property (свойство) пригодится нам в будущем, когда будем подключаться к БД.
+        """
+        return f"sqlite+aiosqlite://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     class Config:
         env_file = os.path.join(BASE_DIR, 'envs/.env_dev')
@@ -81,5 +91,5 @@ class ProductionSettings(DevelopmentSettings):
 
 settings = DevelopmentSettings()
 # settings = ProductionSettings()
-print("settings-------------", settings.SQLITE_FILE_NAME)
+
 

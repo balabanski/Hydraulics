@@ -144,6 +144,7 @@ cython_debug/
 .idea
 Cylinder/__pycache__/parameters.cpython-34.pyc
 app/.local
+app_db.py
 Cylinder/primer.py
 __pycache__/*
 JsonFiles/*

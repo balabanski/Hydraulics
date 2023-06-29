@@ -114,6 +114,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
+poetry.lock
+pyproject.toml
 
 # Spyder project settings
 .spyderproject

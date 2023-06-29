@@ -6,16 +6,15 @@ from db.session import engine
 from models import File
 import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
-from repositories.file import update_file, SelectFiles
-from schemas.file import IFileUpdateSchema
+from repositories.file import update_file, SelectFiles, create_file
+from schemas.file import IFileUpdateSchema, IFileCreateSchema
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#555555',
                   fg='#ffffff', activeforeground='#ffffff')
 
+
 init_list_files = asyncio.run(SelectFiles.all())
-
-
 
 
 # чтение
@@ -54,6 +53,8 @@ def file_id_input():
     tk.Label(window_, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
     lbl_error = tk.Label(window_, text=lbl_text_error, font=(font[0], 12), **btn_master)
 
+
+
     _row = 2
     for id, name in init_list_files:
         _row+=_row
@@ -62,10 +63,32 @@ def file_id_input():
                   text=name,
                   command=get_id_from_file(_file_id=id),
                   **btn_master).grid(column=0, row=_row)
+
+
+
     tk.Button(window_,
               text='ОТКРЫТЬ',
               command=lambda :window_.destroy(),
               **btn_master).grid(column=0, row=1000)
+
+    ent = tk.Entry(window_, font=(font[0], 12))
+    ent.grid(column=0, row=1001)
+
+    def create_file_click():
+        name_=ent.get()
+        file=create_file(file= IFileCreateSchema(name=name_)) #courutyne
+        asyncio.run(file)
+        init_list_files = asyncio.run(SelectFiles.all())
+        # func_init_list_files(list_files=init_list_files)
+
+
+
+
+    tk.Button(window_,
+              text='СОЗДАТЬ',
+              command=create_file_click,
+              **btn_master).grid(column=1, row=1001)
+
     print('_id_id_id_id_id_id1111-------------------------', file_id)
     window_.mainloop()
     print('_id_id_id_id_id_id2222-------------------------', file_id)
@@ -104,7 +127,6 @@ def parameter_input(metadata, _name_par, file_name):
                 try:
                     par = float(ent.get())
                     metadata[key] = par
-                    print('!!!!!____Сигнал______func_write()')
                     asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
                 except:
                     print('!!!!!____Сигнал______ХРЕН ТЕБЕ func_write()')

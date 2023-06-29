@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 import logging
 logger: logging.Logger = logging.getLogger(__name__)
-from schemas.file import IFileUpdateSchema
+from schemas.file import IFileUpdateSchema, IFileCreateSchema
 
 #-----------------------------create_db_and_tables---------------------------------------------
 async def create_db_and_tables():
@@ -103,10 +103,13 @@ async def delete_file(file_id: int):
 
 async def main() -> None:
     logger.info("Creating initial data")
-    #await async_session()
+
+    #await delete_file(7)
+
+    #await create_file(file=IFileCreateSchema(name="new_file"))
 
     #await FileRepository.update_file(2, file=IFileUpdateSchema(meta_data={'meta': 'update2'})) # НЕ РАБОТАЕТ
-    await update_file(2, file=IFileUpdateSchema(meta_data={'meta': 'update3'}))
+    #await update_file(2, file=IFileUpdateSchema(meta_data={'meta': 'update3'}))
 
 
 

@@ -68,7 +68,7 @@ async def select_file()-> None:
 
 
 async def create_file(file: IFileCreateSchema):
-    logger.info(f"Inserting new object[{file.__class__.__name__}]")
+    logger.info(f"Inserting new object________________[{file.__class__.__name__}]")
     async with SessionLocal()as session:
         new_file=File(name=file.name, user_id=file.user_id,directory_id=file.directory_id, meta_data=file.meta_data)
         session.add(new_file)

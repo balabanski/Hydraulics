@@ -8,7 +8,7 @@ from repositories.file import update_file
 
 
 def insert_image(image_path):
-    def create_img(root, height = None, width = None, columnspan = None):
+    def create_img(root, height=None, width=None, columnspan=None):
 
         canvas = tk.Canvas(root, height = height, width = width)  #height = 550, width = 1050
         canvas.create_image(0, 0, anchor = 'nw', image = img_compiled)

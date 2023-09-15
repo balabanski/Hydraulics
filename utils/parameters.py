@@ -1,6 +1,6 @@
 import tkinter as tk
 import json
-#from repositories.my__init__ import SelectFiles
+# from repositories.my__init__ import SelectFiles
 from sqlmodel import Session, select, col
 from db.session import engine
 from models import File
@@ -10,9 +10,8 @@ from repositories.file import update_file, SelectFiles, create_file
 from schemas.file import IFileUpdateSchema, IFileCreateSchema
 
 font = ['Arial Bold']
-btn_master = dict(bg='#000000', activebackground='#555555',
+btn_master = dict(bg='#000000', activebackground='#4444ff',
                   fg='#ffffff', activeforeground='#ffffff')
-
 
 init_list_files = asyncio.run(SelectFiles.all())
 
@@ -23,66 +22,70 @@ async def get_metadata_from_file(file_id):
         _metadata = await session.execute(select(File.meta_data).where(col(File.id) == file_id))
         metadata = _metadata.first()
         print('meta___data2222_________________', metadata)
-    #window_.destroy()
+    # window_.destroy()
     return metadata
+
+
 # ------------------for file_id_input------------------------------------------
 
 file_id = None
+
+
 def get_id_from_file(_file_id):
     global file_id
+
     def _get_id():
         global file_id
         file_id = _file_id
         print('def get_id_from_file(file_id):________________________', file_id)
-        #window_.destroy()
+        # window_.destroy()
         return file_id
+
     return _get_id
+
+
 # ---------------------------------------------------
 
 def file_id_input():
     global file_id
 
     window_ = tk.Tk()
-    var=tk.IntVar()
+    var = tk.IntVar()
 
     title_text = 'открыть или создать файл для хранения параметров'
     lbl_text_error = 'Для работы необходимо ' + title_text
     lbl_text_message = lbl_text_error + '\nвыбери вариант'
 
     window_.title(title_text)
-    tk.Label(window_, text = lbl_text_message, font = (font[0],12)).grid(row = 0)
+    tk.Label(window_, text=lbl_text_message, font=(font[0], 12)).grid(row=0)
     lbl_error = tk.Label(window_, text=lbl_text_error, font=(font[0], 12), **btn_master)
-
-
 
     _row = 2
     for id, name in init_list_files:
-        _row+=_row
+        _row += _row
         print('list_files___________________________________', init_list_files)
         tk.Button(window_,
                   text=name,
                   command=get_id_from_file(_file_id=id),
                   **btn_master).grid(column=0, row=_row)
 
-
-
     tk.Button(window_,
               text='ОТКРЫТЬ',
-              command=lambda :window_.destroy(),
+              command=lambda: window_.destroy(),
               **btn_master).grid(column=0, row=1000)
 
     ent = tk.Entry(window_, font=(font[0], 12))
     ent.grid(column=0, row=1001)
 
     def create_file_click():
-        name_=ent.get()
-        file=create_file(file= IFileCreateSchema(name=name_)) #courutyne
+        global init_list_files
+        name_ = ent.get()
+        file = create_file(file=IFileCreateSchema(name=name_))  # courutyne
         asyncio.run(file)
+        window_.destroy()
         init_list_files = asyncio.run(SelectFiles.all())
+        file_id_input()
         # func_init_list_files(list_files=init_list_files)
-
-
-
 
     tk.Button(window_,
               text='СОЗДАТЬ',
@@ -94,61 +97,65 @@ def file_id_input():
     print('_id_id_id_id_id_id2222-------------------------', file_id)
     return file_id
 
+    def delete_file_click():
+        name_ = ent.get()
+
+
 # ввод запрашиваемых значений и перезапись файла
 def parameter_input(metadata, _name_par, file_name):
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
     """
+
     def _parameter_input(key,
-                         message = None,
-                         reference = None,
-                         image_compiled = None):
-            window_ = tk.Toplevel()
-            title_text = "ввод параметра {}".format(_name_par.get(key))
-            window_.title(title_text)
+                         message=None,
+                         reference=None,
+                         image_compiled=None):
+        window_ = tk.Toplevel()
+        title_text = "ввод параметра {}".format(_name_par.get(key))
+        window_.title(title_text)
 
+        default_text = '{} определён значением {}'.format(_name_par.get(key), metadata.get(key, 0)) + \
+                       '\n (можешь ввести новое значение в поле справа' + \
+                       '\n либо ничего не вводить и оставить прежним)'
+        lbl_text = default_text
+        if message:
+            lbl_text = '{}\n{}'.format(message, lbl_text)
+        if reference:
+            lbl_text = '{}\n\n{}'.format(lbl_text, reference)
 
+        if image_compiled:
+            image_compiled(window_, height=550, width=1050).grid(row=6, column=0)
 
-            default_text = '{} определён значением {}'.format(_name_par.get(key), metadata.get(key, 0)) + \
-                            '\n (можешь ввести новое значение в поле справа' + \
-                            '\n либо ничего не вводить и оставить прежним)'
-            lbl_text = default_text
-            if message  :
-                lbl_text = '{}\n{}'.format(message, lbl_text)
-            if reference :
-                lbl_text = '{}\n\n{}'.format(lbl_text, reference )
-
-            if image_compiled:
-                image_compiled(window_,height = 550, width = 1050).grid(row = 6, column = 0)
-
-            def clicked():
-                global par
-                try:
-                    par = float(ent.get())
-                    metadata[key] = par
-                    asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
-                except:
-                    print('!!!!!____Сигнал______ХРЕН ТЕБЕ func_write()')
-                    par = metadata.get(key, 0)
-                window_.destroy()
-                return par
-
-            lbl = tk.Label(window_, text=lbl_text,
-                            font=(font[0], 12),
-                            **btn_master)
-            lbl.grid(column=0, row=0)
-
-            ent = tk.Entry(window_, font=(font[0], 12))
-            ent.grid(column=1, row=0)
-            btn = tk.Button(window_, text=' подтвердить запись',
-                            command=clicked,
-                            font=(font[0], 12),
-                            **btn_master)
-            btn.grid(column=0, row=1)
-
-            window_.grab_set()
-            window_.wait_window()  #запускает локальный цикл событий, который
-                                   # завершается после уничтожения окна
+        def clicked():
+            global par
+            try:
+                par = float(ent.get())
+                metadata[key] = par
+                asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
+            except:
+                print('!!!!!____Сигнал______ХРЕН ТЕБЕ func_write()')
+                par = metadata.get(key, 0)
+            window_.destroy()
             return par
+
+        lbl = tk.Label(window_, text=lbl_text,
+                       font=(font[0], 12),
+                       **btn_master)
+        lbl.grid(column=0, row=0)
+
+        ent = tk.Entry(window_, font=(font[0], 12))
+        ent.grid(column=1, row=0)
+        btn = tk.Button(window_, text=' подтвердить запись',
+                        command=clicked,
+                        font=(font[0], 12),
+                        **btn_master)
+        btn.grid(column=0, row=1)
+
+        window_.grab_set()
+        window_.wait_window()  # запускает локальный цикл событий, который
+        # завершается после уничтожения окна
+        return par
+
     return _parameter_input

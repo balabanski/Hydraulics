@@ -18,6 +18,7 @@ class FileBase(SQLModel):
                                         description="The database id of the folders")
     user_id: Optional[int]= Field(default=None, foreign_key="user.id", description="The database id of the user")
 
+
 class File(BaseModel, FileBase,table=True):
     class Config:
         arbitrary_types_allowed = True

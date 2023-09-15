@@ -5,7 +5,8 @@ import os
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+print(BASE_DIR)
 
 
 class DevelopmentSettings(BaseSettings):
@@ -23,7 +24,7 @@ class DevelopmentSettings(BaseSettings):
 
     # Postgres
     POSTGRES_USER: str
-    #POSTGRES_PASSWORD: SecretStr =environ.get('POSTGRES_PASSWORD', "db_password")
+    # POSTGRES_PASSWORD: SecretStr =environ.get('POSTGRES_PASSWORD', "db_password")
     POSTGRES_PASSWORD: str = "db_password"
     POSTGRES_SERVER: str
     POSTGRES_PORT: str
@@ -32,10 +33,8 @@ class DevelopmentSettings(BaseSettings):
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
     # (see URI validator) -> it will be like postgresql://user:password@localhost:5432/db
 
-    #SQLite
+    # SQLite
     SQLITE_FILE_NAME: str
-
-
 
     # SQLAlchemy
     DEBUG: bool = Field(default=True, env="DEBUG")
@@ -76,9 +75,14 @@ class DevelopmentSettings(BaseSettings):
         """
         return f"sqlite+aiosqlite://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
+    @property
+    def sqlite_url(self) -> str:
+        return f"sqlite+aiosqlite:///" + settings.SQLITE_FILE_NAME
+
     class Config:
-        env_file = os.path.join(BASE_DIR, 'envs/.env_dev')
+        env_file = os.path.join(BASE_DIR, 'src/envs/.env_dev')
         case_sensitive = True
+
 
 class TestSettings(DevelopmentSettings):
     ...
@@ -86,7 +90,7 @@ class TestSettings(DevelopmentSettings):
 
 class ProductionSettings(DevelopmentSettings):
     class Config:
-        env_file = os.path.join(BASE_DIR, 'envs/.env.prod')
+        env_file = os.path.join(BASE_DIR, 'src/envs/.env_prod')
 
 
 settings = DevelopmentSettings()

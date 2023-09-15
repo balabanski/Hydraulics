@@ -1,16 +1,12 @@
 from typing import AsyncGenerator
 
-from sqlalchemy import text
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from core.config import settings
-from sqlmodel import Field, SQLModel, Session,  create_engine, select, Relationship, Column, DateTime, text, JSON
+from src.core.config import settings
+from sqlmodel import text
 
 
-sqlite_url = f"sqlite+aiosqlite:///"+ settings.SQLITE_FILE_NAME
-
-engine = create_async_engine(sqlite_url, echo=settings.DEBUG)
+engine = create_async_engine(settings.sqlite_url, echo=settings.DEBUG)
 
 # надо переделать
 '''
@@ -23,8 +19,6 @@ engine = create_engine(
     max_overflow=settings.SQLALCHEMY_MAX_OVERFLOW,
 )
 '''
-
-
 
 
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

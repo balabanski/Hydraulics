@@ -1,5 +1,5 @@
 # coding=utf-8
-from Cylinder.parameters import file_id, r_from_file_func, w_metadata_to_file_func
+from Cylinder.parameters import file_id
 from utils.parameters import font,btn_master
 from Cylinder.options import main_window_cyl, clicked_main_menu_cyl, create_img_from_config
 from Cylinder.cylinder import metadata, selection_D_and_d,\
@@ -8,8 +8,8 @@ from Cylinder.cylinder import metadata, selection_D_and_d,\
 
 import tkinter as tk
 import asyncio
-from schemas import IFileUpdateSchema
-from repositories.file import update_file
+from src.schemas import IFileUpdateSchema
+from src.repositories.file import update_file
 
 from utils._app import get_all_parameters
 

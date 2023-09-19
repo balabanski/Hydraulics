@@ -11,5 +11,6 @@ class OrderEnum:
     ASC = "asc"
     DESC = "desc"
 
+
 class SortEnum:
     CREATED_AT = "created_at"

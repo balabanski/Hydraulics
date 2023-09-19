@@ -1,10 +1,10 @@
-from sqlmodel import Session, select
+from sqlmodel import select
 from models import File
-from schemas import IFileUpdateSchema
-from db.session import engine
+from src.schemas import IFileUpdateSchema
+from src.db.session import engine
 #from repositories.base import BaseRepository
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 #class FileRepository(BaseRepository):
 class FileRepository():

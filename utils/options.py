@@ -3,8 +3,8 @@ from utils.parameters import  btn_master, font
 from types import FunctionType
 
 import asyncio
-from schemas.file import IFileUpdateSchema
-from repositories.file import update_file
+from src.schemas import IFileUpdateSchema
+from src.repositories.file import update_file
 
 
 def insert_image(image_path):

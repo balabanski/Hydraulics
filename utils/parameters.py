@@ -1,13 +1,12 @@
 import tkinter as tk
-import json
 # from repositories.my__init__ import SelectFiles
-from sqlmodel import Session, select, col
-from db.session import engine
+from sqlmodel import select, col
+from src.db.session import engine
 from models import File
 import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
-from repositories.file import update_file, SelectFiles, create_file
-from schemas.file import IFileUpdateSchema, IFileCreateSchema
+from src.repositories.file import update_file, SelectFiles, create_file, delete_file
+from src.schemas import IFileUpdateSchema, IFileCreateSchema
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#4444ff',
@@ -61,17 +60,20 @@ def file_id_input():
     lbl_error = tk.Label(window_, text=lbl_text_error, font=(font[0], 12), **btn_master)
 
     _row = 2
-    for id, name in init_list_files:
+    for id_, name in init_list_files:
         _row += _row
         print('list_files___________________________________', init_list_files)
         tk.Button(window_,
-                  text=name,
-                  command=get_id_from_file(_file_id=id),
+                  text=name+f" ----id={id_}",
+                  command=get_id_from_file(_file_id=id_),
                   **btn_master).grid(column=0, row=_row)
+
+    def open_file_click():
+        window_.destroy()
 
     tk.Button(window_,
               text='ОТКРЫТЬ',
-              command=lambda: window_.destroy(),
+              command=lambda: open_file_click(),
               **btn_master).grid(column=0, row=1000)
 
     ent = tk.Entry(window_, font=(font[0], 12))
@@ -92,13 +94,21 @@ def file_id_input():
               command=create_file_click,
               **btn_master).grid(column=1, row=1001)
 
-    print('_id_id_id_id_id_id1111-------------------------', file_id)
-    window_.mainloop()
-    print('_id_id_id_id_id_id2222-------------------------', file_id)
-    return file_id
-
     def delete_file_click():
-        name_ = ent.get()
+        global init_list_files
+        window_.destroy()
+        asyncio.run(delete_file(file_id=file_id))
+        init_list_files = asyncio.run(SelectFiles.all())
+        file_id_input()
+
+    tk.Button(window_,
+              text='УДАЛИТЬ',
+              command=delete_file_click,
+              **btn_master).grid(column=0, row=1005)
+
+    window_.mainloop()
+
+    return file_id
 
 
 # ввод запрашиваемых значений и перезапись файла

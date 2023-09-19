@@ -1,6 +1,6 @@
 from models import *
 
-from db.session import engine
+from src.db.session import engine
 from sqlmodel import SQLModel, select, Session
 
 import asyncio
@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 import logging
 logger: logging.Logger = logging.getLogger(__name__)
-from schemas.file import IFileUpdateSchema, IFileCreateSchema
+
 
 #-----------------------------create_db_and_tables---------------------------------------------
 async def create_db_and_tables():
@@ -85,19 +85,9 @@ async def create_file(file: IFileCreateSchema):
         await session.commit()
 '''
 
-from repositories.file import update_file, create_file
-
 
 #___________________________delete file_______________________________________________________________________
-async def delete_file(file_id: int):
-    async with AsyncSession(engine) as session:
-        file = await session.get(File, file_id)
-        if not file:
-            print("File not_not found")
-            #raise HTTPException(status_code=404, detail="Hero not found")
-        await session.delete(file)
-        await session.commit()
-        return {"ok": True}
+
 
 
 

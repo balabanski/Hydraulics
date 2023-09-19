@@ -1,9 +1,9 @@
 from utils.parameters import font, btn_master
 import tkinter as tk
 import json
-from schemas import IFileUpdateSchema
+from src.schemas import IFileUpdateSchema
 import asyncio
-from repositories.file import update_file
+from src.repositories.file import update_file
 
 
 def get_all_parameters(main_window=None,

@@ -1,28 +1,19 @@
 import tkinter as tk
-# from repositories.my__init__ import SelectFiles
+
 from sqlmodel import select, col
 from src.db.session import engine
 from models import File
 import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.repositories.file import update_file, SelectFiles, create_file, delete_file
+
+from src.repositories.file import update_file, create_file, delete_file, select_file
 from src.schemas import IFileUpdateSchema, IFileCreateSchema
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#4444ff',
                   fg='#ffffff', activeforeground='#ffffff')
 
-init_list_files = asyncio.run(SelectFiles.all())
-
-
-# чтение
-async def get_metadata_from_file(file_id):
-    async with AsyncSession(engine) as session:
-        _metadata = await session.execute(select(File.meta_data).where(col(File.id) == file_id))
-        metadata = _metadata.first()
-        print('meta___data2222_________________', metadata)
-    # window_.destroy()
-    return metadata
+init_list_files = asyncio.run(select_file())
+print('init_list_files = asyncio.run(select_file)___________________', init_list_files)
 
 
 # ------------------for file_id_input------------------------------------------
@@ -30,16 +21,14 @@ async def get_metadata_from_file(file_id):
 file_id = None
 
 
-def get_id_from_file(_file_id):
+def click_name_(_file_id):
     global file_id
 
     def _get_id():
         global file_id
         file_id = _file_id
         print('def get_id_from_file(file_id):________________________', file_id)
-        # window_.destroy()
         return file_id
-
     return _get_id
 
 
@@ -62,10 +51,9 @@ def file_id_input():
     _row = 2
     for id_, name in init_list_files:
         _row += _row
-        print('list_files___________________________________', init_list_files)
         tk.Button(window_,
                   text=name+f" ----id={id_}",
-                  command=get_id_from_file(_file_id=id_),
+                  command=click_name_(_file_id=id_),
                   **btn_master).grid(column=0, row=_row)
 
     def open_file_click():
@@ -73,7 +61,8 @@ def file_id_input():
 
     tk.Button(window_,
               text='ОТКРЫТЬ',
-              command=lambda: open_file_click(),
+              # command=lambda: open_file_click(),
+              command=lambda: window_.destroy(),
               **btn_master).grid(column=0, row=1000)
 
     ent = tk.Entry(window_, font=(font[0], 12))
@@ -82,10 +71,10 @@ def file_id_input():
     def create_file_click():
         global init_list_files
         name_ = ent.get()
-        file = create_file(file=IFileCreateSchema(name=name_))  # courutyne
-        asyncio.run(file)
+        asyncio.run(create_file(file=IFileCreateSchema(name=name_)))
         window_.destroy()
-        init_list_files = asyncio.run(SelectFiles.all())
+        init_list_files = asyncio.run(select_file())
+
         file_id_input()
         # func_init_list_files(list_files=init_list_files)
 
@@ -98,7 +87,7 @@ def file_id_input():
         global init_list_files
         window_.destroy()
         asyncio.run(delete_file(file_id=file_id))
-        init_list_files = asyncio.run(SelectFiles.all())
+        init_list_files = asyncio.run(select_file())
         file_id_input()
 
     tk.Button(window_,
@@ -140,13 +129,10 @@ def parameter_input(metadata, _name_par, file_name):
 
         def clicked():
             global par
-            try:
-                par = float(ent.get())
-                metadata[key] = par
-                asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
-            except:
-                print('!!!!!____Сигнал______ХРЕН ТЕБЕ func_write()')
-                par = metadata.get(key, 0)
+            par = float(ent.get())
+            metadata[key] = par
+            asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
+            par = metadata.get(key, 0)
             window_.destroy()
             return par
 

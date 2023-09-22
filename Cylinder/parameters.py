@@ -1,6 +1,6 @@
-from utils.parameters import file_id_input, get_metadata_from_file,\
+from utils.parameters import file_id_input, \
                             parameter_input
-
+from src.repositories.file import get_metadata_from_file
 from pathlib import Path
 from src.repositories.file import update_file
 import asyncio
@@ -54,15 +54,14 @@ file_id = file_id_input()
 
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file_func = get_metadata_from_file(file_id=file_id) # coroutine object
+r_from_file_func = get_metadata_from_file(file_id=file_id)  # coroutine object
 
 #переопределяю переменную-получаю словарь с внешнего файла
-metadata = asyncio.run(r_from_file_func)[0]
+metadata = asyncio.run(r_from_file_func)
 print('metadata = asyncio.run(r_from_file_func)++++++++++++++++++++++++++++++++++++=', metadata)
 
 # экземпляр функции w_metadata_to_file ---не----КОРУТИНА
-#w_metadata_to_file_func = update_file(path_file=file_id)
-w_metadata_to_file_func=update_file(file_id=file_id)
+w_metadata_to_file_func = update_file(file_id=file_id)  # coroutyne
 
 reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм) цилиндров(поршня)\n25, ' \
                        '32, 40, 50, 63(65), 80, 100, 125, 140, 160, 180, 200,250, ' \

@@ -22,8 +22,11 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
 
     async def create(self, obj_in: CreateSchemaType, **kwargs: Any) -> ModelType:
         logger.info(f"Inserting new object[{obj_in.__class__.__name__}]")
+        print('self._model____________________________________________', self._model)
 
         db_obj = self._model.from_orm(obj_in)
+        print('db_obj = self._model.from_orm(obj_in)_______________________', db_obj)
+
         add = kwargs.get("add", True)
         flush = kwargs.get("flush", True)
         commit = kwargs.get("commit", True)
@@ -85,26 +88,41 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         limit: int = 100,
         sort_field: Optional[str] = None,
         sort_order: Optional[str] = None,
+        select_columns: Optional[List[str]] = None,
     ) -> List[ModelType]:
+
         columns = self._model.__table__.columns  # type: ignore
 
         if not sort_field:
-            sort_field = SortEnum.CREATED_AT
+            sort_field = "id"
+            # sort_field = SortEnum.CREATED_AT
 
         if not sort_order:
             sort_order = OrderEnum.DESC
 
         order_by = getattr(columns[sort_field], sort_order)()
-        query = select(self._model).offset(skip).limit(limit).order_by(order_by)
 
-        response = await self.db.execute(query)
-        return response.scalars().all()
+        if select_columns:
+            list_columns = []
+            for col in select_columns:
+                column = getattr(self._model, col)
+                list_columns.append(column)
+            query = select(list_columns)
+            response = await self.db.execute(query)
+            return response.all()
+
+        else:
+            query = select(self._model).offset(skip).limit(limit).order_by(order_by)
+            response = await self.db.execute(query)
+            return response.scalars().all()
 
     async def f(self, **kwargs: Any) -> List[ModelType]:
         logger.info(f"Filtering [{self._model.__table__.name.capitalize()}] object by [{kwargs}]")  # type: ignore
-
         query = select(self._model).filter_by(**kwargs)
         response = await self.db.execute(query)
+        #  async with self.db() as session:
+        #     response = await session.execute(query)
+
         scalars: List[ModelType] = response.scalars().all()
 
         return scalars

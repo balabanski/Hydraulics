@@ -20,7 +20,6 @@ engine = create_engine(
 )
 '''
 
-
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
@@ -35,3 +34,16 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
     # after commit.
     async with SessionLocal() as session:
         yield session
+
+
+'''
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    db = SessionLocal()
+    try:
+        yield db
+    except:
+        db.rollback()
+    finally:
+        db.close()
+
+'''

@@ -16,11 +16,11 @@ class FileBase(SQLModel):
     meta_data: Dict = Field(default={}, sa_column=Column(JSON))
     directory_id: Optional[int] = Field(default=None, foreign_key="directory.id",
                                         description="The database id of the folders")
-    user_id: Optional[int]= Field(default=None, foreign_key="user.id", description="The database id of the user")
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id", description="The database id of the user")
 
 
 class File(BaseModel, FileBase,table=True):
     class Config:
         arbitrary_types_allowed = True
     user: Optional[User] = Relationship(back_populates="files")
-    directory:Optional[Directory]= Relationship(back_populates="files")
+    directory:Optional[Directory] = Relationship(back_populates="files")

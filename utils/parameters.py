@@ -129,10 +129,12 @@ def parameter_input(metadata, _name_par, file_name):
 
         def clicked():
             global par
-            par = float(ent.get())
-            metadata[key] = par
-            asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
+            if ent.get():
+                par = float(ent.get())
+                metadata[key] = par
             par = metadata.get(key, 0)
+            asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
+
             window_.destroy()
             return par
 

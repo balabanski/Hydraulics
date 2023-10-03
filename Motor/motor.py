@@ -1,5 +1,5 @@
 
-from Motor.parameters import  metadata_mot, parameter_mot_input
+from Motor.parameters import metadata_mot,  parameter_mot_input
 
 
 # Рабочий объём V(см3)

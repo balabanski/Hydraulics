@@ -1,4 +1,4 @@
-from Motor.parameters import file_name_mot, w_to_file_mot, metadata_mot, r_from_file_mot
+from Motor.parameters import file_id, metadata_mot
 from Motor.motor import V, n, Q, p, M, P
 import tkinter as tk
 from utils.parameters import font, btn_master
@@ -9,10 +9,8 @@ main_window_mot = tk.Tk()
 main_window_mot.title('расчет параметров гидромотора')
 
 get_all_parameters_mot= get_all_parameters(main_window = main_window_mot,
-                                           file_name = file_name_mot,
-                                           metadata = metadata_mot,
-                                           func_w_to_file = w_to_file_mot,
-                                           func_read_from_file_to_metadata= r_from_file_mot,)
+                                           file_name = file_id,
+                                           metadata = metadata_mot,)
 
 get_all_parameters_mot()
 
@@ -20,7 +18,7 @@ get_all_parameters_mot()
 def click_main_menu(label, func):
     def _click_main_menu():
         label.configure(text = func())
-        w_to_file_mot(_metadata= metadata_mot)
+
     return _click_main_menu
 
 # расчёт рабочего объёма---------------------------------------------

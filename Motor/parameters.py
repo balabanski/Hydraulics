@@ -1,8 +1,10 @@
 from pathlib import Path
-from utils.parameters import file_id_input, get_metadata_from_file,\
-                            update_file, parameter_input
+from utils.parameters import file_id_input,  update_file, parameter_input
+from src.repositories.file import get_metadata_from_file
+import asyncio
 
 metadata_mot = {}
+
 
 name_par_mot = {
     "V": 'V (см3)- рабочий объём',
@@ -14,23 +16,18 @@ name_par_mot = {
 }
 
 
-initial_dir_mot = str(Path(Path.cwd(), 'Motor', 'JsonFiles'))
-#открываю или создаю файл для хранения параметров
-file_name_mot = file_id_input(initial_dir_mot, metadata= metadata_mot)
-
-
+file_id = file_id_input()
 
 # экземпляр функции r_from_file_to_metadata
-r_from_file_mot = get_metadata_from_file(path_file=file_name_mot)
-
+r_from_file_func = get_metadata_from_file(file_id=file_id)  # coroutine object
 
 #переопределяю переменную-получаю словарь с внешнего файла
-metadata_mot = r_from_file_mot()
+metadata_mot = asyncio.run(r_from_file_func)
 
 # экземпляр функции w_metadata_to_file
-w_to_file_mot = update_file(path_file=file_name_mot)
+w_metadata_to_file_func = update_file(file_id=file_id)  # coroutyne
 
 parameter_mot_input = parameter_input(metadata = metadata_mot,
                                     _name_par = name_par_mot,
-                                    _func_write = w_to_file_mot
+                                    file_name=file_id
                                     )

@@ -42,13 +42,8 @@ def get_all_parameters(main_window=None,
                 metadata.clear()
                 for key, val in _param.items():
                     metadata[key] = val
-                print('!!!___Сигнал____!!!__________asyncio.run(func_w_to_file')
                 coroutine = update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata))
-                print('coroutine------------', coroutine)
                 asyncio.run(coroutine)
-
-                print('!!!___Сигнал____!!!__________AFTER__asyncio.run(func_w_to_file')
-
                 get_all_param()
             except:
                 txt_param.delete(0.0, 100.100)

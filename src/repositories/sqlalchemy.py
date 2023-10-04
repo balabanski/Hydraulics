@@ -77,7 +77,7 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         return obj_current
 
     async def delete(self, **kwargs: Any) -> None:
-        obj = self.get(**kwargs)
+        obj = await self.get(**kwargs)
 
         await self.db.delete(obj)
         await self.db.commit()

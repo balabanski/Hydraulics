@@ -18,7 +18,7 @@ class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpda
 
 
 
-# ___________________________________________________________BaseService
+# ___________________________________________________________BaseService____________________________________
 from typing import Generic, TypeVar
 
 from src.interfaces.repository import IRepository
@@ -31,7 +31,7 @@ class BaseService(Generic[T]):
     def __init__(self, repo: T) -> None:
         self.repo = repo
 
-# _________________________________________________________________FileService
+# _________________________________________________________________FileService_____________________________
 import logging
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -43,25 +43,26 @@ class FileService(BaseService[FileRepository]):
 
 # _________________________________________________for asyncio.run (использую)______________________________________
 
-async def select_file(session: AsyncSession = get_session()):
+async def select_file(columns=['id', 'name']):
+    session: AsyncSession = get_session()
     repo = FileRepository(db=await anext(session))
-    list_id_name = await repo.all(sort_order='desc', select_columns=['id', 'name'])
+    list_id_name = await repo.all(sort_order='desc', select_columns=columns)
     print('await repo.all()___________________________', list_id_name)
     return list_id_name
     # response.headers["x-content-range"] = f"{len(games)}/{limit}"
 
 
-async def get_metadata_from_file(file_id, session: AsyncSession = get_session()):
+async def get_metadata_from_file(file_id):
+    session: AsyncSession = get_session()
     repo = FileRepository(db=await anext(session))
     list_model_from_id = await repo.f(id=file_id)
     print('file_id_______________________', file_id)
     print('list_model_from_id=await repo.f(id==file_id)_______________________________', list_model_from_id)
-    # print('type(list_model_from_id)____________________________', type(list_model_from_id))
-    # print('type(list_model_from_id[0])____________________________', type(list_model_from_id[0]))
     return list_model_from_id[0].meta_data
 
 
-async def create_file(file: IFileCreateSchema, session: AsyncSession = get_session()):
+async def create_file(file: IFileCreateSchema):
+    session: AsyncSession = get_session()
     repo = FileRepository(await anext(session))
     await repo.create(obj_in=file)
     # logger.info(f"Inserting new object________________[{file.__class__.__name__}]")
@@ -75,43 +76,15 @@ async def update_file(file_id: int, file: IFileUpdateSchema = None):
     await repo.update(obj_current=file_current, obj_in=file)
 
 
+async def delete_file(file_id: int):
+    session: AsyncSession = get_session()
+    repo = FileRepository(await anext(session))
+    await repo.delete(id=file_id)
 # __________________________________________________________-end____________________________________________
 
 
 # ____________________________надо переделать (использую)_____________________________________________
 
-'''
-
-'''
-
-
-
-async def _update_file(file_id: int, file: IFileUpdateSchema = None):
-    async with AsyncSession(engine) as session:
-        db_file = await session.get(File, file_id)
-        print('db_file = await session.get(File, file_id)_______________________', db_file )
-        if not db_file:
-            print("File not_not found")
-            #raise HTTPException(status_code=404, detail="Hero not found")
-        file_data = file.dict(exclude_unset=True)
-        print('!!!!!!!!!file_data!!!!!!!!!!!____________________', file_data)
-        for key, value in file_data.items():
-            setattr(db_file, key, value)
-        session.add(db_file)
-        await session.commit()
-        await session.refresh(db_file)
-        return db_file
-
-
-async def delete_file(file_id: int):
-    async with AsyncSession(engine) as session:
-        file = await session.get(File, file_id)
-        if not file:
-            print("File not_not found")
-            #raise HTTPException(status_code=404, detail="Hero not found")
-        await session.delete(file)
-        await session.commit()
-        return {"ok": True}
 
 # ________________________не использую_______________________________________________________________
 async def _create_file(file: IFileCreateSchema):
@@ -154,3 +127,30 @@ async def _get_metadata_from_file_(file_id):
         print('meta___data_________________', metadata)
     # window_.destroy()
     return metadata[0]
+
+
+async def _update_file(file_id: int, file: IFileUpdateSchema = None):
+    async with AsyncSession(engine) as session:
+        db_file = await session.get(File, file_id)
+        print('db_file = await session.get(File, file_id)_______________________', db_file )
+        if not db_file:
+            print("File not_not found")
+            #raise HTTPException(status_code=404, detail="Hero not found")
+        file_data = file.dict(exclude_unset=True)
+        print('!!!!!!!!!file_data!!!!!!!!!!!____________________', file_data)
+        for key, value in file_data.items():
+            setattr(db_file, key, value)
+        session.add(db_file)
+        await session.commit()
+        await session.refresh(db_file)
+        return db_file
+
+async def _delete_file(file_id: int):
+    async with AsyncSession(engine) as session:
+        file = await session.get(File, file_id)
+        if not file:
+            print("File not_not found")
+            #raise HTTPException(status_code=404, detail="Hero not found")
+        await session.delete(file)
+        await session.commit()
+        return {"ok": True}

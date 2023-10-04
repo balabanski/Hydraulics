@@ -16,6 +16,7 @@ class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpda
     _model = File
 
 
+repo = FileRepository(db=asyncio.run(get_session()))
 
 
 # ___________________________________________________________BaseService____________________________________
@@ -44,8 +45,6 @@ class FileService(BaseService[FileRepository]):
 # _________________________________________________for asyncio.run (использую)______________________________________
 
 async def select_file(columns=['id', 'name']):
-    session: AsyncSession = get_session()
-    repo = FileRepository(db=await anext(session))
     list_id_name = await repo.all(sort_order='desc', select_columns=columns)
     print('await repo.all()___________________________', list_id_name)
     return list_id_name
@@ -53,32 +52,22 @@ async def select_file(columns=['id', 'name']):
 
 
 async def get_metadata_from_file(file_id):
-    session: AsyncSession = get_session()
-    repo = FileRepository(db=await anext(session))
     list_model_from_id = await repo.f(id=file_id)
-    print('file_id_______________________', file_id)
-    print('list_model_from_id=await repo.f(id==file_id)_______________________________', list_model_from_id)
     return list_model_from_id[0].meta_data
 
 
 async def create_file(file: IFileCreateSchema):
-    session: AsyncSession = get_session()
-    repo = FileRepository(await anext(session))
     await repo.create(obj_in=file)
     # logger.info(f"Inserting new object________________[{file.__class__.__name__}]")
 
 
 async def update_file(file_id: int, file: IFileUpdateSchema = None):
-    session: AsyncSession = get_session()
-    repo = FileRepository(await anext(session))
     file_current: Optional[File] = await repo.get(**{'id': file_id})
     print("obj_current:Optional[File] = await repo.get('id'), _________________________________________", file_current)
     await repo.update(obj_current=file_current, obj_in=file)
 
 
 async def delete_file(file_id: int):
-    session: AsyncSession = get_session()
-    repo = FileRepository(await anext(session))
     await repo.delete(id=file_id)
 # __________________________________________________________-end____________________________________________
 
@@ -112,7 +101,7 @@ class SelectFiles:
             return files
 
 
-async def select_file() -> None:
+async def _select_file() -> None:
     async with  AsyncSession(engine) as session:
         coroutine_files = await session.execute(select(File.id, File.name))
         files = coroutine_files.all()

@@ -13,7 +13,6 @@ btn_master = dict(bg='#000000', activebackground='#4444ff',
                   fg='#ffffff', activeforeground='#ffffff')
 
 init_list_files = asyncio.run(select_file())
-print('init_list_files = asyncio.run(select_file)___________________', init_list_files)
 
 
 # ------------------for file_id_input------------------------------------------

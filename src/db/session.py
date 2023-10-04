@@ -33,7 +33,7 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
     # expire_on_commit=False will prevent attributes from being expired
     # after commit.
     async with SessionLocal() as session:
-        yield session
+        return session
 
 
 '''

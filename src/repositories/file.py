@@ -16,7 +16,7 @@ class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpda
     _model = File
 
 
-repo = FileRepository(db=asyncio.run(get_session()))
+repo = FileRepository(db=asyncio.run(anext(get_session())))
 
 
 # ___________________________________________________________BaseService____________________________________

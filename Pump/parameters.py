@@ -13,7 +13,9 @@ name_par_pump = {
     "p": 'p (Bar) - давление (перепад давления)',
 }
 
-file_id = file_id_input()
+file_list = file_id_input()
+file_id = file_list[0]
+file_name = file_list[1]
 
 # экземпляр функции r_from_file_to_metadata
 # экземпляр функции r_from_file_to_metadata
@@ -27,5 +29,5 @@ w_metadata_to_file_func = update_file(file_id=file_id)  # coroutyne
 
 parameter_pump_input = parameter_input(metadata=metadata_pump,
                                        _name_par=name_par_pump,
-                                       file_name=file_id,
+                                       _file_id=file_id,
                                        )

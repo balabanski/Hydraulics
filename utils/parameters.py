@@ -1,8 +1,4 @@
 import tkinter as tk
-
-from sqlmodel import select, col
-from src.db.session import engine
-from models import File
 import asyncio
 
 from src.repositories.file import update_file, create_file, delete_file, select_file
@@ -14,20 +10,19 @@ btn_master = dict(bg='#000000', activebackground='#4444ff',
 
 init_list_files = asyncio.run(select_file())
 
-
 # ------------------for file_id_input------------------------------------------
 
 file_id = None
+file_name = None
 
 
-def click_name_(_file_id):
-    global file_id
-
+def click_name_(_file_id) -> int:
     def _get_id():
         global file_id
         file_id = _file_id
         print('def get_id_from_file(file_id):________________________', file_id)
         return file_id
+
     return _get_id
 
 
@@ -35,6 +30,7 @@ def click_name_(_file_id):
 
 def file_id_input():
     global file_id
+    global file_name
 
     window_ = tk.Tk()
     var = tk.IntVar()
@@ -51,12 +47,9 @@ def file_id_input():
     for id_, name in init_list_files:
         _row += _row
         tk.Button(window_,
-                  text=name+f" ----id={id_}",
+                  text=name + f"  (id={id_})",
                   command=click_name_(_file_id=id_),
                   **btn_master).grid(column=0, row=_row)
-
-    def open_file_click():
-        window_.destroy()
 
     tk.Button(window_,
               text='ОТКРЫТЬ',
@@ -96,11 +89,11 @@ def file_id_input():
 
     window_.mainloop()
 
-    return file_id
+    return [file_id, file_name]
 
 
 # ввод запрашиваемых значений и перезапись файла
-def parameter_input(metadata, _name_par, file_name):
+def parameter_input(metadata, _name_par, _file_id) -> float:
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
@@ -132,7 +125,7 @@ def parameter_input(metadata, _name_par, file_name):
                 par = float(ent.get())
                 metadata[key] = par
             par = metadata.get(key, 0)
-            asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
+            asyncio.run(update_file(file_id=_file_id, file=IFileUpdateSchema(meta_data=metadata)))
 
             window_.destroy()
             return par

@@ -13,13 +13,13 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel import SQLModel
 
-BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
-print('BASE_DIR-----------------------------------', BASE_DIR)
+# BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
+
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 
 
 from src.core.config import settings  # noqa
-from models import *  # noqa
+from src.models import *  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -56,7 +56,7 @@ def run_migrations_offline() -> None:
     """
 
     context.configure(
-        url=settings.POSTGRES_URL,
+        url=settings.sqlite_url,
         target_metadata=target_metadata,
         literal_binds=True,
         ialect_opts={"paramstyle": "named"},
@@ -88,7 +88,10 @@ async def run_migrations_online() -> None:
     #         future=True,
     #     )
     # )
-    connectable = AsyncEngine(create_engine(settings.sqlite_url, echo=True, future=True))
+    if settings.DATABASE == "postgres":
+        pass
+    elif settings.DATABASE == "sqlite":
+        connectable = AsyncEngine(create_engine(settings.sqlite_url, echo=True, future=True))
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

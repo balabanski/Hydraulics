@@ -1,11 +1,9 @@
-from sqlmodel import SQLModel
 from typing import Optional, Dict
-from pydantic import Field
-from models.files import FileBase, File
+from src.models.files import FileBase
 
 
 class IFileUpdateSchema(FileBase):
-    name: Optional[str]=None
+    name: Optional[str] = None
     meta_data: Dict
 
 

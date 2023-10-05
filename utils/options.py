@@ -109,7 +109,7 @@ def option_input(func_img_from_type=None,
     return _option_input
 
 
-def clicked_main_menu(metadata, funk_option_input, file_name, config_json):
+def clicked_main_menu(metadata, funk_option_input, _file_id, config_json):
     """
     функция фабрики закрытия
     -для возможности выбора вариантов исполнения чего-либо
@@ -123,8 +123,6 @@ def clicked_main_menu(metadata, funk_option_input, file_name, config_json):
                            **kwargs):
         def clicked_():
             options_keys = (option_key for option_key in kwargs.keys())
-            # print('options_keys : ', *options_keys)-*-после
-            # распаковки генератора все исчезает(?!)
             option = funk_option_input(*options_keys, from_config=from_config, message=message,
                                        from_name_par=from_name_par)
             for key, funk in kwargs.items():
@@ -144,7 +142,7 @@ def clicked_main_menu(metadata, funk_option_input, file_name, config_json):
                         else:
                             lbl_result.configure(text='это не фунция')
                         break
-            asyncio.run(update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata)))
+            asyncio.run(update_file(file_id=_file_id, file=IFileUpdateSchema(meta_data=metadata)))
 
         return clicked_
 

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select, col
 
 from src.db.session import engine, SessionLocal, get_session
-from models import File
+from src.models import File
 from src.schemas import IFileUpdateSchema, IFileCreateSchema
 from src.repositories.sqlalchemy import BaseSQLAlchemyRepository
 
@@ -16,31 +16,8 @@ class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpda
     _model = File
 
 
-repo = FileRepository(db=asyncio.run(anext(get_session())))
+repo = FileRepository(db=asyncio.run(get_session()))
 
-
-# ___________________________________________________________BaseService____________________________________
-from typing import Generic, TypeVar
-
-from src.interfaces.repository import IRepository
-
-
-T = TypeVar("T", bound=IRepository)
-
-
-class BaseService(Generic[T]):
-    def __init__(self, repo: T) -> None:
-        self.repo = repo
-
-# _________________________________________________________________FileService_____________________________
-import logging
-
-logger: logging.Logger = logging.getLogger(__name__)
-
-
-class FileService(BaseService[FileRepository]):
-    def __init__(self, repo: FileRepository) -> None:
-        self.repo = repo
 
 # _________________________________________________for asyncio.run (использую)______________________________________
 
@@ -69,13 +46,35 @@ async def update_file(file_id: int, file: IFileUpdateSchema = None):
 
 async def delete_file(file_id: int):
     await repo.delete(id=file_id)
-# __________________________________________________________-end____________________________________________
-
-
-# ____________________________надо переделать (использую)_____________________________________________
 
 
 # ________________________не использую_______________________________________________________________
+
+
+# ___________________________________________________________BaseService____________________________________
+from typing import Generic, TypeVar
+
+from src.interfaces.repository import IRepository
+
+
+T = TypeVar("T", bound=IRepository)
+
+
+class BaseService(Generic[T]):
+    def __init__(self, repo: T) -> None:
+        self.repo = repo
+
+# _________________________________________________________________FileService_____________________________
+import logging
+
+logger: logging.Logger = logging.getLogger(__name__)
+
+
+class FileService(BaseService[FileRepository]):
+    def __init__(self, repo: FileRepository) -> None:
+        self.repo = repo
+
+
 async def _create_file(file: IFileCreateSchema):
     logger.info(f"Inserting new object________________[{file.__class__.__name__}]")
     async with SessionLocal() as session:

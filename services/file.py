@@ -3,7 +3,7 @@ import logging
 from services.base import BaseService
 from src.repositories.file import FileRepository
 
-from models.files import File
+from src.models import File
 
 
 from src.schemas import IFileCreateSchema

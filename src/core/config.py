@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parents[2]
 print(BASE_DIR)
 
 
@@ -22,6 +22,7 @@ class DevelopmentSettings(BaseSettings):
     API_STR: str = ""
     BACKEND_CORS_ORIGINS: Union[str, List[AnyHttpUrl]] = "http://localhost:3000,http://localhost:8001"
 
+    DATABASE: str
     # Postgres
     POSTGRES_USER: str
     # POSTGRES_PASSWORD: SecretStr =environ.get('POSTGRES_PASSWORD', "db_password")
@@ -68,7 +69,7 @@ class DevelopmentSettings(BaseSettings):
         )
     '''
     @property
-    def postgresql_url(self) -> str:
+    def POSTGRES_URL(self) -> str:
         """
         строки легче конкатенировать, чем парсить!
         Это property (свойство) пригодится нам в будущем, когда будем подключаться к БД.

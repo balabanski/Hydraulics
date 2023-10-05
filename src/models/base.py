@@ -7,8 +7,9 @@ from sqlalchemy.sql import func
 
 logging.basicConfig(level=logging.INFO)
 
-
 logger = logging.getLogger(__name__)
+
+
 class BaseModel(SQLModel):
     id: Optional[int] = Field(default=None, primary_key=True)
     #create_at: Optional[datetime] = Field(sa_column=Column(DateTime(timezone=True),default = datetime.utcnow))

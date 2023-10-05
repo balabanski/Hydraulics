@@ -1,5 +1,5 @@
 from src.db.session import engine
-from models import *
+from src.models import *
 #-----------------------------create_db_and_tables---------------------------------------------
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)

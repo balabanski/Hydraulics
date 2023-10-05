@@ -1,13 +1,13 @@
-import logging
-from typing import TYPE_CHECKING, Optional, List, Dict
-from sqlmodel import Field, SQLModel, Column, DateTime, Session, Relationship, text, JSON, select, update, col, or_
+from typing import TYPE_CHECKING, Optional, Dict
+from sqlmodel import Field, SQLModel, Column, Relationship, JSON
 
-from models.base import BaseModel
-from models.user import User
-from models.directories import Directory
+from src.models.base import BaseModel
+from src.models.user import User
+from src.models.directories import Directory
+
 if TYPE_CHECKING:
-    from models.user import User
-    from models.directories import Directory
+    from src.models.user import User
+    from src.models.directories import Directory
 
 
 class FileBase(SQLModel):
@@ -19,8 +19,9 @@ class FileBase(SQLModel):
     user_id: Optional[int] = Field(default=None, foreign_key="user.id", description="The database id of the user")
 
 
-class File(BaseModel, FileBase,table=True):
+class File(BaseModel, FileBase, table=True):
     class Config:
         arbitrary_types_allowed = True
+
     user: Optional[User] = Relationship(back_populates="files")
-    directory:Optional[Directory] = Relationship(back_populates="files")
+    directory: Optional[Directory] = Relationship(back_populates="files")

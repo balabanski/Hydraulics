@@ -5,8 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from src.core.config import settings
 from sqlmodel import text
 
-
-engine = create_async_engine(settings.sqlite_url, echo=settings.DEBUG)
+if settings.DATABASE == "postgres":
+    pass
+elif settings.DATABASE == "sqlite":
+    engine = create_async_engine(settings.sqlite_url, echo=settings.DEBUG)
 
 # надо переделать
 '''
@@ -33,7 +35,7 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
     # expire_on_commit=False will prevent attributes from being expired
     # after commit.
     async with SessionLocal() as session:
-        yield session
+        return session
 
 
 '''

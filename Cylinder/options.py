@@ -1,9 +1,11 @@
 import tkinter as tk
 from pathlib import Path
-from Cylinder.parameters import metadata, name_par_cyl, file_id
+from Cylinder.parameters import metadata, name_par_cyl, file_id, file_name
 from utils.options import insert_image, option_input, clicked_main_menu
 
 main_window_cyl = tk.Tk()
+title_text = f"Расчет параметров цилиндра-{file_name}"
+main_window_cyl.title(title_text)
 
 direction = ('выдвижение штока (давление в поршневой полости)', 'втягивание штока (давление в штоковой полости)')
 dif_or_no = ('обычная схема подключения(штоковая и поршневая полости разделены)',
@@ -130,5 +132,5 @@ option_input_cyl = option_input(func_img_from_type=_img_from_type_cyl,
 # экземпляр функции clicked_main_menu (for cylinder)
 clicked_main_menu_cyl = clicked_main_menu(metadata=metadata,
                                           funk_option_input=option_input_cyl,
-                                          file_name=file_id,
+                                          _file_id=file_id,
                                           config_json=config_cyl)

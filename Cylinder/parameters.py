@@ -1,13 +1,8 @@
 from utils.parameters import file_id_input, \
                             parameter_input
 from src.repositories.file import get_metadata_from_file
-from pathlib import Path
 from src.repositories.file import update_file
 import asyncio
-
-
-
-
 
 name_par_cyl = {
     "d1": 'd1 (мм)-диаметр поршня ',
@@ -42,21 +37,19 @@ name_par_cyl = {
     "p2": 'p2 (Bar) - давление в штоковой полости (при втягивании штока)',
 
     "a": 'a(м/с2) - ускорение',
-
 }
 
-#init_list_files = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
-from utils.parameters import init_list_files
-#init_list_files = SelectFiles.all()
-#открываю или создаю файл для хранения параметров
-file_id = file_id_input()
+# init_list_files = str(Path(Path.cwd(), 'Cylinder', 'JsonFiles'))
 
-
+# открываю или создаю файл для хранения параметров
+file_list = file_id_input()
+file_id = file_list[0]
+file_name = file_list[1]
 
 # экземпляр функции r_from_file_to_metadata
 r_from_file_func = get_metadata_from_file(file_id=file_id)  # coroutine object
 
-#переопределяю переменную-получаю словарь с внешнего файла
+# переопределяю переменную-получаю словарь с внешнего файла
 metadata = asyncio.run(r_from_file_func)
 print('metadata = asyncio.run(r_from_file_func)++++++++++++++++++++++++++++++++++++=', metadata)
 
@@ -69,8 +62,9 @@ reference_for_d1 = 'ДЛЯ СПРАВКИ: типовые диаметры(мм)
 reference_for_d2 = 'ДЛЯ СПРАВКИ:типовые диаметры штока 12, 14, 18, 22(25), 28' \
                    '(32), 36(40), 45(50), 56, 63, 70, 80, 90, 100, 140, 180, ' \
                    '220 мм\n'
+
 # экземпляр функции parameter_input
-parameter_cyl_input = parameter_input(metadata = metadata,
-                                      _name_par = name_par_cyl,
-                                      file_name=file_id
+parameter_cyl_input = parameter_input(metadata=metadata,
+                                      _name_par=name_par_cyl,
+                                      _file_id=file_id
                                       )

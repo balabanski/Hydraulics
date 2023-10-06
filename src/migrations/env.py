@@ -56,7 +56,7 @@ def run_migrations_offline() -> None:
     """
 
     context.configure(
-        url=settings.sqlite_url,
+        url=settings.POSTGRES_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         ialect_opts={"paramstyle": "named"},
@@ -89,7 +89,8 @@ async def run_migrations_online() -> None:
     #     )
     # )
     if settings.DATABASE == "postgres":
-        pass
+        print("settings.POSTGRES_URL_____________________________________________________________", settings.POSTGRES_URL)
+        connectable = AsyncEngine(create_engine(settings.POSTGRES_URL, echo=True, future=True))
     elif settings.DATABASE == "sqlite":
         connectable = AsyncEngine(create_engine(settings.sqlite_url, echo=True, future=True))
 

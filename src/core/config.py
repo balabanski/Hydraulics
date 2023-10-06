@@ -25,11 +25,11 @@ class DevelopmentSettings(BaseSettings):
     DATABASE: str
     # Postgres
     POSTGRES_USER: str
-    # POSTGRES_PASSWORD: SecretStr =environ.get('POSTGRES_PASSWORD', "db_password")
-    POSTGRES_PASSWORD: str = "db_password"
+    # POSTGRES_PASSWORD: SecretStr =environ.get('POSTGRES', "db_password")
+    POSTGRES_PASSWORD: str
     POSTGRES_SERVER: str
     POSTGRES_PORT: str
-    POSTGRES_DB: str = "db"
+    POSTGRES_DB: str
     TORTOISE_DATABASE_URI: Optional[str] = None
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
     # (see URI validator) -> it will be like postgresql://user:password@localhost:5432/db
@@ -74,7 +74,7 @@ class DevelopmentSettings(BaseSettings):
         строки легче конкатенировать, чем парсить!
         Это property (свойство) пригодится нам в будущем, когда будем подключаться к БД.
         """
-        return f"sqlite+aiosqlite://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     @property
     def sqlite_url(self) -> str:

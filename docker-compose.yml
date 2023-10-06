@@ -1,0 +1,19 @@
+version: '3'
+
+volumes:
+ # base-data:
+  hydr_db-data:
+ # hydr_nginx-data:
+ # redis-data:
+
+services:
+  hydr_db:
+    image: postgres:15-alpine
+    env_file:
+      - src/envs/.env_dev
+    restart: always
+    ports:
+      - '5431:5432'
+    volumes:
+      - hydr_db-data:/var/lib/postgresql/data
+

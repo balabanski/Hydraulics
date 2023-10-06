@@ -6,7 +6,7 @@ from src.core.config import settings
 from sqlmodel import text
 
 if settings.DATABASE == "postgres":
-    pass
+    engine = create_async_engine(settings.POSTGRES_URL, echo=settings.DEBUG)
 elif settings.DATABASE == "sqlite":
     engine = create_async_engine(settings.sqlite_url, echo=settings.DEBUG)
 

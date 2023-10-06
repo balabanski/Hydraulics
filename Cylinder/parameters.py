@@ -51,7 +51,6 @@ r_from_file_func = get_metadata_from_file(file_id=file_id)  # coroutine object
 
 # переопределяю переменную-получаю словарь с внешнего файла
 metadata = asyncio.run(r_from_file_func)
-print('metadata = asyncio.run(r_from_file_func)++++++++++++++++++++++++++++++++++++=', metadata)
 
 # экземпляр функции w_metadata_to_file ---не----КОРУТИНА
 w_metadata_to_file_func = update_file(file_id=file_id)  # coroutyne

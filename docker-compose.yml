@@ -13,7 +13,7 @@ services:
       - src/envs/.env_dev
     restart: always
     ports:
-      - '5431:5432'
+      - ${POSTGRES_PORT:-5431}:5432
     volumes:
       - hydr_db-data:/var/lib/postgresql/data
 

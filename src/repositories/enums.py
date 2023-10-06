@@ -13,4 +13,4 @@ class OrderEnum:
 
 
 class SortEnum:
-    CREATED_AT = "created_at"
+    CREATED_AT = "create_at"

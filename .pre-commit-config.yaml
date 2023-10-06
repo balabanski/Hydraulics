@@ -1,0 +1,39 @@
+default_language_version:
+    python: python3
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+    -   id: trailing-whitespace #Обрезает конечные пробелы.
+    -   id: end-of-file-fixer #Гарантирует, что файлы заканчиваются новой строкой и только новой строкой.
+    -   id: check-yaml #Пытается загрузить все файлы yaml для проверки синтаксиса.
+    -   id: debug-statements #Проверьте импорт отладчика и breakpoint()вызовы py37+ в исходном коде python.
+    -   id: requirements-txt-fixer #Сортирует записи в требованиях.txt и ограничениях.txt и удаляет неправильные записи дляpkg-resources==0.0.0
+-   repo: https://github.com/psf/black
+    # Black — бескомпромиссный форматировщик  кода Python. Используя его, вы соглашаетесь передать контроль над
+    # мелочами ручного форматирования. В свою очередь, Black дает вам скорость, детерминизм и свободу
+    # от pycodestyleформатирования. Вы сэкономите время и умственную энергию для более важных дел.
+    rev: 22.6.0
+    hooks:
+    -   id: black
+        args: ["--config=./hydr_backend/pyproject.toml"]
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.241'
+    hooks:
+        - id: ruff
+-   repo: https://github.com/PyCQA/isort
+    # isort — это утилита/библиотека Python для сортировки импорта по алфавиту и автоматического разделения на разделы и по типу.
+    rev: 5.12.0
+    hooks:
+    -   id: isort
+        args: ["--settings-path=./hydr_backend/pyproject.toml"]
+-   repo: https://github.com/codespell-project/codespell
+    rev: v2.2.2
+    hooks:
+    -   id: codespell
+# -   repo: https://github.com/pre-commit/mirrors-mypy
+#     rev: v0.982
+#     hooks:
+#       - id: mypy
+#         args: ["--config-file=./hydr_backend/pyproject.toml"]

@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-from src.interfaces.repository import IRepository
+from backend.src.interfaces.repository import IRepository
 
 
 T = TypeVar("T", bound=IRepository)

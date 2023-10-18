@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING, Optional, Dict
 from sqlmodel import Field, SQLModel, Column, Relationship, JSON
 
-from src.models.base import BaseModel
-from src.models.user import User
-from src.models.directories import Directory
+from backend.src.models.base import BaseModel
+from backend.src.models.user import User
+from backend.src.models.directories import Directory
 
 if TYPE_CHECKING:
-    from src.models.user import User
-    from src.models.directories import Directory
+    from backend.src.models.user import User
+    from backend.src.models.directories import Directory
 
 
 class FileBase(SQLModel):

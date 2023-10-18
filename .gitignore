@@ -107,7 +107,7 @@ celerybeat.pid
 # Environments
 .env
 .env_dev
-envs/.env_dev
+envs/
 .venv
 env/
 venv/
@@ -115,6 +115,7 @@ ENV/
 env.bak/
 venv.bak/
 .python-version
+volumes/
 
 
 # Spyder project settings

@@ -1,12 +1,12 @@
 import logging
 
-from services.base import BaseService
-from src.repositories.file import FileRepository
+from backend.src.services.base import BaseService
+from backend.src.repositories.file import FileRepository
 
-from src.models import File
+from backend.src.models import File
 
 
-from src.schemas import IFileCreateSchema
+from backend.src.schemas import IFileCreateSchema
 
 # Game Game Game Game Game Game
 

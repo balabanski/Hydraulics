@@ -1,12 +1,9 @@
-import asyncio
 from typing import Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select, col
 
-from src.db.session import engine, SessionLocal, get_session
-from src.models import File
-from src.schemas import IFileUpdateSchema, IFileCreateSchema
-from src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
+from backend.src.db.session import get_session
+from backend.src.models import File
+from backend.src.schemas import IFileUpdateSchema, IFileCreateSchema
+from backend.src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
 
 import logging
 logger: logging.Logger = logging.getLogger(__name__)
@@ -122,7 +119,7 @@ async def delete_file(file_id: int):
 # ___________________________________________________________BaseService____________________________________
 from typing import Generic, TypeVar
 
-from src.interfaces.repository import IRepository
+from backend.src.interfaces.repository import IRepository
 
 
 T = TypeVar("T", bound=IRepository)

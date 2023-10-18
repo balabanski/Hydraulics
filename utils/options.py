@@ -3,8 +3,8 @@ from utils.parameters import btn_master, font
 from types import FunctionType
 
 import asyncio
-from src.schemas import IFileUpdateSchema
-from src.repositories.file import update_file
+from backend.src.schemas import IFileUpdateSchema
+from backend.src.repositories.file import update_file
 
 
 def insert_image(image_path):
@@ -67,6 +67,7 @@ def option_input(func_img_from_type=None,
                 select_img_and_message_from_type()
             except:
                 _type.set(config_json.get(sorted(args)[0]))
+                select_img_and_message_from_type()
 
         elif from_name_par:
             for key_par in args:

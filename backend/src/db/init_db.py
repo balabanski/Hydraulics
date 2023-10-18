@@ -1,5 +1,6 @@
-from src.db.session import engine
-from src.models import *
+from backend.src.db.session import engine
+
+
 #-----------------------------create_db_and_tables---------------------------------------------
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)

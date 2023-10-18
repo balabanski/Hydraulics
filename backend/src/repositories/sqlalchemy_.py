@@ -4,8 +4,8 @@ from typing import Any, Generic, List, Optional, Type, TypeVar
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import SQLModel, select
 
-from src.repositories.enums import OrderEnum, SortEnum
-from src.interfaces.repository import IRepository
+from backend.src.repositories.enums import OrderEnum, SortEnum
+from backend.src.interfaces.repository import IRepository
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=SQLModel)

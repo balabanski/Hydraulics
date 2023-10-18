@@ -1,6 +1,5 @@
-from pathlib import Path
 from utils.parameters import file_id_input, update_file, parameter_input
-from src.repositories.file import get_metadata_from_file
+from backend.src.repositories.file import get_metadata_from_file
 import asyncio
 
 metadata_mot = {}

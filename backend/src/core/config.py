@@ -22,7 +22,7 @@ class DevelopmentSettings(BaseSettings):
     API_STR: str = ""
     BACKEND_CORS_ORIGINS: Union[str, List[AnyHttpUrl]] = "http://localhost:3000,http://localhost:8001"
 
-    DATABASE: str
+    DATABASE: Optional[str] = None
     # Postgres
     POSTGRES_USER: str
     # POSTGRES_PASSWORD: SecretStr =environ.get('POSTGRES', "db_password")
@@ -35,7 +35,7 @@ class DevelopmentSettings(BaseSettings):
     # (see URI validator) -> it will be like postgresql://user:password@localhost:5432/db
 
     # SQLite
-    SQLITE_FILE_NAME: str
+    SQLITE_FILE_NAME: Optional[str] = None
 
     # SQLAlchemy
     DEBUG: bool = Field(default=True, env="DEBUG")
@@ -68,6 +68,8 @@ class DevelopmentSettings(BaseSettings):
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
     '''
+    # database = os.environ.get("DATABASE", "sqlite")
+
     @property
     def POSTGRES_URL(self) -> str:
         """
@@ -76,12 +78,20 @@ class DevelopmentSettings(BaseSettings):
         """
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
+
     @property
     def sqlite_url(self) -> str:
         return f"sqlite+aiosqlite:///" + settings.SQLITE_FILE_NAME
 
     class Config:
-        env_file = os.path.join(BASE_DIR, 'src/envs/.env_dev')
+        local = os.environ.get("USE_LOCAL_DB", "True")
+        print('local_________________________________________________', local)
+
+        if local == "False":
+            env_file = os.path.join(BASE_DIR, 'src/envs/.env_dev')
+        else:
+            env_file = os.path.join(BASE_DIR, 'src/envs/.env_local')
+
         case_sensitive = True
 
 

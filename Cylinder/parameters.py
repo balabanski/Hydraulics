@@ -1,7 +1,7 @@
 from utils.parameters import file_id_input, \
                             parameter_input
-from src.repositories.file import get_metadata_from_file
-from src.repositories.file import update_file
+from backend.src.repositories.file import get_metadata_from_file
+from backend.src.repositories.file import update_file
 import asyncio
 
 name_par_cyl = {

@@ -11,7 +11,7 @@ down:
 
 bash:
 	@echo "connecting to container...."
-	docker compose exec backend bash
+	docker compose exec hydr_db bash
 
 # alembic
 alembic-scaffold:
@@ -26,9 +26,9 @@ alembic-make-migrations:
 	@echo "creating migration file...."
 	docker compose exec backend alembic revision --autogenerate -m "add year"
 
-alembic-migrate:
+al_upgrade:
 	@echo "applying migration...."
-	docker compose exec backend alembic upgrade head
+	docker compose exec ccc67e5a560a alembic upgrade head
 
 # lint
 # test:
@@ -37,7 +37,7 @@ alembic-migrate:
 
 lint:
 	@echo "running ruff...."
-	docker compose exec backend ruff src
+	docker compose exec backend ruff sr
 
 black:
 	@echo "running black...."
@@ -54,3 +54,7 @@ BREW-exists: ; @which brew > /dev/null
 hooks: check
 	@echo "installing pre-commit hooks...."
 	pre-commit install
+
+
+# можно подключиться к базе данных:
+# psql -h 192.168.0.4 -U <user_db> -d <name_container>

@@ -1,8 +1,8 @@
 import tkinter as tk
 import asyncio
 
-from src.repositories.file import update_file, create_file, delete_file, select_file
-from src.schemas import IFileUpdateSchema, IFileCreateSchema
+from backend.src.repositories.file import update_file, create_file, delete_file, select_file
+from backend.src.schemas import IFileUpdateSchema, IFileCreateSchema
 
 font = ['Arial Bold']
 btn_master = dict(bg='#000000', activebackground='#4444ff',

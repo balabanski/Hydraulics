@@ -1,5 +1,5 @@
 from typing import Optional, Dict
-from src.models.files import FileBase
+from backend.src.models.files import FileBase
 
 
 class IFileUpdateSchema(FileBase):

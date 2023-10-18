@@ -1,6 +1,7 @@
 import asyncio
 import pathlib
 import sys
+from os import environ
 from logging.config import fileConfig
 
 # from sqlalchemy import engine_from_config
@@ -15,11 +16,11 @@ from sqlmodel import SQLModel
 
 # BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
 
-sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
+# sys.path.append(str(pathlib.Path(__file__).resolve().parents[2]))
 
 
-from src.core.config import settings  # noqa
-from src.models import *  # noqa
+from backend.src.core.config import settings  # noqa
+from backend.src.models import *  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -88,6 +89,7 @@ async def run_migrations_online() -> None:
     #         future=True,
     #     )
     # )
+
     if settings.DATABASE == "postgres":
         print("settings.POSTGRES_URL_____________________________________________________________", settings.POSTGRES_URL)
         connectable = AsyncEngine(create_engine(settings.POSTGRES_URL, echo=True, future=True))

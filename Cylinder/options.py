@@ -64,10 +64,12 @@ def create_img_from_config():
                 ver_1_p2(main_window_cyl).grid(row=1, column=1)
             else:
                 in_gor_1(main_window_cyl).grid(row=1, column=1)
+    elif metadata.get('config') is None:
+        ver_1_p2(main_window_cyl).grid(row=1, column=1)
 
 
 def _img_from_type_cyl(window_, type_):
-    if metadata.get('config') is None:        
+    if metadata.get('config') is None:
         metadata['config'] = {}
 
     if type_.get() == direction[0]:

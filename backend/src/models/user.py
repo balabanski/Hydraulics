@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING, Optional, List
 from sqlmodel import Field, Relationship, text
 import uuid as uuid_pkg
 
-from src.models.base import BaseModel
+from backend.src.models.base import BaseModel
 
 
 if TYPE_CHECKING:
-    from src.models.directories import Directory
-    from src.models.files import File
+    from backend.src.models.directories import Directory
+    from backend.src.models.files import File
 
 
 class User(BaseModel, table=True):

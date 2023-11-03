@@ -10,6 +10,11 @@ print(BASE_DIR)
 
 
 class DevelopmentSettings(BaseSettings):
+    ENV: str = Field(default="dev", env="ENV")
+    VERSION: str = Field(default="v1", env="VERSION")
+
+    USE_SENTRY: bool = Field(default=False, env="USE_SENTRY")
+
     # SECURITY # JWT
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
@@ -34,40 +39,59 @@ class DevelopmentSettings(BaseSettings):
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
     # (see URI validator) -> it will be like postgresql://user:password@localhost:5432/db
 
+    # Redis
+    REDIS_HOST: str = Field(default="", env="REDIS_HOST")
+    REDIS_PORT: str = Field(default="", env="REDIS_PORT")
+
     # SQLite
     SQLITE_FILE_NAME: Optional[str] = None
 
     # SQLAlchemy
     DEBUG: bool = Field(default=True, env="DEBUG")
-    SQLALCHEMY_POOL_SIZE: int = 20
-    SQLALCHEMY_POOL_RECYCLE: int = 1200
-    SQLALCHEMY_POOL_TIMEOUT: int = 5
-    SQLALCHEMY_MAX_OVERFLOW: int = 10
+
+    DB_POOL_SIZE: int = Field(default=83, env="DB_POOL_SIZE")
+    WEB_CONCURRENCY: int = Field(default=9, env="WEB_CONCURRENCY")
+    MAX_OVERFLOW: int = Field(default=64, env="MAX_OVERFLOW")
+
+    POOL_SIZE: int = Field(default=None, env="POOL_SIZE")
+    # POSTGRES_URL: str = Field(default=None, env="POSTGRES_URL")
+
+    # SQLALCHEMY_POOL_RECYCLE: int = 1200
+    # SQLALCHEMY_POOL_TIMEOUT: int = 5
+    # SQLALCHEMY_MAX_OVERFLOW: int = 10
 
     # FIRST SUPERUSER
     # FIRST_SUPERUSER_EMAIL: EmailStr = "example@example.com"  # type: ignore
     FIRST_SUPERUSER_PASSWORD: str = "my_secret_password"
 
     # VALIDATORS
+
+    @validator("POOL_SIZE", pre=True)  # , check_fields=False
+    def build_pool(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+        if isinstance(v, int):
+            return v
+        return max(values.get("DB_POOL_SIZE") // values.get("WEB_CONCURRENCY"), 5)  # type: ignore
+
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def _assemble_cors_origins(cls, cors_origins):
         if isinstance(cors_origins, str):
             return [item.strip() for item in cors_origins.split(",")]
         return cors_origins
 
-    '''
-    @validator("SQLALCHEMY_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, str]) -> str:
-        if isinstance(v, str):
-            return v
-        return PostgresDsn.build(
-            scheme="postgresql+asyncpg",
-            user=values.get("POSTGRES_USER"),
-            password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_SERVER") + ":" + values.get("POSTGRES_PORT"),
-            path=f"/{values.get('POSTGRES_DB') or ''}",
-        )
-    '''
+
+    # @validator("POSTGRES_URL", pre=True)
+    # def assemble_db_connection(cls, v: Optional[str], values: Dict[str, str]) -> str:
+    #     if isinstance(v, str):
+    #         return v
+    #     return PostgresDsn.build(
+    #         scheme="postgresql+asyncpg",
+    #         user=values.get("POSTGRES_USER"),
+    #         password=values.get("POSTGRES_PASSWORD"),
+    #         host=values.get("POSTGRES_SERVER") + ":" + values.get("POSTGRES_PORT"),
+    #         path=f"/{values.get('POSTGRES_DB') or ''}",
+    #     )
+
+
     # database = os.environ.get("DATABASE", "sqlite")
 
     @property
@@ -86,7 +110,6 @@ class DevelopmentSettings(BaseSettings):
     class Config:
         local = os.environ.get("USE_LOCAL_DB", "True")
         print('local_________________________________________________', local)
-
         if local == "False":
             env_file = os.path.join(BASE_DIR, 'src/envs/.env_dev')
         else:
@@ -106,5 +129,8 @@ class ProductionSettings(DevelopmentSettings):
 
 settings = DevelopmentSettings()
 # settings = ProductionSettings()
+
+print('settings.BACKEND_CORS_ORIGINSL_______________', settings.BACKEND_CORS_ORIGINS)
+print("POOL_SIZE_________________________________", settings.POOL_SIZE)
 
 

@@ -7,21 +7,17 @@ from backend.src.core.config import settings
 from sqlmodel import text
 
 if settings.DATABASE == "postgres":
-    engine = create_async_engine(settings.POSTGRES_URL, echo=settings.DEBUG, poolclass=NullPool)
+    engine = create_async_engine(
+        settings.POSTGRES_URL,
+        echo=settings.DEBUG,
+        future=True,
+        pool_size=settings.POOL_SIZE,
+        pool_pre_ping=True,
+        max_overflow=settings.MAX_OVERFLOW,
+    )
 elif settings.DATABASE == "sqlite":
     engine = create_async_engine(settings.sqlite_url, echo=settings.DEBUG)
 
-# надо переделать
-'''
-engine = create_engine(
-    settings.postgresql_url,
-    echo=settings.DEBUG,
-    future=True,
-    pool_size=settings.SQLALCHEMY_POOL_SIZE,
-    pool_pre_ping=True,
-    max_overflow=settings.SQLALCHEMY_MAX_OVERFLOW,
-)
-'''
 
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 

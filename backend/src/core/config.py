@@ -130,7 +130,7 @@ class ProductionSettings(DevelopmentSettings):
 settings = DevelopmentSettings()
 # settings = ProductionSettings()
 
-print('settings.BACKEND_CORS_ORIGINSL_______________', settings.BACKEND_CORS_ORIGINS)
-print("POOL_SIZE_________________________________", settings.POOL_SIZE)
+# print('settings.BACKEND_CORS_ORIGINSL_______________', settings.BACKEND_CORS_ORIGINS)
+# print("POOL_SIZE_________________________________", settings.POOL_SIZE)
 
 

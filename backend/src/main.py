@@ -72,4 +72,4 @@ async def on_startup() -> None:
 app.add_event_handler("startup", on_startup)
 
 app.include_router(routes.home_router)
-# app.include_router(routes.api_router, prefix=f"/{settings.VERSION}")
+app.include_router(routes.api_router, prefix=f"/{settings.VERSION}")

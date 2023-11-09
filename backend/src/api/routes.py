@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 from fastapi.responses import PlainTextResponse, Response
-from backend.src.api.v1 import user, health, files, directories
+from backend.src.api.v1 import users, login, health, files, directories
 
 
 home_router = APIRouter()
@@ -13,6 +13,10 @@ async def home() -> Response:
 
 api_router = APIRouter()
 api_router.include_router(health.router)
-# api_router.include_router(game.router)
+api_router.include_router(login.router, tags=["login"])
+
 # api_router.include_router(subreddit.router)
 # api_router.include_router(player.router)
+api_router.include_router(users.router, prefix="/users", tags=["users"])
+# api_router.include_router(utils.router, prefix="/utils", tags=["utils"])
+# api_router.include_router(items.router, prefix="/items", tags=["items"])

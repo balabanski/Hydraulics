@@ -23,6 +23,7 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         logger.info(f"Inserting new object[{obj_in.__class__.__name__}]")
 
         db_obj = self._model.from_orm(obj_in)
+        print('pre_db_obj = self._model.from_orm(obj_in)_____________________________________', db_obj)
 
         add = kwargs.get("add", True)
         flush = kwargs.get("flush", True)
@@ -32,12 +33,14 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
                 self.db.add(db_obj)
                 # Navigate these with caution
             if add and commit:
-                try:
-                    await self.db.commit()
-                    await self.db.refresh(db_obj)
-                except Exception as exc:
-                    logger.error(exc)
-                    await self.db.rollback()
+                await self.db.commit()
+                await self.db.refresh(db_obj)
+                # try:
+                #     await self.db.commit()
+                #     await self.db.refresh(db_obj)
+                # except Exception as exc:
+                #     logger.error(exc)
+                #     await self.db.rollback()
 
             elif add and flush:
                 await self.db.flush()

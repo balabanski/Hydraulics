@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union, Any
 import secrets
-from pydantic import AnyHttpUrl, PostgresDsn, BaseSettings, AnyUrl, validator, Field, SecretStr
+from pydantic import AnyHttpUrl, PostgresDsn, BaseSettings, AnyUrl, validator, Field, SecretStr, EmailStr
 import os
 from pathlib import Path
 
@@ -24,7 +24,7 @@ class DevelopmentSettings(BaseSettings):
     # PROJECT NAME, API PREFIX, CORS ORIGINS
     PROJECT_NAME: str
     PROJECT_VERSION: str = "2.1.0"
-    API_STR: str = ""
+    API_V1_STR: str = "/api/v1"
     BACKEND_CORS_ORIGINS: Union[str, List[AnyHttpUrl]] = "http://localhost:3000,http://localhost:8001"
 
     DATABASE: Optional[str] = None
@@ -78,7 +78,6 @@ class DevelopmentSettings(BaseSettings):
             return [item.strip() for item in cors_origins.split(",")]
         return cors_origins
 
-
     # @validator("POSTGRES_URL", pre=True)
     # def assemble_db_connection(cls, v: Optional[str], values: Dict[str, str]) -> str:
     #     if isinstance(v, str):
@@ -91,8 +90,34 @@ class DevelopmentSettings(BaseSettings):
     #         path=f"/{values.get('POSTGRES_DB') or ''}",
     #     )
 
-
     # database = os.environ.get("DATABASE", "sqlite")
+
+    SMTP_TLS: bool = True
+    SMTP_PORT: Optional[int] = None
+    SMTP_HOST: Optional[str] = None
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    EMAILS_FROM_EMAIL: Optional[EmailStr] = None
+    EMAILS_FROM_NAME: Optional[str] = None
+
+    @validator("EMAILS_FROM_NAME")
+    def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:
+        if not v:
+            return values["PROJECT_NAME"]
+        return v
+
+    EMAILS_ENABLED: bool = False
+    EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
+    EMAIL_TEMPLATES_DIR: str = "/app/app/email-templates/build"
+
+    @validator("EMAILS_ENABLED", pre=True)
+    def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
+        return bool(
+            values.get("SMTP_HOST")
+            and values.get("SMTP_PORT")
+            and values.get("EMAILS_FROM_EMAIL")
+        )
+
 
     @property
     def POSTGRES_URL(self) -> str:
@@ -102,10 +127,14 @@ class DevelopmentSettings(BaseSettings):
         """
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
-
     @property
     def sqlite_url(self) -> str:
         return f"sqlite+aiosqlite:///" + settings.SQLITE_FILE_NAME
+
+    # EMAIL_TEST_USER: EmailStr = "test@example.com"  # type: ignore
+    # FIRST_SUPERUSER: EmailStr
+    # FIRST_SUPERUSER_PASSWORD: str
+    USERS_OPEN_REGISTRATION: bool = True  # False
 
     class Config:
         local = os.environ.get("USE_LOCAL_DB", "True")
@@ -130,7 +159,7 @@ class ProductionSettings(DevelopmentSettings):
 settings = DevelopmentSettings()
 # settings = ProductionSettings()
 
-# print('settings.BACKEND_CORS_ORIGINSL_______________', settings.BACKEND_CORS_ORIGINS)
+# print('settings.SECRET_KEY_______________', settings.SECRET_KEY)
 # print("POOL_SIZE_________________________________", settings.POOL_SIZE)
 
 

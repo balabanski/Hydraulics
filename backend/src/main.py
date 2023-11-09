@@ -35,6 +35,10 @@ tags_metadata = [
         "description": "List of Users",
     },
     {
+        "name": "login",
+        "description": "login for users",
+    },
+    {
         "name": "files",
         "description": "List of Files",
     },

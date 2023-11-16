@@ -14,9 +14,10 @@ class FileBase(SQLModel):
     name: str = Field(index=True)
     # решение для data https://stackoverflow.com/questions/70567929/how-to-use-json-columns-with-sqlmodel
     meta_data: Dict = Field(default={}, sa_column=Column(JSON))
-    directory_id: Optional[int] = Field(default=None, foreign_key="directory.id",
-                                        description="The database id of the folders")
-    user_id: Optional[int] = Field(default=None, foreign_key="user.id", description="The database id of the user")
+    directory_id: Optional[int] = Field(
+        foreign_key="directory.id", description="The database id of the folders"
+    )
+    user_id: Optional[int] = Field(foreign_key="user.id", description="The database id of the user")
 
 
 class File(BaseModel, FileBase, table=True):

@@ -20,10 +20,12 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         self.db = db
 
     async def create(self, obj_in: CreateSchemaType, **kwargs: Any) -> ModelType:
-        logger.info(f"Inserting new object[{obj_in.__class__.__name__}]")
+        logger.info(f"********Inserting new object[{obj_in.__class__.__name__}]")
 
         db_obj = self._model.from_orm(obj_in)
-        print('pre_db_obj = self._model.from_orm(obj_in)_____________________________________', db_obj)
+        print(
+            "pre_db_obj = self._model.from_orm(obj_in)_____________________________________", db_obj
+        )
 
         add = kwargs.get("add", True)
         flush = kwargs.get("flush", True)
@@ -31,10 +33,13 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         async with self.db:
             if add:
                 self.db.add(db_obj)
+                print("db.add(db_obj))__________________OK___________________________________")
                 # Navigate these with caution
             if add and commit:
                 await self.db.commit()
+                print("db.commit()__________________OK___________________________________")
                 await self.db.refresh(db_obj)
+                print("db.refresh(db_obj)__________________OK___________________________________")
                 # try:
                 #     await self.db.commit()
                 #     await self.db.refresh(db_obj)
@@ -44,7 +49,8 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
 
             elif add and flush:
                 await self.db.flush()
-
+                print("db.flush()__________________OK___________________________________")
+        print("db_obj___________________________________________________________", db_obj)
         return db_obj
 
     async def get(self, **kwargs: Any) -> Optional[ModelType]:
@@ -85,12 +91,12 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
             await self.db.commit()
 
     async def all(
-            self,
-            skip: int = 0,
-            limit: int = 100,
-            sort_field: Optional[str] = None,
-            sort_order: Optional[str] = None,
-            select_columns: Optional[List[str]] = None,
+        self,
+        skip: int = 0,
+        limit: int = 100,
+        sort_field: Optional[str] = None,
+        sort_order: Optional[str] = None,
+        select_columns: Optional[List[str]] = None,
     ) -> List[ModelType]:
 
         columns = self._model.__table__.columns  # type: ignore

@@ -1,6 +1,15 @@
 from typing import Dict, List, Optional, Union, Any
 import secrets
-from pydantic import AnyHttpUrl, PostgresDsn, BaseSettings, AnyUrl, validator, Field, SecretStr, EmailStr
+from pydantic import (
+    AnyHttpUrl,
+    PostgresDsn,
+    BaseSettings,
+    AnyUrl,
+    validator,
+    Field,
+    SecretStr,
+    EmailStr,
+)
 import os
 from pathlib import Path
 
@@ -25,7 +34,9 @@ class DevelopmentSettings(BaseSettings):
     PROJECT_NAME: str
     PROJECT_VERSION: str = "2.1.0"
     API_V1_STR: str = "/api/v1"
-    BACKEND_CORS_ORIGINS: Union[str, List[AnyHttpUrl]] = "http://localhost:3000,http://localhost:8001"
+    BACKEND_CORS_ORIGINS: Union[
+        str, List[AnyHttpUrl]
+    ] = "http://localhost:3000,http://localhost:8001"
 
     DATABASE: Optional[str] = None
     # Postgres
@@ -113,11 +124,8 @@ class DevelopmentSettings(BaseSettings):
     @validator("EMAILS_ENABLED", pre=True)
     def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
         return bool(
-            values.get("SMTP_HOST")
-            and values.get("SMTP_PORT")
-            and values.get("EMAILS_FROM_EMAIL")
+            values.get("SMTP_HOST") and values.get("SMTP_PORT") and values.get("EMAILS_FROM_EMAIL")
         )
-
 
     @property
     def POSTGRES_URL(self) -> str:
@@ -138,11 +146,11 @@ class DevelopmentSettings(BaseSettings):
 
     class Config:
         local = os.environ.get("USE_LOCAL_DB", "True")
-        print('local_________________________________________________', local)
+        print("local_________________________________________________", local)
         if local == "False":
-            env_file = os.path.join(BASE_DIR, 'src/envs/.env_dev')
+            env_file = os.path.join(BASE_DIR, "src/envs/.env_dev")
         else:
-            env_file = os.path.join(BASE_DIR, 'src/envs/.env_local')
+            env_file = os.path.join(BASE_DIR, "src/envs/.env_local")
 
         case_sensitive = True
 
@@ -153,7 +161,7 @@ class TestSettings(DevelopmentSettings):
 
 class ProductionSettings(DevelopmentSettings):
     class Config:
-        env_file = os.path.join(BASE_DIR, 'src/envs/.env_prod')
+        env_file = os.path.join(BASE_DIR, "src/envs/.env_prod")
 
 
 settings = DevelopmentSettings()
@@ -161,5 +169,3 @@ settings = DevelopmentSettings()
 
 # print('settings.SECRET_KEY_______________', settings.SECRET_KEY)
 # print("POOL_SIZE_________________________________", settings.POOL_SIZE)
-
-

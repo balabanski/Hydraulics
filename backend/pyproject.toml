@@ -58,8 +58,27 @@ sections = 'FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER'
 [tool.black]
 line-length = 100
 include = '\.pyi?$'
-extend-exclude = '(\.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|migrations)'
-
+extend-exclude = '(\.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|migrations|volumes)'
+#exclude =  '''
+#/(
+#    \.eggs
+#    | \.git
+#    | \.hg
+#    | \.mypy_cache
+#    | \.pytest_cache
+#    | \.tox
+#    | \.vscode
+#    | __pycache__
+#    | _build
+#    | buck-out
+#    | build
+#    | dist
+#    | venv
+#    | migrations
+#    | volumes
+#
+#)/
+#'''
 [tool.ruff]
 line-length = 100
 exclude = [".git", "__pycache__", ".mypy_cache", ".pytest_cache", "migrations"]

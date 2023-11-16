@@ -27,13 +27,14 @@ async def add_postgresql_extension() -> None:
         query = text("CREATE EXTENSION IF NOT EXISTS pg_trgm")
         await db.execute(query)
 
-'''
+
+"""
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     # expire_on_commit=False will prevent attributes from being expired
     # after commit.
     async with SessionLocal() as session:
         return session
-'''
+"""
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
@@ -44,4 +45,3 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         db.rollback()
     finally:
         await db.close()
-

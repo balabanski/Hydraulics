@@ -1,6 +1,9 @@
 from typing import Optional, Dict
 from backend.src.models.files import FileBase
 
+from pydantic import BaseModel
+from sqlmodel import SQLModel
+
 
 class IFileUpdateSchema(FileBase):
     name: Optional[str] = None
@@ -11,5 +14,13 @@ class IFileCreateSchema(FileBase):
     pass
 
 
-class IFileReadSchema:
-    pass
+# class IFileCreateSchema(SQLModel):
+#     name: str
+
+
+class IFileReadSchema(BaseModel):
+    id: int
+    name: str
+
+    # class Config:
+    #     orm_mode = True

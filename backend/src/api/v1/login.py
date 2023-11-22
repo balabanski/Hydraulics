@@ -3,7 +3,8 @@ from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+# from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.src import repositories, models, schemas
 from backend.src.api import deps
@@ -20,18 +21,20 @@ router = APIRouter()
 
 
 @router.post("/login/access-token", response_model=schemas.Token)
-def login_access_token(
-    db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
+async def login_access_token(
+    db: AsyncSession = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = repositories.user_repo.authenticate(
-        db, email=form_data.username, password=form_data.password
+    repo = repositories.UserRepository(db=db)
+    user = await repo.authenticate(
+        email=form_data.username, password=form_data.password
     )
+    print('*********in login: user = await repo.authenticate___________________________________ ', user)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
-    elif not repositories.user_repo.is_active(user):
+    elif not repo.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
@@ -49,11 +52,13 @@ def login_access_token(
 
 
 @router.post("/password-recovery/{email}", response_model=schemas.Msg)
-def recover_password(email: str, db: Session = Depends(deps.get_db)) -> Any:
+async def recover_password(email: str, db: AsyncSession = Depends(deps.get_db)) -> Any:
     """
     Password Recovery
     """
-    user = repositories.user_repo.get_by_email(db, email=email)
+    repo = repositories.UserRepository(db=db)
+    # user = repositories.user_repo.get_by_email(db, email=email)
+    user = await repo.get_by_email(email=email)
 
     if not user:
         raise HTTPException(
@@ -66,27 +71,30 @@ def recover_password(email: str, db: Session = Depends(deps.get_db)) -> Any:
 
 
 @router.post("/reset-password/", response_model=schemas.Msg)
-def reset_password(
+async def reset_password(
     token: str = Body(...),
     new_password: str = Body(...),
-    db: Session = Depends(deps.get_db),
+    db: AsyncSession = Depends(deps.get_db),
 ) -> Any:
     """
     Reset password
     """
-    email = verify_password_reset_token(token)
-    if not email:
+    repo = repositories.UserRepository(db=db)
+    # email = verify_password_reset_token(token)
+    user_id = verify_password_reset_token(token)
+    if not user_id:
         raise HTTPException(status_code=400, detail="Invalid token")
-    user = repositories.user_repo.get_by_email(db, email=email)
+    # user = await repo.get_by_email(email=email)
+    user = await repo.get(id=user_id)
     if not user:
         raise HTTPException(
             status_code=404,
             detail="The user with this username does not exist in the system.",
         )
-    elif not repositories.user_repo.is_active(user):
+    elif not repo.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     hashed_password = get_password_hash(new_password)
     user.hashed_password = hashed_password
     db.add(user)
-    db.commit()
+    await db.commit()
     return {"msg": "Password updated successfully"}

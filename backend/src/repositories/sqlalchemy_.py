@@ -19,14 +19,17 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
 
-    async def create(self, obj_in: CreateSchemaType, **kwargs: Any) -> ModelType:
+    async def create(self, obj_in: CreateSchemaType) -> ModelType:
         logger.info(f"********Inserting new object[{obj_in.__class__.__name__}]")
+
+        print('in_create:*** obj_in__________________________________________', obj_in, '\n',
+             'type(obj_in)+++++++++', type(obj_in))
 
         db_obj = self._model.from_orm(obj_in)
         print(
             "pre_db_obj = self._model.from_orm(obj_in)_____________________________________", db_obj
         )
-
+        kwargs={}
         add = kwargs.get("add", True)
         flush = kwargs.get("flush", True)
         commit = kwargs.get("commit", True)
@@ -51,10 +54,11 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
                 await self.db.flush()
                 print("db.flush()__________________OK___________________________________")
         print("db_obj___________________________________________________________", db_obj)
+        print("db_obj.id___________________________________________________________", db_obj.id)
         return db_obj
 
     async def get(self, **kwargs: Any) -> Optional[ModelType]:
-        logger.info(f"Fetching [{self._model.__table__.name.capitalize()}] object by [{kwargs}]")  # type: ignore
+        logger.info(f"******Fetching [{self._model.__table__.name.capitalize()}] object by [{kwargs}]")  # type: ignore
 
         query = select(self._model).filter_by(**kwargs)
         async with self.db:
@@ -109,6 +113,14 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
             sort_order = OrderEnum.DESC
 
         order_by = getattr(columns[sort_field], sort_order)()
+
+        if not select_columns:
+            query = select(self._model).offset(skip).limit(limit).order_by(order_by)
+            print('********in sqlalchmy_:*************query = select(self._model).offset(skip).limit(limit).order_by(order_by)\n***', query)
+
+            response = await self.db.execute(query)
+            print('********in sqlalchmy_:***********************************response=\n***', response)
+            return response.scalars().all()
 
         if select_columns:
             list_columns = []

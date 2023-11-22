@@ -20,10 +20,7 @@ class User(BaseModel, table=True):
     )
     full_name: str = Field(default=None, index=True)
     email: str = Field(unique=True, index=True, nullable=False)
-    # hashed_password: str = Field(nullable=False)
-    hashed_password: str = Field(
-        default=None, nullable=True
-    )  #####################################################
+    hashed_password: str = Field(nullable=False)
     is_active: bool = Field(default=True, sa_column=Column(Boolean()))
     is_superuser: bool = Field(default=False, sa_column=Column(Boolean()))
     directories: Optional[List["Directory"]] = Relationship(back_populates="user")

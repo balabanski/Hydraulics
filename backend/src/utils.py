@@ -89,9 +89,12 @@ def send_new_account_email(email_to: str, username: str, password: str) -> None:
 
 def generate_password_reset_token(email: str) -> str:
     delta = timedelta(hours=settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS)
+    print('delta = timedelta(hours=settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS)____________________________________', delta)
     now = datetime.utcnow()
+    print('now = datetime.utcnow()_____________________________________________', now)
     expires = now + delta
     exp = expires.timestamp()
+    print('exp = expires.timestamp()________________________________', exp)
     encoded_jwt = jwt.encode(
         {"exp": exp, "nbf": now, "sub": email},
         settings.SECRET_KEY,
@@ -102,7 +105,13 @@ def generate_password_reset_token(email: str) -> str:
 
 def verify_password_reset_token(token: str) -> Optional[str]:
     try:
+        print("***************decoded_token**********************")
         decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-        return decoded_token["email"]
-    except jwt.JWTError:
+        print('decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])___________', decoded_token)
+        # return decoded_token["email"]
+        user_id = int(decoded_token["sub"])
+        return user_id  # id of user
+    # except jwt.JWTError:
+    #     return None
+    except:
         return None

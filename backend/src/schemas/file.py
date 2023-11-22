@@ -14,10 +14,6 @@ class IFileCreateSchema(FileBase):
     pass
 
 
-# class IFileCreateSchema(SQLModel):
-#     name: str
-
-
 class IFileReadSchema(BaseModel):
     id: int
     name: str

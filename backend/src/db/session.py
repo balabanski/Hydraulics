@@ -14,6 +14,7 @@ if settings.DATABASE == "postgres":
         pool_size=settings.POOL_SIZE,
         pool_pre_ping=True,
         max_overflow=settings.MAX_OVERFLOW,
+        # poolclass=NullPool,
     )
 elif settings.DATABASE == "sqlite":
     engine = create_async_engine(settings.sqlite_url, echo=settings.DEBUG)

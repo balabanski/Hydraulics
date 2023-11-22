@@ -26,6 +26,7 @@ class DevelopmentSettings(BaseSettings):
 
     # SECURITY # JWT
     SECRET_KEY: str = secrets.token_urlsafe(32)
+    # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     ACCESS_TOKEN_EXPIRE: int = 60 * 15
     REFRESH_TOKEN_EXPIRE: int = 60 * 60 * 24 * 30
@@ -34,9 +35,14 @@ class DevelopmentSettings(BaseSettings):
     PROJECT_NAME: str
     PROJECT_VERSION: str = "2.1.0"
     API_V1_STR: str = "/api/v1"
-    BACKEND_CORS_ORIGINS: Union[
-        str, List[AnyHttpUrl]
-    ] = "http://localhost:3000,http://localhost:8001"
+    # SERVER_NAME: str
+    DOMAIN: str
+    SERVER_HOST: AnyHttpUrl
+    # SERVER_HOST: AnyHttpUrl = "http://${DOMAIN?Variable not set}"
+    # BACKEND_CORS_ORIGINS: Union[
+    #     str, List[AnyHttpUrl]
+    # ] = "http://localhost:3000,http://localhost:8001"
+    # BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
     DATABASE: Optional[str] = None
     # Postgres
@@ -83,11 +89,13 @@ class DevelopmentSettings(BaseSettings):
             return v
         return max(values.get("DB_POOL_SIZE") // values.get("WEB_CONCURRENCY"), 5)  # type: ignore
 
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def _assemble_cors_origins(cls, cors_origins):
-        if isinstance(cors_origins, str):
-            return [item.strip() for item in cors_origins.split(",")]
-        return cors_origins
+    # @validator("BACKEND_CORS_ORIGINS", pre=True)
+    # def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    #     if isinstance(v, str) and not v.startswith("["):
+    #         return [i.strip() for i in v.split(",")]
+    #     elif isinstance(v, (list, str)):
+    #         return v
+    #     raise ValueError(v)
 
     # @validator("POSTGRES_URL", pre=True)
     # def assemble_db_connection(cls, v: Optional[str], values: Dict[str, str]) -> str:
@@ -104,8 +112,8 @@ class DevelopmentSettings(BaseSettings):
     # database = os.environ.get("DATABASE", "sqlite")
 
     SMTP_TLS: bool = True
-    SMTP_PORT: Optional[int] = None
     SMTP_HOST: Optional[str] = None
+    SMTP_PORT: Optional[int] = None
     SMTP_USER: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
     EMAILS_FROM_EMAIL: Optional[EmailStr] = None
@@ -117,9 +125,9 @@ class DevelopmentSettings(BaseSettings):
             return values["PROJECT_NAME"]
         return v
 
-    EMAILS_ENABLED: bool = False
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
-    EMAIL_TEMPLATES_DIR: str = "/app/app/email-templates/build"
+    EMAIL_TEMPLATES_DIR: str = "backend/src/email-templates/build"
+    EMAILS_ENABLED: bool = False
 
     @validator("EMAILS_ENABLED", pre=True)
     def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
@@ -146,6 +154,7 @@ class DevelopmentSettings(BaseSettings):
 
     class Config:
         local = os.environ.get("USE_LOCAL_DB", "True")
+        # local = os.environ.get("USE_LOCAL_DB", "False")
         print("local_________________________________________________", local)
         if local == "False":
             env_file = os.path.join(BASE_DIR, "src/envs/.env_dev")
@@ -167,5 +176,6 @@ class ProductionSettings(DevelopmentSettings):
 settings = DevelopmentSettings()
 # settings = ProductionSettings()
 
-# print('settings.SECRET_KEY_______________', settings.SECRET_KEY)
+# print('settings.BACKEND_CORS_ORIGINS_______________', settings.BACKEND_CORS_ORIGINS)
 # print("POOL_SIZE_________________________________", settings.POOL_SIZE)
+print(settings.SECRET_KEY)

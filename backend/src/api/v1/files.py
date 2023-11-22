@@ -6,7 +6,6 @@ from backend.src.repositories import FileRepository
 from backend.src.api import deps
 from backend.src.schemas.file import IFileReadSchema, IFileCreateSchema
 
-
 router = APIRouter()
 
 
@@ -26,28 +25,32 @@ async def list_files(session: AsyncSession = Depends(deps.get_db)):
 @router.post(
     "/create",
     response_description="create new file",
-    # response_model=IFileCreateSchema,
+    response_model=List[IFileReadSchema],
 )
 async def create_file(
-    name: str,
-    session: AsyncSession = Depends(deps.get_db),
+        name: str,
+        session: AsyncSession = Depends(deps.get_db),
 ):
     repo = FileRepository(db=session)
     file = IFileCreateSchema(name=name)
     await repo.create(obj_in=file)
+    list_id_name = await repo.all(sort_order="desc", select_columns=["id", "name"])
+    return list_id_name
 
 
 @router.post(
     "/delete",
     response_description="delete file",
-    # response_model=IFileCreateSchema,
+    response_model=List[IFileReadSchema],
 )
 async def delete_file(
-    file_id: int,
-    session: AsyncSession = Depends(deps.get_db),
+        file_id: int,
+        session: AsyncSession = Depends(deps.get_db),
 ):
     repo = FileRepository(db=session)
     await repo.delete(id=file_id)
+    list_id_name = await repo.all(sort_order="desc", select_columns=["id", "name"])
+    return list_id_name
 
 
 @router.get(
@@ -56,8 +59,8 @@ async def delete_file(
     response_model=Dict,
 )
 async def get_metadata(
-    file_id: int,
-    session: AsyncSession = Depends(deps.get_db),
+        file_id: int,
+        session: AsyncSession = Depends(deps.get_db),
 ):
     repo = FileRepository(db=session)
     list_model_from_id = await repo.f(id=file_id)

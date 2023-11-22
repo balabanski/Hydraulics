@@ -49,9 +49,11 @@ tags_metadata = [
 ]
 
 origins = [
-    "https://tagyoureitbot.com",
+    "https://localhost.hydraulics.com",
     "http://localhost",
     "http://localhost:3000",
+
+    "http://localhost:587",
 ]
 
 
@@ -59,9 +61,11 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     description="Backend to calculate the hydraulic drive",
     version=settings.VERSION,
-    openapi_url=f"/{settings.VERSION}/openapi.json",
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
     openapi_tags=tags_metadata,
 )
+
+
 
 
 async def on_startup() -> None:
@@ -70,10 +74,28 @@ async def on_startup() -> None:
     FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
     logger.info("FastAPI app running...")
 
+    # Set all CORS enabled origins
+    # if settings.BACKEND_CORS_ORIGINS:
+    #     app.add_middleware(
+    #         CORSMiddleware,
+    #         allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+    #         allow_credentials=True,
+    #         allow_methods=["*"],
+    #         allow_headers=["*"],
+    #     )
 
-# app.add_middleware(CORSMiddleware, allow_origins=origins, expose_headers=["x-content-range"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    expose_headers=["x-content-range"],
+
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    )
 
 app.add_event_handler("startup", on_startup)
 
 app.include_router(routes.home_router)
-app.include_router(routes.api_router, prefix=f"/{settings.VERSION}")
+app.include_router(routes.api_router, prefix=f"{settings.API_V1_STR}")

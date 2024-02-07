@@ -35,6 +35,7 @@ class UserUpdate(UserBase):
             hash_pas = get_password_hash(password)
             value["hashed_password"] = hash_pas
         print('value__________', value)
+
         return value
 
 

@@ -1,10 +1,9 @@
-from typing import Optional
-
 from backend.src.db.session import get_session
 from backend.src.models import File
 from backend.src.schemas import IFileUpdateSchema, IFileCreateSchema
 from backend.src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
-
+# from aiohttp.web_exceptions import HTTPException
+from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import logging
@@ -15,30 +14,22 @@ logger: logging.Logger = logging.getLogger(__name__)
 class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpdateSchema]):
     _model = File
 
-    # def __init__(self, db: AsyncSession) -> None:
-    #     self.db = db
-    #
-    # async def create(self, obj_in: IFileCreateSchema) -> File:
-    #
-    #     db_obj = File(
-    #         name=obj_in.name
-    #     )
-    #     print('db_obj = File(name=obj_in.name)_____________________________________________________', db_obj)
-    #     self.db.add(db_obj)
-    #     print('db.add(db_obj))__________________OK___________________________________')
-    #     await self.db.commit()
-    #     print('db.commit()__________________OK___________________________________')
-    #     await self.db.refresh(db_obj)
-    #     print('db.refresh(db_obj)__________________OK___________________________________')
-    #     print('db_obj___________________________________________________________', db_obj)
-    #     return db_obj
-
-
-# repo = FileRepository(db=asyncio.run(get_session()))
+    async def update(self, file_id: int, file: IFileUpdateSchema = None):
+        logger.info(f"\n**********Updating [{self._model.__table__.name.capitalize()}] object with [{file}]")  # type: ignore
+        db_file = await self.db.get(File, file_id)
+        if not db_file:
+            print("File not_not found")
+            raise HTTPException(status_code=404, detail="file not found")
+        file_data = file.dict(exclude_unset=True)
+        for key, value in file_data.items():
+            setattr(db_file, key, value)
+        self.db.add(db_file)
+        await self.db.commit()
+        await self.db.refresh(db_file)
+        return db_file
 
 
 # _________________________________________________for asyncio.run (использую)______________________________________
-
 
 async def select_file(columns=["id", "name"]):
     repo = FileRepository(db=await get_session())
@@ -81,10 +72,10 @@ async def get_metadata_from_file(file_id):
 """
 
 
-async def create_file(file: IFileCreateSchema):
-    repo = FileRepository(db=await get_session())
-    await repo.create(obj_in=file)
-    # logger.info(f"Inserting new object________________[{file.__class__.__name__}]")
+# async def create_file(file: IFileCreateSchema):
+#     repo = FileRepository(db=await get_session())
+#     await repo.create(obj_in=file)
+#     # logger.info(f"Inserting new object________________[{file.__class__.__name__}]")
 
 
 """
@@ -103,7 +94,7 @@ async def create_file(file: IFileCreateSchema):
 
 async def update_file(file_id: int, file: IFileUpdateSchema = None):
     repo = FileRepository(db=await get_session())
-    file_current: Optional[File] = await repo.get(**{"id": file_id})
+    file_current: File = await repo.get(**{"id": file_id})
     print(
         "obj_current:Optional[File] = await repo.get('id'), _________________________________________",
         file_current,
@@ -112,8 +103,6 @@ async def update_file(file_id: int, file: IFileUpdateSchema = None):
 
 
 """
-
-
 async def update_file(file_id: int, file: IFileUpdateSchema = None):
     async with AsyncSession(engine) as session:
         db_file = await session.get(File, file_id)
@@ -148,7 +137,6 @@ async def delete_file(file_id: int):
         await session.commit()
     return {"ok": True}
 """
-# ________________________не использую_______________________________________________________________
 
 
 # ___________________________________________________________BaseService____________________________________

@@ -1,14 +1,14 @@
-from utils.parameters import font, btn_master
+# from web_app.utils.parameters import font, btn_master
+from web_app.utils.settings_gui import font, btn_master
 import tkinter as tk
 import json
-from backend.src.schemas import IFileUpdateSchema
-import asyncio
-from backend.src.repositories.file import update_file
+from web_app.requests.req_file import update_file
 
 
 def get_all_parameters(main_window=None,
-                       file_name=None,
+                       file_id=None,
                        metadata=None,
+                       file_name=None
                        ):
     def _get_all_parameters():
         txt_param = tk.Text(main_window, width=50, height=12, font=(font[0], 12))
@@ -18,15 +18,14 @@ def get_all_parameters(main_window=None,
 
         def get_all_param():
             txt_param.delete(0.0, 100.100)
-            if file_name:
+            if file_id:
                 c_read = json.dumps(metadata, sort_keys=True, indent=4)
                 txt_param.insert(0.0, c_read)
             else:
                 txt_param.insert(0.0, error_open_file_message)
 
-        if file_name:
+        if file_id:
             txt_param.insert(0.0, '\nпараметры загружены \n для просмотра жми кнопку "параметры"\n')
-            main_window.title(file_name)
 
         else:
             txt_param.insert(0.0, error_open_file_message)
@@ -42,8 +41,10 @@ def get_all_parameters(main_window=None,
                 metadata.clear()
                 for key, val in _param.items():
                     metadata[key] = val
-                coroutine = update_file(file_id=file_name, file=IFileUpdateSchema(meta_data=metadata))
-                asyncio.run(coroutine)
+                print('id_=file_id,, _______', file_id)
+                print('name = file_name______________', file_name)
+                print('meta_data=metadata____________________________\n',metadata)
+                update_file(id_=file_id, name=file_name,  meta_data=metadata)
                 get_all_param()
             except:
                 txt_param.delete(0.0, 100.100)

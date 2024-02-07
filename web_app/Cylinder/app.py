@@ -1,22 +1,20 @@
 # coding=utf-8
-from Cylinder.parameters import file_id
-from utils.parameters import font, btn_master
-from Cylinder.options import main_window_cyl, clicked_main_menu_cyl, create_img_from_config
-from Cylinder.cylinder import metadata, selection_D_and_d, \
+from web_app.Cylinder.parameters import file_id, file_name
+# from web_app.utils.parameters import font, btn_master
+from web_app.utils.settings_gui import font, btn_master
+from web_app.Cylinder.options import main_window_cyl, clicked_main_menu_cyl, create_img_from_config
+from web_app.Cylinder.cylinder import metadata, selection_D_and_d, \
     v1, v1_diff, v2, Q1, Q2, Q1_diff, P1, P2, P1_diff, p1, p2, p1_dif, V1_diff, V1, V2, F_diff, F1, F2, \
     v1_fact, v1_diff_f, v2_fact, t1, t2, t1_diff
 
 import tkinter as tk
-import asyncio
-from backend.src.schemas import IFileUpdateSchema
-from backend.src.repositories.file import update_file
-from utils._app import get_all_parameters
-
-
+from web_app.requests.req_file import update_file
+from web_app.utils._app import get_all_parameters
 
 get_all_parameters_cyl = get_all_parameters(main_window=main_window_cyl,
-                                            file_name=file_id,
+                                            file_id=file_id,
                                             metadata=metadata,
+                                            file_name=file_name
                                             )
 
 get_all_parameters_cyl()
@@ -27,7 +25,7 @@ get_all_parameters_cyl()
 #    -заданного давления и силы
 def clicked_selection_d():
     lbl_diameter_selection_d.configure(text=selection_D_and_d())
-    asyncio.run(update_file(file_id=file_id, file=IFileUpdateSchema(meta_data=metadata)))
+    update_file(id_=file_id, name=file_name, meta_data=metadata)
 
 
 btn_diameter_selection_d = tk.Button(main_window_cyl,

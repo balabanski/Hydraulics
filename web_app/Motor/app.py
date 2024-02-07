@@ -1,16 +1,17 @@
-from Motor.parameters import file_id, metadata_mot
-from Motor.motor import V, n, Q, p, M, P
+from web_app.Motor.parameters import file_id, file_name, metadata_mot
+from web_app.Motor.motor import V, n, Q, p, M, P
 import tkinter as tk
-from utils.parameters import font, btn_master
-from utils._app import get_all_parameters
+from web_app.utils.settings_gui import font, btn_master
+from web_app.utils._app import get_all_parameters
 
 
 main_window_mot = tk.Tk()
 main_window_mot.title('расчет параметров гидромотора')
 
 get_all_parameters_mot= get_all_parameters(main_window = main_window_mot,
-                                           file_name = file_id,
-                                           metadata = metadata_mot,)
+                                           file_id= file_id,
+                                           metadata = metadata_mot,
+                                           file_name=file_name)
 
 get_all_parameters_mot()
 

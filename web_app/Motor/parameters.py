@@ -1,8 +1,5 @@
-from utils.parameters import file_id_input, update_file, parameter_input
-from backend.src.repositories.file import get_metadata_from_file
-import asyncio
-
-metadata_mot = {}
+from web_app.utils.parameters import file_id_input, parameter_input
+from web_app.requests.req_file import get_metadata_from_file
 
 name_par_mot = {
     "V": 'V (см3)- рабочий объём',
@@ -17,16 +14,11 @@ file_list = file_id_input()
 file_id = file_list[0]
 file_name = file_list[1]
 
-# экземпляр функции r_from_file_to_metadata
-r_from_file_func = get_metadata_from_file(file_id=file_id)  # coroutine object
+metadata_mot = get_metadata_from_file(id_=file_id)
 
-# переопределяю переменную-получаю словарь с внешнего файла
-metadata_mot = asyncio.run(r_from_file_func)
-
-# экземпляр функции w_metadata_to_file
-w_metadata_to_file_func = update_file(file_id=file_id)  # coroutyne
 
 parameter_mot_input = parameter_input(metadata=metadata_mot,
                                       _name_par=name_par_mot,
-                                      _file_id=file_id
+                                      _file_id=file_id,
+                                      _file_name=file_name
                                       )

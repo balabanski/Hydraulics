@@ -14,8 +14,10 @@ class UserRepository(BaseSQLAlchemyRepository[User, UserCreate, UserUpdate]):
     _model = User
 
     async def get_by_email(self, *, email: str) -> Optional[User]:
-        # logger.info(f"******Fetching [{self._model.__table__.name.capitalize()}] object by [{kwargs}]")  # type: ignore
-        return await self.get(email=email)
+        query = select(User).filter_by(email=email)
+        res = await self.db.execute(query)
+        scalar: User = res.scalar_one_or_none()
+        return scalar
 
     async def authenticate(self,  *, email: str, password: str) -> Optional[User]:
         user_ = await self.get(email=email)

@@ -1,34 +1,37 @@
 import tkinter as tk
 import asyncio
+from web_app.utils.settings_gui import font, btn_master
 
-from backend.src.repositories.file import update_file, create_file, delete_file, select_file
-from backend.src.schemas import IFileUpdateSchema, IFileCreateSchema
+from backend.src.schemas import IFileCreateSchema
+from urllib import request
+import json
+from web_app.requests.req_file import get_list_files, create_file, delete_file, update_file
+from web_app.user import get_token
 
-font = ['Arial Bold']
-btn_master = dict(bg='#000000', activebackground='#4444ff',
-                  fg='#ffffff', activeforeground='#ffffff')
-
-init_list_files = asyncio.run(select_file())
-
-# ------------------for file_id_input------------------------------------------
 
 file_id = None
 file_name = None
 
 
-def click_name_(_file_id) -> int:
+def click_name_(_file_id, _file_name) -> int:
     def _get_id():
         global file_id
+        global file_name
         file_id = _file_id
-        print('def get_id_from_file(file_id):________________________', file_id)
-        return file_id
-
+        file_name = _file_name
+        print('file_id, file_name__________________', file_id, file_name)
     return _get_id
 
 
 # ---------------------------------------------------
-
 def file_id_input():
+    global init_list_files
+    token = get_token()
+
+    init_list_files = asyncio.run(get_list_files(token_=token))
+    print('init_list_files =__________________________________________', init_list_files)
+
+    # ------------------for file_id_input------------------------------------------
     global file_id
     global file_name
 
@@ -44,11 +47,12 @@ def file_id_input():
     lbl_error = tk.Label(window_, text=lbl_text_error, font=(font[0], 12), **btn_master)
 
     _row = 2
-    for id_, name in init_list_files:
+    for i in init_list_files:
         _row += _row
         tk.Button(window_,
-                  text=name + f"  (id={id_})",
-                  command=click_name_(_file_id=id_),
+                  # text=i['name'] + f"  (id={i['id']})",
+                  text=i[1] + f"  (id={i[0]})",
+                  command=click_name_(_file_id=i[0], _file_name=i[1]),
                   **btn_master).grid(column=0, row=_row)
 
     tk.Button(window_,
@@ -61,11 +65,12 @@ def file_id_input():
     ent.grid(column=0, row=1001)
 
     def create_file_click():
-        global init_list_files
         name_ = ent.get()
-        asyncio.run(create_file(file=IFileCreateSchema(name=name_)))
+        print("****************CREATE**************************")
+        create_file(name_=name_)
         window_.destroy()
-        init_list_files = asyncio.run(select_file())
+        print("****************in CREATE**init_list_files************************")
+        # init_list_files = asyncio.run(get_list_files())
 
         file_id_input()
         # func_init_list_files(list_files=init_list_files)
@@ -76,10 +81,8 @@ def file_id_input():
               **btn_master).grid(column=1, row=1001)
 
     def delete_file_click():
-        global init_list_files
         window_.destroy()
-        asyncio.run(delete_file(file_id=file_id))
-        init_list_files = asyncio.run(select_file())
+        delete_file(id_=file_id)
         file_id_input()
 
     tk.Button(window_,
@@ -93,7 +96,7 @@ def file_id_input():
 
 
 # ввод запрашиваемых значений и перезапись файла
-def parameter_input(metadata, _name_par, _file_id) -> float:
+def parameter_input(metadata, _name_par, _file_id, _file_name) -> float:
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
@@ -125,7 +128,7 @@ def parameter_input(metadata, _name_par, _file_id) -> float:
                 par = float(ent.get())
                 metadata[key] = par
             par = metadata.get(key, 0)
-            asyncio.run(update_file(file_id=_file_id, file=IFileUpdateSchema(meta_data=metadata)))
+            update_file(id_=_file_id, name=_file_name, meta_data=metadata)
 
             window_.destroy()
             return par

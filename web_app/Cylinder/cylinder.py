@@ -1,8 +1,8 @@
 from math import sqrt
 from pathlib import Path
-from Cylinder.parameters import  metadata, name_par_cyl, parameter_cyl_input,\
-    w_metadata_to_file_func, reference_for_d1, reference_for_d2
-from Cylinder.options import  option_input_cyl, insert_image, arrangement, direction, dif_or_no
+from web_app.Cylinder.parameters import  metadata, name_par_cyl, parameter_cyl_input, \
+    reference_for_d1, reference_for_d2
+from web_app.Cylinder.options import option_input_cyl, insert_image, arrangement, direction, dif_or_no
 
 
 
@@ -244,7 +244,7 @@ def selection_D_and_d():
     key_p = None
     key_P = None
 
-    nomogramma_path= str(Path(Path.cwd(),'Cylinder','images', 'Nomogramma_.png'))
+    nomogramma_path= str(Path(Path.cwd(),'Cylinder', 'images', 'Nomogramma_.png'))
     global nomogramma_compiled
     if not nomogramma_compiled :
         nomogramma_compiled = insert_image(nomogramma_path)

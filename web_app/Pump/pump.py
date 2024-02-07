@@ -1,4 +1,4 @@
-from Pump.parameters import  metadata_pump, parameter_pump_input
+from web_app.Pump.parameters import  metadata_pump, parameter_pump_input
 
 
 # рабочий объём V(см3)

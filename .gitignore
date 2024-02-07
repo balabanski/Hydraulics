@@ -145,14 +145,14 @@ cython_debug/
 # project
 .idea/workspace.xml
 .idea
-Cylinder/__pycache__/parameters.cpython-34.pyc
+web_app/Cylinder/__pycache__/parameters.cpython-34.pyc
 app/.local
 app_db.py
-Cylinder/primer.py
+web_app/Cylinder/primer.py
 __pycache__/*
 JsonFiles/*
-/Cylinder/JsonFiles/
-/Motor/JsonFiles/
-/Pump/JsonFiles/
+/web_app/Cylinder/JsonFiles/
+/web_app/Motor/JsonFiles/
+/web_app/Pump/JsonFiles/
 1_testing_file.json
 Read_w

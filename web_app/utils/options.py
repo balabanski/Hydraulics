@@ -1,10 +1,8 @@
 import tkinter as tk
-from utils.parameters import btn_master, font
+from web_app.utils.parameters import btn_master, font
 from types import FunctionType
 
-import asyncio
-from backend.src.schemas import IFileUpdateSchema
-from backend.src.repositories.file import update_file
+from web_app.requests.req_file import update_file
 
 
 def insert_image(image_path):
@@ -110,7 +108,7 @@ def option_input(func_img_from_type=None,
     return _option_input
 
 
-def clicked_main_menu(metadata, funk_option_input, _file_id, config_json):
+def clicked_main_menu(metadata, funk_option_input, _file_id, _file_name, config_json):
     """
     функция фабрики закрытия
     -для возможности выбора вариантов исполнения чего-либо
@@ -143,8 +141,6 @@ def clicked_main_menu(metadata, funk_option_input, _file_id, config_json):
                         else:
                             lbl_result.configure(text='это не фунция')
                         break
-            asyncio.run(update_file(file_id=_file_id, file=IFileUpdateSchema(meta_data=metadata)))
-
+            update_file(id_=_file_id, name=_file_name, meta_data=metadata)
         return clicked_
-
     return _clicked_main_menu

@@ -10,8 +10,6 @@ from backend.src import repositories, models, schemas
 from backend.src.api import deps
 from backend.src.core.config import settings
 from backend.src.utils import send_new_account_email
-import asyncio
-
 
 router = APIRouter()
 
@@ -49,7 +47,7 @@ async def create_user(
             detail="The user with this username already exists in the system.",
         )
     user = await repo.create(obj_in=user_in)
-    print('*****settings.EMAILS_ENABLED*******************************************\n********', settings.EMAILS_ENABLED)
+
     if settings.EMAILS_ENABLED and user_in.email:
         send_new_account_email(
             email_to=user_in.email, username=user_in.email, password=user_in.hashed_password
@@ -57,7 +55,7 @@ async def create_user(
     return user
 
 
-@router.put("/me", response_model=schemas.User)
+@router.put("/update-me", response_model=schemas.User)
 async def update_user_me(
     *,
     db: AsyncSession = Depends(deps.get_db),
@@ -75,9 +73,9 @@ async def update_user_me(
           obj_in)
     print('*****in rout update_my*********current_user: models.User = Depends(deps.get_current_active_user)**\n',
           current_user)
-    current_user_data = jsonable_encoder(current_user)
-    print('*****in rout update_my*********current_user_data = jsonable_encoder(current_user)*********\n',
-          current_user_data)
+    # current_user_data = jsonable_encoder(current_user)  # dict
+    # print('*****in rout update_my*********current_user_data = jsonable_encoder(current_user)*********\n',
+    #       current_user_data)
     # user_in = schemas.UserUpdate(**current_user_data)
     # if password is not None:
     #     user_in.password = password
@@ -100,7 +98,7 @@ async def read_user_me(
     return current_user
 
 
-@router.post("/open", response_model=schemas.User)
+@router.post("/create-user-open", response_model=schemas.User)
 async def create_user_open(
     *,
     db: AsyncSession = Depends(deps.get_db),
@@ -115,14 +113,13 @@ async def create_user_open(
             status_code=403,
             detail="Open user registration is forbidden on this server",
         )
-    user = await repo.get_by_email(email=user_create.email)
+    user = await repo.get_by_email(email=user_create.email)  # None
 
     if user is not None:
         raise HTTPException(
             status_code=400,
             detail="The user with this username already exists in the system",
         )
-    print("in API:**** user_create**** = _____________________________", user)
     user = await repo.create(user_create)
     # user_in = user_create.dict()
     # print("in API:**** user_in**** = user_create.dict()______________dict_______________", user_in)
@@ -140,12 +137,9 @@ async def read_user_by_id(
     Get a specific user by id.
     """
     repo = repositories.UserRepository(db=db)
-    print('*******in router.get("/{user_id}***************************************current_user=\n', current_user)
     user = await repo.get(id=user_id)
-    print('*******in router.get("/{user_id}***************************************user=\n', user)
     if user == current_user:
         return user
-    print("(((((((((((((current_user.is_active))))))))))", current_user.is_active)
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="The user doesn't have enough privileges")
     return user

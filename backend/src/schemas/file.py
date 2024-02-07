@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 
 
 class IFileUpdateSchema(FileBase):
-    name: Optional[str] = None
+    name: Optional[str]
     meta_data: Dict
 
 

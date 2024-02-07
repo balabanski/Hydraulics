@@ -22,7 +22,8 @@ router = APIRouter()
 
 @router.post("/login/access-token", response_model=schemas.Token)
 async def login_access_token(
-    db: AsyncSession = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
+    db: AsyncSession = Depends(deps.get_db),
+    form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
@@ -31,7 +32,7 @@ async def login_access_token(
     user = await repo.authenticate(
         email=form_data.username, password=form_data.password
     )
-    print('*********in login: user = await repo.authenticate___________________________________ ', user)
+    print('*********in access-token: user = await repo.authenticate___________________________________\n', user)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not repo.is_active(user):

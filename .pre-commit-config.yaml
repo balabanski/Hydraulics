@@ -13,7 +13,7 @@ repos:
 -   repo: https://github.com/psf/black
     # Black — бескомпромиссный форматировщик  кода Python. Используя его, вы соглашаетесь передать контроль над
     # мелочами ручного форматирования. В свою очередь, Black дает вам скорость, детерминизм и свободу
-    # от pycodestyleформатирования. Вы сэкономите время и умственную энергию для более важных дел.
+    # от py_code_style форматирования. Вы сэкономите время и умственную энергию для более важных дел.
     rev: 22.6.0
     hooks:
     -   id: black
@@ -29,6 +29,7 @@ repos:
     -   id: isort
         args: ["--settings-path=./backend/pyproject.toml"]
 -   repo: https://github.com/codespell-project/codespell
+    # codespell: Исправьте распространенные орфографические ошибки в текстовых файлах
     rev: v2.2.2
     hooks:
     -   id: codespell

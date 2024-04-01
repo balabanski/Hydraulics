@@ -11,41 +11,41 @@ down:
 
 bash:
 	@echo "connecting to container...."
-	docker compose exec hydr_db bash
+	docker compose exec -it hydr_backend bash
 
 # alembic
 alembic-scaffold:
 	@echo "scaffolding migrations folder..."
-	docker compose exec backend alembic init -t async migrations
+	docker compose exec hydr_backend alembic init -t async migrations
 
 alembic-init:
 	@echo "initializing first migration...."
-	docker compose exec backend alembic revision --autogenerate -m "init"
+	docker compose exec hydr_backend alembic revision --autogenerate -m "init"
 
-alembic-make-migrations:
+alembic-revision:
 	@echo "creating migration file...."
-	docker compose exec backend alembic revision --autogenerate -m "add year"
+	docker compose exec hydr_backend alembic revision --autogenerate -m "add year"
 
-al_upgrade:
+alembic-upgrade:
 	@echo "applying migration...."
-	docker compose exec ccc67e5a560a alembic upgrade head
+	docker compose exec hydr_backend alembic upgrade head
 
 # lint
 # test:
 # 	@echo "running pytest...."
-# 	docker compose exec backend pytest --cov-report xml --cov=src tests/
+# 	docker compose exec hydr_backend pytest --cov-report xml --cov=src tests/
 
 lint:
 	@echo "running ruff...."
-	docker compose exec backend ruff sr
+	docker compose exec hydr_backend ruff sr
 
 black:
 	@echo "running black...."
-	docker compose exec backend black .
+	docker compose exec hydr_backend black .
 
 mypy:
 	@echo "running mypy...."
-	docker compose exec backend mypy src/
+	docker compose exec hydr_backend mypy src/
 
 # misc
 check: BREW-exists

@@ -81,9 +81,9 @@ $ make alembic-upgrade
 ### General workflow
 См. [Makefile](/Makefile) для просмотра доступных команд.
 
-По умолчанию зависимости управляются с помощью [Poetry](https://python-poetry.org/), зайдите туда и установите его.
+По умолчанию зависимости управляются с помощью [Poetry](https://python-poetry.org/). `Можете` зайти туда и установить его.
 
-Из  `./hydr_backend/` вы можете установить все зависимости с помощью:
+Из  `./hydr_backend/` вы `можете` установить все зависимости с помощью:
 
 ```console
 $ poetry install
@@ -92,7 +92,7 @@ $ poetry install
 
 
 ### pre-commit hooks
-Если вы еще этого не сделали, загрузите системный пакет [pre-commit](https://pre-commit.com/) и установите его. После этого установите git-хуки с помощью:
+Если вы еще этого не сделали, `можете` загрузить системный пакет [pre-commit](https://pre-commit.com/) и установите его. После этого установите git-хуки с помощью:
 ```console
 $ pre-commit install
 pre-commit installed at .git/hooks/pre-commit

@@ -24,7 +24,7 @@ def click_name_(_file_id, _file_name) -> int:
 
 
 # ---------------------------------------------------
-def file_id_input():
+def gui_filedialog():
     global init_list_files
     token = get_token()
 
@@ -72,7 +72,7 @@ def file_id_input():
         print("****************in CREATE**init_list_files************************")
         # init_list_files = asyncio.run(get_list_files())
 
-        file_id_input()
+        gui_filedialog()
         # func_init_list_files(list_files=init_list_files)
 
     tk.Button(window_,
@@ -83,7 +83,7 @@ def file_id_input():
     def delete_file_click():
         window_.destroy()
         delete_file(id_=file_id)
-        file_id_input()
+        gui_filedialog()
 
     tk.Button(window_,
               text='УДАЛИТЬ',

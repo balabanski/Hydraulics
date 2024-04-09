@@ -9,15 +9,21 @@ def gui_cyl_motor_pump():
 
     def click_cyl():
         main_window.destroy()
-        import web_app.Cylinder.app
+        from web_app.Cylinder.app import gui_main_cyl
+
+        gui_main_cyl()
 
     def click_mot():
         main_window.destroy()
-        import web_app.Motor.app
+        from web_app.Motor.app import gui_main_mot
+
+        gui_main_mot()
 
     def click_pump():
         main_window.destroy()
-        import web_app.Pump.app
+        from web_app.Pump.app import gui_main_pump
+
+        gui_main_pump()
 
     btn_cyl = tk.Button(main_window, text='ГИДРОЦИЛЛИНДР',
                         font=(font[0], 12),

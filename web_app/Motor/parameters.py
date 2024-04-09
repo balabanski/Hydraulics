@@ -1,4 +1,4 @@
-from web_app.utils.parameters import file_id_input, parameter_input
+from web_app.utils.parameters import gui_filedialog, parameter_input
 from web_app.requests.req_file import get_metadata_from_file
 
 name_par_mot = {
@@ -10,7 +10,7 @@ name_par_mot = {
     "p": 'p (Bar) - давление (перепад давления)',
 }
 
-file_list = file_id_input()
+file_list = gui_filedialog()
 file_id = file_list[0]
 file_name = file_list[1]
 

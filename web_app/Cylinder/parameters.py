@@ -1,4 +1,4 @@
-from web_app.utils.parameters import file_id_input, \
+from web_app.utils.parameters import gui_filedialog, \
                             parameter_input
 from web_app.requests.req_file import get_metadata_from_file
 import asyncio
@@ -39,7 +39,7 @@ name_par_cyl = {
 }
 
 # открываю или создаю файл для хранения параметров
-file_list = file_id_input()
+file_list = gui_filedialog()
 file_id = file_list[0]
 file_name = file_list[1]
 

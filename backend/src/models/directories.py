@@ -1,12 +1,14 @@
-from typing import TYPE_CHECKING, Optional, List
-from sqlmodel import Field, Relationship
-from backend.src.models.base import BaseModel
+from typing import TYPE_CHECKING, List, Optional
 
+from sqlmodel import Field, Relationship
+
+from backend.src.models.base import BaseModel
 from backend.src.models.user import User
 
+
 if TYPE_CHECKING:
-    from backend.src.models.user import User
     from backend.src.models.files import File
+    from backend.src.models.user import User
 
 
 class Directory(BaseModel, table=True):

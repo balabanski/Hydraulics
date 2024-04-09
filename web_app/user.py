@@ -1,25 +1,17 @@
-import time
-import tkinter as tk
-from tkinter import ttk
-import asyncio
-from tkinter import Button
-
-from web_app.requests.req_user import req_access_token, update_user_me, sign_up
-from web_app.utils.settings_gui import font, btn_master
-import os
 import json
+import os
+import tkinter as tk
+
+from web_app.requests.req_user import req_access_token, sign_up, update_user_me
+from web_app.utils.settings_gui import btn_master, font
+
 
 token = None
-email = None
 
 # from __future__ import annotations
-import json
-import tkinter as tk
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from tkinter import ttk
-from typing import List
-from urllib import parse, request
+
+
+email = None
 
 
 def create_user_folder():
@@ -44,67 +36,24 @@ def read_user_data():
         data_user = json.load(file)
     return data_user
 
+
 def remove_user_dada():
     try:
         os.remove(user_file)
     except:
         pass
 
-#
-# class UI(ABC):
-#     """An abstract class that describes which methods a UI should have."""
-#     @abstractmethod
-#     def setup(self, controller: Controller) -> None:
-#         pass
-#
-#     @abstractmethod
-#     def start(self) -> None:
-#         pass
-#
-#
-#
-# class Controller(ABC):
-#     """
-#     An abstract class that describes which methods a Controller should have.
-#     """
-#     @abstractmethod
-#     def __init__(self, ui: UI) -> None:
-#         pass
-#
-#     @abstractmethod
-#     def run(self) -> None:
-#         pass
-#
-#     @abstractmethod
-#     def gui_login(self):   # -> List[ShortURL]:
-#         pass
-#
-#     @abstractmethod
-#     def gui_auto_login(self) -> None:
-#         pass
-#
-#
-# class TkUI(UI):
-#     def setup(self, controller: Controller) -> None:
-#         """Sets up the UI"""
-#         self.root = tk.Tk()
-#         self.root.title('URL Shortener')
 
-
-class GUI_login():
+class GUI_login:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.root.title("Авторизация")
 
     def setup_login(self):
-        lbl_email = tk.Label(self.root, text="Ваш email",
-                             font=(font[0], 12),
-                             **btn_master)
+        lbl_email = tk.Label(self.root, text="Ваш email", font=(font[0], 12), **btn_master)
         lbl_email.grid(column=0, row=1)
 
-        lbl_password = tk.Label(self.root, text="пароль",
-                                font=(font[0], 12),
-                                **btn_master)
+        lbl_password = tk.Label(self.root, text="пароль", font=(font[0], 12), **btn_master)
         lbl_password.grid(column=0, row=3)
 
         entr_email = tk.Entry(self.root, font=(font[0], 12))
@@ -113,9 +62,7 @@ class GUI_login():
         entr_password = tk.Entry(self.root, font=(font[0], 12))
         entr_password.grid(column=1, row=3)
 
-        lbl_message_ok = tk.Label(self.root, text=" " * 100,
-                                  font=(font[0], 12),
-                                  **btn_master)
+        lbl_message_ok = tk.Label(self.root, text=" " * 100, font=(font[0], 12), **btn_master)
         lbl_message_ok.grid(column=1, row=5)
 
         def click_sign_in():
@@ -141,18 +88,22 @@ class GUI_login():
             new_user.setup()
             new_user.start()
 
-        btn_sign_in = tk.Button(self.root,
-                                text='войти',
-                                font=(font[0], 12),
-                                command=click_sign_in,
-                                **btn_master)
+        btn_sign_in = tk.Button(
+            self.root,
+            text="войти",
+            font=(font[0], 12),
+            command=click_sign_in,
+            **btn_master,
+        )
         btn_sign_in.grid(column=0, row=8)
 
-        btn_sign_up = tk.Button(self.root,
-                                text='Регистрация',
-                                font=(font[0], 12),
-                                command=click_sign_up,
-                                **btn_master)
+        btn_sign_up = tk.Button(
+            self.root,
+            text="Регистрация",
+            font=(font[0], 12),
+            command=click_sign_up,
+            **btn_master,
+        )
         btn_sign_up.grid(column=0, row=10)
 
     def start(self) -> None:
@@ -172,14 +123,10 @@ class GUI_update_or_create:
     def setup(self):
         self.root = tk.Tk()
         self.root.title(self.titl_text)
-        lbl_email = tk.Label(self.root, text="Ваш email",
-                             font=(font[0], 12),
-                             **btn_master)
+        lbl_email = tk.Label(self.root, text="Ваш email", font=(font[0], 12), **btn_master)
         lbl_email.grid(column=0, row=1)
 
-        lbl_password = tk.Label(self.root, text="пароль",
-                                font=(font[0], 12),
-                                **btn_master)
+        lbl_password = tk.Label(self.root, text="пароль", font=(font[0], 12), **btn_master)
         lbl_password.grid(column=0, row=3)
 
         entr_email = tk.Entry(self.root, font=(font[0], 12))
@@ -188,14 +135,12 @@ class GUI_update_or_create:
         entr_password = tk.Entry(self.root, font=(font[0], 12))
         entr_password.grid(column=1, row=3)
 
-        lbl_message_ok = tk.Label(self.root, text=" " * 100,
-                                  font=(font[0], 12),
-                                  **btn_master)
+        lbl_message_ok = tk.Label(self.root, text=" " * 100, font=(font[0], 12), **btn_master)
         lbl_message_ok.grid(column=1, row=5)
 
-        lbl_check_repeat_password = tk.Label(self.root, text="повторить пароль",
-                                             font=(font[0], 12),
-                                             **btn_master)
+        lbl_check_repeat_password = tk.Label(
+            self.root, text="повторить пароль", font=(font[0], 12), **btn_master
+        )
         lbl_check_repeat_password.grid(column=0, row=4)
 
         entr_check_repeat_password = tk.Entry(self.root, font=(font[0], 12))
@@ -240,10 +185,10 @@ class GUI_update_or_create:
         def click_create_user():
             data = get_data()
             data_user = {"user": data}
-            print('data_user______________________', data_user)
+            print("data_user______________________", data_user)
 
             res: dict = sign_up(data_=data_user)
-            print('res = sign_up____________________', res)
+            print("res = sign_up____________________", res)
 
             if res:
                 if res.get("email"):
@@ -259,8 +204,6 @@ class GUI_update_or_create:
                     lbl_message_ok.configure(text=text.center(100, "*"))
                     raise Exception(text)
 
-
-
             else:
                 text = "Ошибка. Проверьте введённые данные."
                 lbl_message_ok.configure(text=text.center(100, "*"))
@@ -272,11 +215,13 @@ class GUI_update_or_create:
         if self.create_user:
             func_click = click_create_user
 
-        btn_sign_in = tk.Button(self.root,
-                                text=self.btn_text,
-                                font=(font[0], 12),
-                                command=func_click,
-                                **btn_master)
+        btn_sign_in = tk.Button(
+            self.root,
+            text=self.btn_text,
+            font=(font[0], 12),
+            command=func_click,
+            **btn_master,
+        )
         btn_sign_in.grid(column=0, row=8)
 
     def start(self):
@@ -284,14 +229,14 @@ class GUI_update_or_create:
 
 
 class GUI_update(GUI_update_or_create):
-    titl_text = 'Обновление'
-    btn_text = 'подтвердить изменения'
+    titl_text = "Обновление"
+    btn_text = "подтвердить изменения"
     update_user = True
 
 
 class GUI_create(GUI_update_or_create):
-    titl_text = 'Регистрация нового пользователя'
-    btn_text = 'Зарегистрироваться'
+    titl_text = "Регистрация нового пользователя"
+    btn_text = "Зарегистрироваться"
     create_user = True
 
 
@@ -307,11 +252,13 @@ def gui_auto_login(token_, email_):
     def click_auto_sign_in():
         user_window.destroy()
 
-    btn_auto_sign_in = tk.Button(user_window,
-                                 text=f'ВОЙТИ как пользователь {email_}',
-                                 font=(font[0], 12),
-                                 command=click_auto_sign_in,
-                                 **btn_master)
+    btn_auto_sign_in = tk.Button(
+        user_window,
+        text=f"ВОЙТИ как пользователь {email_}",
+        font=(font[0], 12),
+        command=click_auto_sign_in,
+        **btn_master,
+    )
     btn_auto_sign_in.grid(column=0, row=2)
 
     def click_update_user():
@@ -326,18 +273,22 @@ def gui_auto_login(token_, email_):
         user_window.destroy()
         remove_user_dada()
 
-    btn_update_user = tk.Button(user_window,
-                                text='МЗМЕНИТЬ ПАРОЛЬ, EMAIL',
-                                font=(font[0], 12),
-                                command=click_update_user,
-                                **btn_master)
+    btn_update_user = tk.Button(
+        user_window,
+        text="МЗМЕНИТЬ ПАРОЛЬ, EMAIL",
+        font=(font[0], 12),
+        command=click_update_user,
+        **btn_master,
+    )
     btn_update_user.grid(column=0, row=3)
 
-    btn_log_out = tk.Button(user_window,
-                                text='ВЫЙТИ',
-                                font=(font[0], 12),
-                                command=click_log_out,
-                                **btn_master)
+    btn_log_out = tk.Button(
+        user_window,
+        text="ВЫЙТИ",
+        font=(font[0], 12),
+        command=click_log_out,
+        **btn_master,
+    )
     btn_log_out.grid(column=0, row=4)
 
     user_window.mainloop()

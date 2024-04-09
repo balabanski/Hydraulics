@@ -1,7 +1,8 @@
 import tkinter as tk
-from web_app.user import user_file, gui_auto_login, GUI_login, get_token, read_user_data
-from web_app.utils.settings_gui import font, btn_master
-import os
+
+from web_app.user import GUI_login, get_token, gui_auto_login, read_user_data
+from web_app.utils.settings_gui import btn_master, font
+
 
 def gui_cyl_motor_pump():
     main_window = tk.Tk()
@@ -25,18 +26,27 @@ def gui_cyl_motor_pump():
 
         gui_main_pump()
 
-    btn_cyl = tk.Button(main_window, text='ГИДРОЦИЛЛИНДР',
-                        font=(font[0], 12),
-                        command=click_cyl,
-                        **btn_master)
-    btn_mot = tk.Button(main_window, text='ГИДРОМОТОР',
-                        font=(font[0], 12),
-                        command=click_mot,
-                        **btn_master)
-    btn_pump = tk.Button(main_window, text='ГИДРОНАСОС',
-                         font=(font[0], 12),
-                         command=click_pump,
-                         **btn_master)
+    btn_cyl = tk.Button(
+        main_window,
+        text="ГИДРОЦИЛЛИНДР",
+        font=(font[0], 12),
+        command=click_cyl,
+        **btn_master,
+    )
+    btn_mot = tk.Button(
+        main_window,
+        text="ГИДРОМОТОР",
+        font=(font[0], 12),
+        command=click_mot,
+        **btn_master,
+    )
+    btn_pump = tk.Button(
+        main_window,
+        text="ГИДРОНАСОС",
+        font=(font[0], 12),
+        command=click_pump,
+        **btn_master,
+    )
     btn_cyl.grid(column=0, row=1)
     btn_mot.grid(column=1, row=1)
     btn_pump.grid(column=2, row=1)
@@ -66,6 +76,3 @@ if __name__ == "__main__":
 
     if token:
         gui_cyl_motor_pump()
-
-
-

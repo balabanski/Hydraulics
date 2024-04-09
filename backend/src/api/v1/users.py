@@ -1,15 +1,14 @@
 from typing import Any, List
 
 from fastapi import APIRouter, Body, Depends, HTTPException
-from fastapi.encoders import jsonable_encoder
-from pydantic.networks import EmailStr
-from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
-from backend.src import repositories, models, schemas
+from backend.src import models, repositories, schemas
 from backend.src.api import deps
 from backend.src.core.config import settings
 from backend.src.utils import send_new_account_email
+
 
 router = APIRouter()
 
@@ -69,10 +68,14 @@ async def update_user_me(
     Update own user.
     """
     repo = repositories.UserRepository(db=db)
-    print('*****in rout update_my*********obj_in: schemas.UserUpdate****************************************\n',
-          obj_in)
-    print('*****in rout update_my*********current_user: models.User = Depends(deps.get_current_active_user)**\n',
-          current_user)
+    print(
+        "*****in rout update_my*********obj_in: schemas.UserUpdate****************************************\n",
+        obj_in,
+    )
+    print(
+        "*****in rout update_my*********current_user: models.User = Depends(deps.get_current_active_user)**\n",
+        current_user,
+    )
     # current_user_data = jsonable_encoder(current_user)  # dict
     # print('*****in rout update_my*********current_user_data = jsonable_encoder(current_user)*********\n',
     #       current_user_data)
@@ -102,7 +105,7 @@ async def read_user_me(
 async def create_user_open(
     *,
     db: AsyncSession = Depends(deps.get_db),
-    user_create: schemas.UserCreate = Body(..., embed=True, alias='user'),
+    user_create: schemas.UserCreate = Body(..., embed=True, alias="user"),
 ) -> Any:
     """
     Create new user without the need to be logged in.

@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Optional, List
-from sqlmodel import Field, Relationship, text, Column, Boolean
 import uuid as uuid_pkg
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlmodel import Boolean, Column, Field, Relationship, text
 
 from backend.src.models.base import BaseModel
 

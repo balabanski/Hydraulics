@@ -1,12 +1,13 @@
-from backend.src.db.session import get_session
-from backend.src.models import File
-from backend.src.schemas import IFileUpdateSchema, IFileCreateSchema
-from backend.src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
+import logging
+
 # from aiohttp.web_exceptions import HTTPException
 from fastapi.exceptions import HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
 
-import logging
+from backend.src.db.session import get_session
+from backend.src.models import File
+from backend.src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
+from backend.src.schemas import IFileCreateSchema, IFileUpdateSchema
+
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -15,7 +16,9 @@ class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpda
     _model = File
 
     async def update(self, file_id: int, file: IFileUpdateSchema = None):
-        logger.info(f"\n**********Updating [{self._model.__table__.name.capitalize()}] object with [{file}]")  # type: ignore
+        logger.info(
+            f"\n**********Updating [{self._model.__table__.name.capitalize()}] object with [{file}]"
+        )  # type: ignore
         db_file = await self.db.get(File, file_id)
         if not db_file:
             print("File not_not found")
@@ -30,6 +33,7 @@ class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpda
 
 
 # _________________________________________________for asyncio.run (использую)______________________________________
+
 
 async def select_file(columns=["id", "name"]):
     repo = FileRepository(db=await get_session())
@@ -58,8 +62,6 @@ async def get_metadata_from_file(file_id):
 
 
 """
-
-
 async def get_metadata_from_file(file_id):
     async with AsyncSession(engine) as session:
         _metadata = await session.execute(select(File.meta_data).where(col(File.id) == file_id))
@@ -139,26 +141,27 @@ async def delete_file(file_id: int):
 """
 
 
-# ___________________________________________________________BaseService____________________________________
-from typing import Generic, TypeVar
-
-from backend.src.interfaces.repository import IRepository
-
-
-T = TypeVar("T", bound=IRepository)
-
-
-class BaseService(Generic[T]):
-    def __init__(self, repo: T) -> None:
-        self.repo = repo
-
-
-# _________________________________________________________________FileService_____________________________
-import logging
-
-logger: logging.Logger = logging.getLogger(__name__)
-
-
-class FileService(BaseService[FileRepository]):
-    def __init__(self, repo: FileRepository) -> None:
-        self.repo = repo
+# # ___________________________________________________________BaseService____________________________________
+# from typing import Generic, TypeVar
+#
+# from backend.src.interfaces.repository import IRepository
+#
+#
+# T = TypeVar("T", bound=IRepository)
+#
+#
+# class BaseService(Generic[T]):
+#     def __init__(self, repo: T) -> None:
+#         self.repo = repo
+#
+#
+# # _________________________________________________________________FileService_____________________________
+# import logging
+#
+#
+# logger: logging.Logger = logging.getLogger(__name__)
+#
+#
+# class FileService(BaseService[FileRepository]):
+#     def __init__(self, repo: FileRepository) -> None:
+#         self.repo = repo

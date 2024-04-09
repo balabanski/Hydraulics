@@ -1,22 +1,11 @@
 import logging
-from typing import Optional, List, Dict
-from sqlmodel import (
-    Field,
-    SQLModel,
-    Column,
-    DateTime,
-    Session,
-    Relationship,
-    text,
-    JSON,
-    select,
-    update,
-    col,
-    or_,
-)
-import uuid as uuid_pkg
+# import uuid as uuid_pkg
 from datetime import datetime
+from typing import Optional
+
 from sqlalchemy.sql import func
+from sqlmodel import Column, DateTime, Field, SQLModel
+
 
 logging.basicConfig(level=logging.INFO)
 

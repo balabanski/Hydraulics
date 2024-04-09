@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 from fastapi.responses import PlainTextResponse, Response
-from backend.src.api.v1 import users, login, health, files, directories
+
+from backend.src.api.v1 import files, health, login, users
 
 
 home_router = APIRouter()

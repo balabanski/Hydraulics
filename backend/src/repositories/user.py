@@ -1,13 +1,11 @@
-from typing import Any, Dict, Optional, Union
+from typing import Optional
 
-from sqlalchemy.orm import Session
 from sqlmodel import select
 
-from backend.src.core.security import get_password_hash, verify_password
-from backend.src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
+from backend.src.core.security import verify_password
 from backend.src.models.user import User
+from backend.src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
 from backend.src.schemas.user import UserCreate, UserUpdate
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class UserRepository(BaseSQLAlchemyRepository[User, UserCreate, UserUpdate]):
@@ -19,7 +17,7 @@ class UserRepository(BaseSQLAlchemyRepository[User, UserCreate, UserUpdate]):
         scalar: User = res.scalar_one_or_none()
         return scalar
 
-    async def authenticate(self,  *, email: str, password: str) -> Optional[User]:
+    async def authenticate(self, *, email: str, password: str) -> Optional[User]:
         user_ = await self.get(email=email)
         if not user_:
             return None

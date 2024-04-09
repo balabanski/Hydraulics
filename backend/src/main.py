@@ -52,7 +52,6 @@ origins = [
     "https://localhost.hydraulics.com",
     "http://localhost",
     "http://localhost:3000",
-
     "http://localhost:587",
 ]
 
@@ -64,8 +63,6 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     openapi_tags=tags_metadata,
 )
-
-
 
 
 async def on_startup() -> None:
@@ -89,11 +86,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     expose_headers=["x-content-range"],
-
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    )
+)
 
 app.add_event_handler("startup", on_startup)
 

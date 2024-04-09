@@ -1,17 +1,9 @@
-from typing import Dict, List, Optional, Union, Any
-import secrets
-from pydantic import (
-    AnyHttpUrl,
-    PostgresDsn,
-    BaseSettings,
-    AnyUrl,
-    validator,
-    Field,
-    SecretStr,
-    EmailStr,
-)
 import os
+import secrets
 from pathlib import Path
+from typing import Any, Dict, Optional
+
+from pydantic import AnyHttpUrl, BaseSettings, EmailStr, Field, PostgresDsn, validator
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -145,7 +137,7 @@ class DevelopmentSettings(BaseSettings):
 
     @property
     def sqlite_url(self) -> str:
-        return f"sqlite+aiosqlite:///" + settings.SQLITE_FILE_NAME
+        return "sqlite+aiosqlite:///" + settings.SQLITE_FILE_NAME
 
     # EMAIL_TEST_USER: EmailStr = "test@example.com"  # type: ignore
     # FIRST_SUPERUSER: EmailStr

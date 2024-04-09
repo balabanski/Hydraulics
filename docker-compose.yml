@@ -29,13 +29,13 @@ services:
     environment:
       - PYTHON-UNBUFFERED=0
       #- DISPLAY=unix$DISPLAY
-    command: | 
-      bash -c "set -ex      
+    command: |
+      bash -c "set -ex
       until </dev/tcp/hydr_db/5432; do
       >&2 echo 'Postgres is unavailable - sleeping'; sleep 1
       done
       sleep 2
-      >&2 echo 'Postgres is up - executing command'      
+      >&2 echo 'Postgres is up - executing command'
       alembic upgrade head &&
       uvicorn backend.src.main:app --reload --workers 1 --host 0.0.0.0 --port 8000 --log-config=backend/src/logconfig.yml"
     volumes:

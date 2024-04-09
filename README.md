@@ -37,7 +37,7 @@
 
 ## Configure
 
-#### необходимо создать файлы конфигурации. 
+#### необходимо создать файлы конфигурации.
 - Выполните команды (это скопирует .env файлы):
 ```bash
 cp backend/src/envs/example/.env_dev backend/src/envs
@@ -57,7 +57,7 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 ## Usage
 после настройки .env файлов:
 
-1. Docker: 
+1. Docker:
 ```Bash
 make up
 ```

@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Body, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
-from backend.src.repositories import FileRepository
-from backend.src.api import deps
-from backend.src.schemas.file import IFileReadSchema, IFileCreateSchema, IFileUpdateSchema
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from backend.src import models
+from backend.src.api import deps
+from backend.src.repositories import FileRepository
+from backend.src.schemas.file import IFileCreateSchema, IFileReadSchema, IFileUpdateSchema
+
 
 router = APIRouter()
 
@@ -15,9 +17,10 @@ router = APIRouter()
     response_description="List all files instances",
     response_model=List[Tuple],
 )
-async def list_files(session: AsyncSession = Depends(deps.get_db),
-                     user: models.User = Depends(deps.get_current_active_user),
-                     ):
+async def list_files(
+    session: AsyncSession = Depends(deps.get_db),
+    user: models.User = Depends(deps.get_current_active_user),
+):
     # columns = ["id", "name"]
     repo = FileRepository(db=session)
     # list_models_Files = await repo.all(sort_order="desc", select_columns=columns)
@@ -35,9 +38,9 @@ async def list_files(session: AsyncSession = Depends(deps.get_db),
     response_model=List[IFileReadSchema],
 )
 async def create_file(
-        name: str,
-        session: AsyncSession = Depends(deps.get_db),
-        user: models.User = Depends(deps.get_current_active_user),
+    name: str,
+    session: AsyncSession = Depends(deps.get_db),
+    user: models.User = Depends(deps.get_current_active_user),
 ):
     repo = FileRepository(db=session)
     file = IFileCreateSchema(name=name, user_id=user.id)
@@ -52,9 +55,9 @@ async def create_file(
     response_model=List[IFileReadSchema],
 )
 async def delete_file(
-        file_id: int,
-        session: AsyncSession = Depends(deps.get_db),
-        user:models.User = Depends(deps.get_current_active_user),
+    file_id: int,
+    session: AsyncSession = Depends(deps.get_db),
+    user: models.User = Depends(deps.get_current_active_user),
 ):
     repo = FileRepository(db=session)
     await repo.delete(id=file_id)
@@ -69,9 +72,9 @@ async def delete_file(
     response_model=Dict,
 )
 async def get_metadata(
-        file_id: int,
-        session: AsyncSession = Depends(deps.get_db),
-        user:models.User = Depends(deps.get_current_active_user),
+    file_id: int,
+    session: AsyncSession = Depends(deps.get_db),
+    user: models.User = Depends(deps.get_current_active_user),
 ):
     repo = FileRepository(db=session)
     list_model_from_id = await repo.f(id=file_id)
@@ -84,10 +87,10 @@ async def get_metadata(
     # response_model=Dict,
 )
 async def update_file(
-        file_id: int,
-        obj_in: IFileUpdateSchema,
-        session: AsyncSession = Depends(deps.get_db),
-        user:models.User = Depends(deps.get_current_active_user),
+    file_id: int,
+    obj_in: IFileUpdateSchema,
+    session: AsyncSession = Depends(deps.get_db),
+    user: models.User = Depends(deps.get_current_active_user),
 ):
     repo = FileRepository(db=session)
 

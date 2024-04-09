@@ -1,19 +1,18 @@
-import redis.asyncio as aioredis
-from redis.asyncio import Redis
-from typing import Generator
+from typing import AsyncGenerator
 
+import jwt
+import redis.asyncio as aioredis
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-import jwt
-from pydantic import ValidationError
-from sqlalchemy.orm import Session
+# from pydantic import ValidationError
+from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src import repositories, models, schemas
+from backend.src import models, repositories, schemas
 from backend.src.core import security
 from backend.src.core.config import settings
 from backend.src.db.session import SessionLocal
-from sqlalchemy.ext.asyncio import AsyncSession
-from typing import AsyncGenerator
+
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/login/access-token")
 
@@ -37,15 +36,17 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def get_current_user(
-        db: AsyncSession = Depends(get_db),
-        token: str = Depends(reusable_oauth2)
+    db: AsyncSession = Depends(get_db), token: str = Depends(reusable_oauth2)
 ) -> models.User:
     repo = repositories.UserRepository(db=db)
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
-        print('*********payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])******', payload)
+        print(
+            "*********payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])******",
+            payload,
+        )
         token_data = schemas.TokenPayload(**payload)
-        print('token_data = schemas.TokenPayload(**payload)___________________', token_data)
+        print("token_data = schemas.TokenPayload(**payload)___________________", token_data)
     # except (jwt.JWTError, ValidationError):
     except:
         raise HTTPException(
@@ -59,7 +60,7 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-        current_user: models.User = Depends(get_current_user),
+    current_user: models.User = Depends(get_current_user),
 ) -> models.User:
     # repo = await repositories.UserRepository.is_active(current_user)
     # if not repo:
@@ -69,7 +70,7 @@ async def get_current_active_user(
 
 
 def get_current_active_superuser(
-        current_user: models.User = Depends(get_current_user),
+    current_user: models.User = Depends(get_current_user),
 ) -> models.User:
     if not current_user.is_superuser:
         raise HTTPException(status_code=400, detail="The user doesn't have enough privileges")

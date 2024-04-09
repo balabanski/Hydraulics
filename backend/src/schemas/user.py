@@ -1,7 +1,7 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field
-from pydantic import root_validator
+from pydantic import BaseModel, EmailStr, Field, root_validator
+
 from backend.src.core.security import get_password_hash
 
 
@@ -21,10 +21,10 @@ class UserUpdate(UserBase):
     @root_validator
     def check_repeat_password(cls, values):
         pw1, pw2 = values.get("hashed_password"), values.get("repeat_password")
-        print('pw1+++++++++', pw1, '\n', 'pw2**********', pw2)
+        print("pw1+++++++++", pw1, "\n", "pw2**********", pw2)
         if pw1 is not None and pw2 is not None and pw1 != pw2:
             raise ValueError("passwords do not match")
-        print('values__________', values)
+        print("values__________", values)
         del values["repeat_password"]
         return values
 
@@ -34,7 +34,7 @@ class UserUpdate(UserBase):
         if password:
             hash_pas = get_password_hash(password)
             value["hashed_password"] = hash_pas
-        print('value__________', value)
+        print("value__________", value)
 
         return value
 

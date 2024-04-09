@@ -1,10 +1,14 @@
 from typing import AsyncGenerator
 
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from backend.src.core.config import settings
+from sqlalchemy.orm import sessionmaker
 from sqlmodel import text
+
+from backend.src.core.config import settings
+
+
+# from sqlalchemy.pool import NullPool
+
 
 if settings.DATABASE == "postgres":
     engine = create_async_engine(

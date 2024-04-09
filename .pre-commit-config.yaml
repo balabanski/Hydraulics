@@ -1,15 +1,32 @@
+exclude: backend/src/migrations
 default_language_version:
     python: python3
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
+    -   id: check-added-large-files
     -   id: trailing-whitespace #Обрезает конечные пробелы.
     -   id: end-of-file-fixer #Гарантирует, что файлы заканчиваются новой строкой и только новой строкой.
+    -   id: check-toml
     -   id: check-yaml #Пытается загрузить все файлы yaml для проверки синтаксиса.
+        args:
+            - --unsafe
     -   id: debug-statements #Проверьте импорт отладчика и breakpoint()вызовы py37+ в исходном коде python.
     -   id: requirements-txt-fixer #Сортирует записи в требованиях.txt и ограничениях.txt и удаляет неправильные записи дляpkg-resources==0.0.0
+
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.2.2
+    hooks:
+        # Run the linter.
+        - id: ruff
+          types_or: [ python, pyi, jupyter ]
+          args: [ --fix ]
+        # Run the formatter.
+        - id: ruff-format
+          #types_or: [ python, pyi, jupyter ]
+
 -   repo: https://github.com/psf/black
     # Black — бескомпромиссный форматировщик  кода Python. Используя его, вы соглашаетесь передать контроль над
     # мелочами ручного форматирования. В свою очередь, Black дает вам скорость, детерминизм и свободу
@@ -18,10 +35,7 @@ repos:
     hooks:
     -   id: black
         args: ["--config=./backend/pyproject.toml"]
--   repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.0.241'
-    hooks:
-        - id: ruff
+
 -   repo: https://github.com/PyCQA/isort
     # isort — это утилита/библиотека Python для сортировки импорта по алфавиту и автоматического разделения на разделы и по типу.
     rev: 5.12.0
@@ -33,7 +47,7 @@ repos:
     rev: v2.2.2
     hooks:
     -   id: codespell
-        args: ["--config=./backend/pyproject.toml", "--ignore-words-list=selectin"
+        args: ["--config=./backend/pyproject.toml", "--ignore-words-list=selectin"]
 # -   repo: https://github.com/pre-commit/mirrors-mypy
 #     rev: v0.982
 #     hooks:

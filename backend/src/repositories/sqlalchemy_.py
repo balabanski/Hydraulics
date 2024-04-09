@@ -1,12 +1,12 @@
 import logging
 from typing import Any, Generic, List, Optional, Type, TypeVar
 
+from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import SQLModel, select
 
-from backend.src.repositories.enums import OrderEnum, SortEnum
 from backend.src.interfaces.repository import IRepository
-from fastapi.exceptions import HTTPException
+from backend.src.repositories.enums import OrderEnum, SortEnum
 
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
@@ -47,7 +47,9 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         return db_obj
 
     async def get(self, **kwargs: Any) -> Optional[ModelType]:
-        logger.info(f"\n**********Fetching one_or_none[{self._model.__table__.name.capitalize()}] object by [{kwargs}]")  # type: ignore
+        logger.info(
+            f"\n**********Fetching one_or_none[{self._model.__table__.name.capitalize()}] object by [{kwargs}]"
+        )  # type: ignore
 
         query = select(self._model).filter_by(**kwargs)
         async with self.db:
@@ -61,7 +63,9 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         return scalar
 
     async def f(self, **kwargs: Any) -> List[ModelType]:
-        logger.info(f"\n**********Filtering all [{self._model.__table__.name.capitalize()}] object by [{kwargs}]")  # type: ignore
+        logger.info(
+            f"\n**********Filtering all [{self._model.__table__.name.capitalize()}] object by [{kwargs}]"
+        )  # type: ignore
         async with self.db:
             query = select(self._model).filter_by(**kwargs)
             response = await self.db.execute(query)
@@ -71,7 +75,9 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         return scalars
 
     async def update(self, obj_current: ModelType, obj_in: UpdateSchemaType) -> ModelType:
-        logger.info(f"\n**********Updating [{self._model.__table__.name.capitalize()}] object with [{obj_in}]")  # type: ignore
+        logger.info(
+            f"\n**********Updating [{self._model.__table__.name.capitalize()}] object with [{obj_in}]"
+        )  # type: ignore
 
         update_data = obj_in.dict(
             exclude_unset=True
@@ -89,7 +95,8 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
 
     async def delete(self, **kwargs: Any) -> None:
         logger.info(
-            f"\n**********Deleting [{self._model.__table__.name.capitalize()}] object by [{kwargs}]")  # type: ignore
+            f"\n**********Deleting [{self._model.__table__.name.capitalize()}] object by [{kwargs}]"
+        )  # type: ignore
         async with self.db:
             obj = await self.get(**kwargs)
 
@@ -138,7 +145,8 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
 
     async def get_or_create(self, obj_in: CreateSchemaType, **kwargs: Any) -> ModelType:
         logger.info(
-            f"\n**********GET object by [{kwargs}] or CREATE object by [{obj_in}] in table [{self._model.__table__.name.capitalize()}]")  # type: ignore
+            f"\n**********GET object by [{kwargs}] or CREATE object by [{obj_in}] in table [{self._model.__table__.name.capitalize()}]"
+        )  # type: ignore
         async with self.db:
             get_instance: Optional[ModelType] = await self.get(**kwargs)
 

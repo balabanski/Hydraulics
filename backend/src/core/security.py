@@ -6,6 +6,7 @@ from passlib.context import CryptContext
 
 from backend.src.core.config import settings
 
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated=["auto"])
 
 
@@ -21,6 +22,7 @@ def create_access_token(subject: Union[str, Any], expires_delta: timedelta = Non
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
 # def encode_access_token(self):
 #     now = datetime.now(timezone.utc)
 #     token_age_h = current_app.config.get("TOKEN_EXPIRE_HOURS")
@@ -31,6 +33,7 @@ def create_access_token(subject: Union[str, Any], expires_delta: timedelta = Non
 #     payload = dict(exp=expire, iat=now, sub=self.public_id, admin=self.admin)
 #     key = current_app.config.get("SECRET_KEY")
 #     return jwt.encode(payload, key, algorithm="HS256")
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)

@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 # from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src import repositories, models, schemas
+from backend.src import repositories, schemas
 from backend.src.api import deps
 from backend.src.core import security
 from backend.src.core.config import settings
@@ -16,6 +16,7 @@ from backend.src.utils import (
     send_reset_password_email,
     verify_password_reset_token,
 )
+
 
 router = APIRouter()
 
@@ -29,10 +30,11 @@ async def login_access_token(
     OAuth2 compatible token login, get an access token for future requests
     """
     repo = repositories.UserRepository(db=db)
-    user = await repo.authenticate(
-        email=form_data.username, password=form_data.password
+    user = await repo.authenticate(email=form_data.username, password=form_data.password)
+    print(
+        "*********in access-token: user = await repo.authenticate___________________________________\n",
+        user,
     )
-    print('*********in access-token: user = await repo.authenticate___________________________________\n', user)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not repo.is_active(user):

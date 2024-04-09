@@ -1,8 +1,8 @@
-from typing import Optional, Dict
-from backend.src.models.files import FileBase
+from typing import Dict, Optional
 
 from pydantic import BaseModel
-from sqlmodel import SQLModel
+
+from backend.src.models.files import FileBase
 
 
 class IFileUpdateSchema(FileBase):

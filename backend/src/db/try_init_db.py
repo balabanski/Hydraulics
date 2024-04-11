@@ -1,27 +1,38 @@
 import asyncio
 import logging
-
-from sqlalchemy.orm import Session
+# from sqlalchemy.orm import Session
 from sqlmodel import SQLModel
-
 from backend.src.db.session import engine
-from backend.src.models import Directory, File, User
+# from backend.src.models import Directory, File, User
+from backend.src.models import *
+from backend.src.core.config import settings
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 
 
 logger: logging.Logger = logging.getLogger(__name__)
+engine = create_async_engine(settings.sqlite_url, echo=settings.DEBUG)
+print(engine.url)
+
+SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 # -----------------------------create_db_and_tables---------------------------------------------
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.drop_all)
+        await conn.run_sync(SQLModel.metadata.create_all)
+    # SQLModel.metadata.create_all(engine)
 
 
 # ---------------------------------create_data----------------------------------------------
 async def create_init_data() -> None:
-    # async with SessionLocal() as session:
-    with Session(engine) as session:
+    async with SessionLocal() as session:
+    # with Session(engine) as session:
         user_1 = User(
-            name="Vanya",
+            full_name="Vanya",
+            email="vania50505050@gmail.com",
+            hashed_password='97014b6d26954784abddecae3b7b67f6',
         )
         file_1 = File(name="Prestel_main")
 
@@ -36,15 +47,19 @@ async def create_init_data() -> None:
         user_1.directories = [directory_1, dir_2]
         directory_1.files = [file_2]
         dir_2.files = [file_3]
+
+        session.add(file_4)
         file_4.user = user_1
-        # await session.commit()
-        session.commit()
+
+        await session.commit()
+        # session.commit()
 
 
 async def main() -> None:
     logger.info("Creating initial data")
-    # create_db_and_tables()
-    # await create_init_data()
+    await create_db_and_tables()
+
+    await create_init_data()
     # await select_dir_and_file()
     # await get_metadata_from_db(name_file= "Prestel_main")
     # update_file(6,FileUpdate(meta_data={'value': 'Petiusha'}))
@@ -54,7 +69,6 @@ async def main() -> None:
     # delete_file(9)
 
     # logger.info("Initial data created")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

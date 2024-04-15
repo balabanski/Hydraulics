@@ -2,7 +2,7 @@ import tkinter as tk
 
 from web_app.Pump.parameters import file_id, file_name, metadata_pump
 from web_app.Pump.pump import P, Q, V
-from web_app.utils._app import get_all_parameters
+from web_app.utils._app import widget_all_parameters
 # from web_app.utils.parameters import font, btn_master
 from web_app.utils.settings_gui import btn_master, font
 
@@ -11,7 +11,7 @@ def gui_main_pump():
     main_window_pump = tk.Tk()
     main_window_pump.title("расчет параметров гидронасоса")
 
-    get_all_parameters_pump = get_all_parameters(
+    get_all_parameters_pump = widget_all_parameters(
         main_window=main_window_pump,
         file_id=file_id,
         metadata=metadata_pump,

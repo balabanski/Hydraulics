@@ -5,13 +5,13 @@ from web_app.Cylinder.options import (
     arrangement,
     dif_or_no,
     direction,
-    insert_image,
-    option_input_cyl,
+    widget_image,
+    func_option_input_cyl,
 )
 from web_app.Cylinder.parameters import (
     metadata,
     name_par_cyl,
-    parameter_cyl_input,
+    parameter_input_cyl,
     reference_for_d1,
     reference_for_d2,
 )
@@ -34,17 +34,17 @@ def F_ring(d, d2):
 def func_F_with_JSON_file(key_d, *args):
     def _F_with_JSON_file():
         if key_d == "d1":
-            d = parameter_cyl_input(
+            d = parameter_input_cyl(
                 key_d, reference=reference_for_d1
             )  # ввод параметра и перезапись файла
         else:
-            d = parameter_cyl_input(key_d, reference=reference_for_d2)
+            d = parameter_input_cyl(key_d, reference=reference_for_d2)
         if len(args) == 0:
             f = F_circle(d)
             return f
         if len(args) == 1:
             key_d2 = args[0]
-            d2 = parameter_cyl_input(key_d2, reference=reference_for_d2)
+            d2 = parameter_input_cyl(key_d2, reference=reference_for_d2)
             f = F_ring(d, d2)
             return f
 
@@ -79,10 +79,10 @@ def _V2(L2, d1, d2):
 def func_V_wiht_JSON_file(func, key_V, key_L, *keys_d):
     def _V_wiht_JSON_file():
         args = []
-        for i in keys_d:
-            par = parameter_cyl_input(i)
-            args.append(par)
-        L = parameter_cyl_input(key_L)
+        for key_d in keys_d:
+            d = parameter_input_cyl(key_d)
+            args.append(d)
+        L = parameter_input_cyl(key_L)
         V = func(L, *args)
         metadata[key_V] = round(V, 2)
         return V
@@ -114,8 +114,8 @@ from debug import debug
 
 def t_teor(func_F, key_Q, key_L, key_t):
     def _t_teor():
-        Q = parameter_cyl_input(key_Q)
-        L = parameter_cyl_input(key_L)
+        Q = parameter_input_cyl(key_Q)
+        L = parameter_input_cyl(key_L)
         F = func_F()
         _t = round(t_theor_(Q, L, F), 1)
         metadata[key_t] = _t
@@ -144,8 +144,8 @@ def func_v_fact_with_dict(func_F, key_L, key_t, key_v):
             q = round(Q, 2)
             return q
 
-        L = parameter_cyl_input(key_L)
-        t = parameter_cyl_input(key_t)
+        L = parameter_input_cyl(key_L)
+        t = parameter_input_cyl(key_t)
         F = func_F()
         v = v_fact(L, t)
         Q = Q(F, v)
@@ -171,7 +171,7 @@ def v_theor(F, Q, n_ob=0.95):
 def func_v_theoretic_with_dict(func_F, key_Q, key_v):
     def _v_theoretic_with_dict():
         F = func_F()
-        Q = parameter_cyl_input(key_Q)
+        Q = parameter_input_cyl(key_Q)
         v = v_theor(F, Q)
         metadata[key_v] = round(v, 2)
         return v
@@ -195,7 +195,7 @@ def Q(F, v, n_ob=0.95):
 def func_Q_with_dict(func_F, funk_v, key_v, key_q):
     def Q_with_dict():
         F = func_F()
-        v = parameter_cyl_input(key_v)
+        v = parameter_input_cyl(key_v)
         _Q = Q(F, v, n_ob=0.95)
         metadata[key_q] = _Q
         return _Q
@@ -225,9 +225,9 @@ def P(
 def func_P_with_dict(key_P):
     def _P_with_dict():
         _P = 0
-        var_P = option_input_cyl(*arrangement)
-        m = parameter_cyl_input("m")
-        _a = parameter_cyl_input("a")
+        var_P = func_option_input_cyl(*arrangement)
+        m = parameter_input_cyl("m")
+        _a = parameter_input_cyl("a")
         g = None
         if var_P == arrangement[0]:
             g = 0
@@ -259,10 +259,10 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
     def _p_with_dict():
         F = func_F()
         options = ("ввести значение усилия", "вычислить значение усилия")
-        var_P = option_input_cyl(*options)
+        var_P = func_option_input_cyl(*options)
         _P = None
         if var_P == options[0]:
-            _P = parameter_cyl_input(key_P)
+            _P = parameter_input_cyl(key_P)
         elif var_P == options[1]:
             _P = func_P()
 
@@ -275,11 +275,11 @@ def func_p_with_dict(func_F, func_P, key_p, key_P):
 
 # функции фабрики закрытия - для вызова ввести   NameFunc()
 p1 = func_p_with_dict(F1, P1, "p1", "P1")  # требуемое давление при выдвижении штока
-p1_dif = func_p_with_dict(F_diff, P1, "p1", "P1")
+p1_diff = func_p_with_dict(F_diff, P1, "p1", "P1")
 p2 = func_p_with_dict(F2, P2, "p2", "P2")  # требуемое давление при втягивании штока
 
 
-nomogramma_compiled = None
+func_widget_nomogramma = None
 
 
 def selection_D_and_d():
@@ -289,14 +289,14 @@ def selection_D_and_d():
     определения диаметра штока
     """
 
-    var_p = option_input_cyl(dif_or_no[1], *direction)
+    var_p = func_option_input_cyl("p1", "p1_diff", "p2", from_config=True)
     key_p = None
     key_P = None
 
-    nomogramma_path = str(Path(Path.cwd(), "Cylinder", "images", "Nomogramma_.png"))
-    global nomogramma_compiled
-    if not nomogramma_compiled:
-        nomogramma_compiled = insert_image(nomogramma_path)
+    nomogramma_path = str(Path(Path.cwd(), "web_app", "Cylinder", "images", "Nomogramma_.png"))
+    global func_widget_nomogramma
+    if not func_widget_nomogramma:
+        func_widget_nomogramma = widget_image(nomogramma_path)
 
     if var_p == direction[0] or var_p == dif_or_no[1]:
         key_p = "p1"
@@ -305,16 +305,16 @@ def selection_D_and_d():
         key_p = "p2"
         key_P = "P2"
 
-    p = parameter_cyl_input(key_p)
+    p = parameter_input_cyl(key_p)
     P = None
     options_P = ("ввести значение усилия", "вычислить значение усилия")
-    var_P = option_input_cyl(*options_P)
+    var_P = func_option_input_cyl(*options_P)
     if var_P == options_P[0]:
-        P = parameter_cyl_input(key_P)
+        P = parameter_input_cyl(key_P)
     elif var_P == options_P[1]:
         P = func_P_with_dict(key_P)()
         metadata[key_P] = P
-        P = parameter_cyl_input(key=key_P, message="в результате вычисления")
+        P = parameter_input_cyl(key=key_P, message="в результате вычисления")
 
     message_for_d1 = (
         "В соответствии с заданным усилием при выдвижении "
@@ -326,7 +326,7 @@ def selection_D_and_d():
         "{} (кН) и условной длины штока (ход поршня определён {}(мм)) по номогррамме."
         "\n".format(metadata.get("P1"), metadata.get("L1", metadata.get("L2")))
     )
-    arg_for_d2 = dict(reference=_reference + reference_for_d2, image_compiled=nomogramma_compiled)
+    arg_for_d2 = dict(reference=_reference + reference_for_d2, func_widget_image=func_widget_nomogramma)
 
     F = P * 100 / p  #  определяем требуемую площадь см2(Н/см2==10Bar
 
@@ -334,14 +334,14 @@ def selection_D_and_d():
         d = sqrt(F * 100 / 0.785)
         metadata["d1"] = d
 
-        d = parameter_cyl_input(key="d1", message=message_for_d1, reference=reference_for_d1)
-        parameter_cyl_input(key="d2", **arg_for_d2)
+        parameter_input_cyl(key="d1", message=message_for_d1, reference=reference_for_d1)
+        parameter_input_cyl(key="d2", **arg_for_d2)
 
     elif var_p == dif_or_no[1]:
         d = sqrt(F * 100 / 0.785)
         metadata["d2"] = d
 
-        d = parameter_cyl_input(
+        parameter_input_cyl(
             key="d2",
             message="при дифференциальной схеме рабочей площадью "
             "является площадь штока.\n" + message_for_d1,
@@ -349,7 +349,7 @@ def selection_D_and_d():
         )
 
     elif var_p == direction[1]:
-        d2 = parameter_cyl_input(key="d2", **arg_for_d2)
+        d2 = parameter_input_cyl(key="d2", **arg_for_d2)
         d = sqrt((F * 100 / 0.786) + d2**2)
         msg_for_d2 = (
             "если диаметр штока определён значением {} мм и\n{} опрелен"
@@ -369,7 +369,7 @@ def selection_D_and_d():
         else:
             metadata["d1"] = d
 
-        parameter_cyl_input(key="d1", message=msg_for_d2, reference=reference_for_d1)
+        parameter_input_cyl(key="d1", message=msg_for_d2, reference=reference_for_d1)
     return "диаметр поршня d1 = {}\n диаметр штока d2 = {}".format(
         metadata.get("d1"), metadata.get("d2")
     )

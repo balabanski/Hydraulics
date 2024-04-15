@@ -95,13 +95,13 @@ def gui_filedialog():
 
 
 # ввод запрашиваемых значений и перезапись файла
-def parameter_input(metadata, _name_par, _file_id, _file_name) -> float:
+def gui_parameter_input(metadata, _name_par, _file_id, _file_name) -> float:
     """
     сосдаем окно верхнего уровня (поверх основного)
     для ввода необходимых параметров и записи их во внешний файл
     """
 
-    def _parameter_input(key, message=None, reference=None, image_compiled=None):
+    def _parameter_input(key, message=None, reference=None, func_widget_image=None):
         window_ = tk.Toplevel()
         title_text = "ввод параметра {}".format(_name_par.get(key))
         window_.title(title_text)
@@ -117,8 +117,8 @@ def parameter_input(metadata, _name_par, _file_id, _file_name) -> float:
         if reference:
             lbl_text = "{}\n\n{}".format(lbl_text, reference)
 
-        if image_compiled:
-            image_compiled(window_, height=550, width=1050).grid(row=6, column=0)
+        if func_widget_image:
+            func_widget_image(window_, height=550, width=1050).grid(row=6, column=0)
 
         def clicked():
             global par
@@ -135,6 +135,7 @@ def parameter_input(metadata, _name_par, _file_id, _file_name) -> float:
         lbl.grid(column=0, row=0)
 
         ent = tk.Entry(window_, font=(font[0], 12))
+        ent.focus()
         ent.grid(column=1, row=0)
         btn = tk.Button(
             window_,

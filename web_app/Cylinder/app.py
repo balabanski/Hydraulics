@@ -16,7 +16,7 @@ from web_app.Cylinder.cylinder import (
     V1_diff,
     metadata,
     p1,
-    p1_dif,
+    p1_diff,
     p2,
     selection_D_and_d,
     t1,
@@ -29,22 +29,22 @@ from web_app.Cylinder.cylinder import (
     v2,
     v2_fact,
 )
-from web_app.Cylinder.options import clicked_main_menu_cyl, create_img_from_config, main_window_cyl
+from web_app.Cylinder.options import func_clicked_main_menu_cyl, widget_img_from_config, main_window_cyl
 from web_app.Cylinder.parameters import file_id, file_name
 from web_app.requests.req_file import update_file
-from web_app.utils._app import get_all_parameters
+from web_app.utils._app import widget_all_parameters
 from web_app.utils.settings_gui import btn_master, font
 
 
 def gui_main_cyl():
-    get_all_parameters_cyl = get_all_parameters(
+    widget_all_parameters_cyl = widget_all_parameters(
         main_window=main_window_cyl,
         file_id=file_id,
         metadata=metadata,
         file_name=file_name,
     )
 
-    get_all_parameters_cyl()
+    widget_all_parameters_cyl()
 
     # подбор диаметра поршня и штока исходя из:------------------------------------
     #    -выбранной конфигурации работы цилиндра
@@ -73,7 +73,7 @@ def gui_main_cyl():
         main_window_cyl,
         text="v(м/сек) - расчёт теоретической скорости",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(
+        command=func_clicked_main_menu_cyl(
             lbl_speed_v_theoretic,
             from_config=True,
             message=True,
@@ -92,7 +92,7 @@ def gui_main_cyl():
         main_window_cyl,
         text="Q(л/мин) - расчёт требуемого(фактического) расхода",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(
+        command=func_clicked_main_menu_cyl(
             lbl_flow_Q, from_config=True, message=True, Q1=Q1, Q2=Q2, Q1_diff=Q1_diff
         ),
         **btn_master,
@@ -106,7 +106,7 @@ def gui_main_cyl():
         main_window_cyl,
         text="P(кН) - расчёт требуемого усилия",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(
+        command=func_clicked_main_menu_cyl(
             lbl_force_P, from_config=True, message=True, P1=P1, P2=P2, P1_diff=P1_diff
         ),
         **btn_master,
@@ -120,8 +120,8 @@ def gui_main_cyl():
         main_window_cyl,
         text="p(Bar) -расчет требуемого давления" "(без учета потерь трения)",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(
-            lbl_pressure_p, from_config=True, message=True, p1=p1, p1_dif=p1_dif, p2=p2
+        command=func_clicked_main_menu_cyl(
+            lbl_pressure_p, from_config=True, message=True, p1=p1, p1_diff=p1_diff, p2=p2
         ),
         **btn_master,
     )
@@ -134,7 +134,7 @@ def gui_main_cyl():
         main_window_cyl,
         text="t(сек.) -расчетное время хода поршня",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(
+        command=func_clicked_main_menu_cyl(
             lbl_time_t, from_config=True, message=True, t1=t1, t1_diff=t1_diff, t2=t2
         ),
         **btn_master,
@@ -148,7 +148,7 @@ def gui_main_cyl():
         main_window_cyl,
         text="V(л.)- вычисление объёма",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(lbl_V, from_name_par=True, V1=V1, V1_diff=V1_diff, V2=V2),
+        command=func_clicked_main_menu_cyl(lbl_V, from_name_par=True, V1=V1, V1_diff=V1_diff, V2=V2),
         **btn_master,
     )
     btn_V.grid(column=0, row=19)
@@ -160,7 +160,7 @@ def gui_main_cyl():
         main_window_cyl,
         text="F(см2)- расчет площадей",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(lbl_area_F, from_name_par=True, F1=F1, F1_diff=F_diff, F2=F2),
+        command=func_clicked_main_menu_cyl(lbl_area_F, from_name_par=True, F1=F1, F1_diff=F_diff, F2=F2),
         **btn_master,
     )
     btn_area_F.grid(column=0, row=22)
@@ -172,7 +172,7 @@ def gui_main_cyl():
         main_window_cyl,
         text="фактические t(время)-v(скорость) хода поршня\n" "и расчетная подача Q",
         font=(font[0], 12),
-        command=clicked_main_menu_cyl(
+        command=func_clicked_main_menu_cyl(
             lbl_speed_v,
             from_config=True,
             message=True,
@@ -184,6 +184,6 @@ def gui_main_cyl():
     )
     btn_speed_v.grid(column=0, row=24)
 
-    create_img_from_config()
+    widget_img_from_config()
 
     main_window_cyl.mainloop()

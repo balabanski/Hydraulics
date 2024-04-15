@@ -6,7 +6,7 @@ from web_app.requests.req_file import update_file
 from web_app.utils.settings_gui import btn_master, font
 
 
-def get_all_parameters(main_window=None, file_id=None, metadata=None, file_name=None):
+def widget_all_parameters(main_window=None, file_id=None, metadata=None, file_name=None):
     def _get_all_parameters():
         txt_param = tk.Text(main_window, width=50, height=12, font=(font[0], 12))
         txt_param.grid(column=0, row=1)

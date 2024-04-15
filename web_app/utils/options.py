@@ -5,7 +5,7 @@ from web_app.requests.req_file import update_file
 from web_app.utils.parameters import btn_master, font
 
 
-def insert_image(image_path):
+def widget_image(image_path):
     def create_img(root, height=None, width=None, columnspan=None):
         canvas = tk.Canvas(root, height=height, width=width)  # height = 550, width = 1050
         canvas.create_image(0, 0, anchor="nw", image=img_compiled)
@@ -105,6 +105,7 @@ def option_input(
                 select_img_and_message_from_type()
             except:
                 _type.set(args[0])
+                select_img_and_message_from_type()
 
         def clicked():
             func_create_img_from_config()

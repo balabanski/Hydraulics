@@ -1,5 +1,5 @@
 from web_app.requests.req_file import get_metadata_from_file
-from web_app.utils.parameters import gui_filedialog, parameter_input
+from web_app.utils.parameters import gui_filedialog, gui_parameter_input
 
 
 name_par_mot = {
@@ -18,7 +18,7 @@ file_name = file_list[1]
 metadata_mot = get_metadata_from_file(id_=file_id)
 
 
-parameter_mot_input = parameter_input(
+parameter_mot_input = gui_parameter_input(
     metadata=metadata_mot,
     _name_par=name_par_mot,
     _file_id=file_id,

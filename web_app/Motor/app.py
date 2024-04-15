@@ -2,7 +2,7 @@ import tkinter as tk
 
 from web_app.Motor.motor import M, P, Q, V, n, p
 from web_app.Motor.parameters import file_id, file_name, metadata_mot
-from web_app.utils._app import get_all_parameters
+from web_app.utils._app import widget_all_parameters
 from web_app.utils.settings_gui import btn_master, font
 
 
@@ -10,7 +10,7 @@ def gui_main_mot():
     main_window_mot = tk.Tk()
     main_window_mot.title("расчет параметров гидромотора")
 
-    get_all_parameters_mot = get_all_parameters(
+    get_all_parameters_mot = widget_all_parameters(
         main_window=main_window_mot,
         file_id=file_id,
         metadata=metadata_mot,

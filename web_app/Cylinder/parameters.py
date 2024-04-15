@@ -1,5 +1,5 @@
 from web_app.requests.req_file import get_metadata_from_file
-from web_app.utils.parameters import gui_filedialog, parameter_input
+from web_app.utils.parameters import gui_filedialog, gui_parameter_input
 
 
 name_par_cyl = {
@@ -31,7 +31,7 @@ name_par_cyl = {
     "P1_diff": "P1_diff (кН) - (при дифференциальной схеме) усилие при выдвижении штока",
     "m": "m (тн) - масса груза",
     "p1": "p1 (Bar) - давление в поршневой полости (при выдвижении штока)",
-    "p1_dif": "p1_dif (Bar) - (при дифференциальной схеме)давление в поршневой полости (при выдвижении штока)",
+    "p1_diff": "p1_diff (Bar) - (при дифференциальной схеме)давление в поршневой полости (при выдвижении штока)",
     "p2": "p2 (Bar) - давление в штоковой полости (при втягивании штока)",
     "a": "a(м/с2) - ускорение",
 }
@@ -56,6 +56,6 @@ reference_for_d2 = (
 )
 
 # экземпляр функции parameter_input
-parameter_cyl_input = parameter_input(
+parameter_input_cyl = gui_parameter_input(
     metadata=metadata, _name_par=name_par_cyl, _file_id=file_id, _file_name=file_name
 )

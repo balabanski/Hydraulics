@@ -5,8 +5,8 @@ from web_app.Cylinder.options import (
     arrangement,
     dif_or_no,
     direction,
-    widget_image,
     func_option_input_cyl,
+    widget_image,
 )
 from web_app.Cylinder.parameters import (
     metadata,
@@ -326,7 +326,10 @@ def selection_D_and_d():
         "{} (кН) и условной длины штока (ход поршня определён {}(мм)) по номогррамме."
         "\n".format(metadata.get("P1"), metadata.get("L1", metadata.get("L2")))
     )
-    arg_for_d2 = dict(reference=_reference + reference_for_d2, func_widget_image=func_widget_nomogramma)
+    arg_for_d2 = dict(
+        reference=_reference + reference_for_d2,
+        func_widget_image=func_widget_nomogramma,
+    )
 
     F = P * 100 / p  #  определяем требуемую площадь см2(Н/см2==10Bar
 

@@ -29,7 +29,11 @@ from web_app.Cylinder.cylinder import (
     v2,
     v2_fact,
 )
-from web_app.Cylinder.options import func_clicked_main_menu_cyl, widget_img_from_config, main_window_cyl
+from web_app.Cylinder.options import (
+    func_clicked_main_menu_cyl,
+    main_window_cyl,
+    widget_img_from_config,
+)
 from web_app.Cylinder.parameters import file_id, file_name
 from web_app.requests.req_file import update_file
 from web_app.utils._app import widget_all_parameters
@@ -121,7 +125,12 @@ def gui_main_cyl():
         text="p(Bar) -расчет требуемого давления" "(без учета потерь трения)",
         font=(font[0], 12),
         command=func_clicked_main_menu_cyl(
-            lbl_pressure_p, from_config=True, message=True, p1=p1, p1_diff=p1_diff, p2=p2
+            lbl_pressure_p,
+            from_config=True,
+            message=True,
+            p1=p1,
+            p1_diff=p1_diff,
+            p2=p2,
         ),
         **btn_master,
     )
@@ -148,7 +157,9 @@ def gui_main_cyl():
         main_window_cyl,
         text="V(л.)- вычисление объёма",
         font=(font[0], 12),
-        command=func_clicked_main_menu_cyl(lbl_V, from_name_par=True, V1=V1, V1_diff=V1_diff, V2=V2),
+        command=func_clicked_main_menu_cyl(
+            lbl_V, from_name_par=True, V1=V1, V1_diff=V1_diff, V2=V2
+        ),
         **btn_master,
     )
     btn_V.grid(column=0, row=19)
@@ -160,7 +171,9 @@ def gui_main_cyl():
         main_window_cyl,
         text="F(см2)- расчет площадей",
         font=(font[0], 12),
-        command=func_clicked_main_menu_cyl(lbl_area_F, from_name_par=True, F1=F1, F1_diff=F_diff, F2=F2),
+        command=func_clicked_main_menu_cyl(
+            lbl_area_F, from_name_par=True, F1=F1, F1_diff=F_diff, F2=F2
+        ),
         **btn_master,
     )
     btn_area_F.grid(column=0, row=22)
@@ -183,7 +196,9 @@ def gui_main_cyl():
         **btn_master,
     )
     btn_speed_v.grid(column=0, row=24)
-
-    widget_img_from_config()
+    try:
+        widget_img_from_config()
+    except AttributeError as e:
+        raise AttributeError(e.args, "не задан файл для хранения параметров")
 
     main_window_cyl.mainloop()

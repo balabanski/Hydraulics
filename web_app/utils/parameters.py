@@ -2,7 +2,7 @@ import asyncio
 import tkinter as tk
 
 from web_app.requests.req_file import create_file, delete_file, get_list_files, update_file
-from web_app.user import get_token
+from web_app.user import GUI_login, get_token
 from web_app.utils.settings_gui import btn_master, font
 
 
@@ -34,14 +34,21 @@ def gui_filedialog():
     global file_name
 
     window_ = tk.Tk()
-
     title_text = "открыть или создать файл для хранения параметров"
-    lbl_text_error = "Для работы необходимо " + title_text
-    lbl_text_message = lbl_text_error + "\nвыбери вариант"
-
     window_.title(title_text)
-    tk.Label(window_, text=lbl_text_message, font=(font[0], 12)).grid(row=0)
-    lbl_error = tk.Label(window_, text=lbl_text_error, font=(font[0], 12), **btn_master)
+
+    if init_list_files is not None:
+        lbl_text = " Для работы необходимо " + title_text
+        lbl_text_message = lbl_text + "\nвыбери вариант"
+        tk.Label(window_, text=lbl_text_message, font=(font[0], 12)).grid(row=0)
+    else:
+        lbl_text_message = "Похоже ваш токен устарел.\n Закройте это окно, пройдите авторизацию, и повторите попытку."
+        tk.Label(window_, text=lbl_text_message, font=(font[0], 12)).grid(row=0)
+
+        login_ = GUI_login(root=tk.Tk())
+        login_.setup_login()
+        login_.start()
+        raise Exception("повторить действия")
 
     _row = 2
     for i in init_list_files:
@@ -68,7 +75,9 @@ def gui_filedialog():
     def create_file_click():
         name_ = ent.get()
         print("****************CREATE**************************")
-        create_file(name_=name_)
+        if name_:
+            create_file(name_=name_)
+
         window_.destroy()
         print("****************in CREATE**init_list_files************************")
         # init_list_files = asyncio.run(get_list_files())

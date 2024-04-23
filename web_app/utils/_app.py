@@ -11,7 +11,7 @@ def widget_all_parameters(main_window=None, file_id=None, metadata=None, file_na
         txt_param = tk.Text(main_window, width=50, height=12, font=(font[0], 12))
         txt_param.grid(column=0, row=1)
 
-        error_open_file_message = "\nне задан файл для хранения параметров\n"
+        error_open_file_message = "\nне задан файл для хранения параметров\nЗАКРОЙТЕ ОКНО!"
 
         def get_all_param():
             txt_param.delete(0.0, 100.100)

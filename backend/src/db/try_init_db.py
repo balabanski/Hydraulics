@@ -1,13 +1,14 @@
 import asyncio
 import logging
-# from sqlalchemy.orm import Session
-from sqlmodel import SQLModel
-from backend.src.db.session import engine
-# from backend.src.models import Directory, File, User
-from backend.src.models import *
-from backend.src.core.config import settings
+
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.orm import Session
+from sqlmodel import SQLModel
+
+from backend.src.core.config import settings
+# from backend.src.db.session import engine
+from backend.src.models import Directory, File, User
 
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -28,11 +29,11 @@ async def create_db_and_tables():
 # ---------------------------------create_data----------------------------------------------
 async def create_init_data() -> None:
     async with SessionLocal() as session:
-    # with Session(engine) as session:
+        # with Session(engine) as session:
         user_1 = User(
             full_name="Vanya",
             email="vania50505050@gmail.com",
-            hashed_password='97014b6d26954784abddecae3b7b67f6',
+            hashed_password="97014b6d26954784abddecae3b7b67f6",
         )
         file_1 = File(name="Prestel_main")
 
@@ -69,6 +70,7 @@ async def main() -> None:
     # delete_file(9)
 
     # logger.info("Initial data created")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

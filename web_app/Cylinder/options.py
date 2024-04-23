@@ -2,7 +2,7 @@ import tkinter as tk
 from pathlib import Path
 
 from web_app.Cylinder.parameters import file_id, file_name, metadata, name_par_cyl
-from web_app.utils.options import clicked_main_menu, widget_image, option_input
+from web_app.utils.options import clicked_main_menu, option_input, widget_image
 
 
 main_window_cyl = tk.Tk()

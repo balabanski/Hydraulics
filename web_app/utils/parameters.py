@@ -3,29 +3,18 @@ import tkinter as tk
 
 from web_app.requests.req_file import create_file, delete_file, get_list_files, update_file
 from web_app.user import GUI_login, get_token
-from web_app.utils.settings_gui import btn_master, font
+from web_app.utils.settings_gui import btn_master,btn_master_2, font
 
 
 file_id = None
 file_name = None
 
 
-def click_name_(_file_id, _file_name) -> int:
-    def _get_id():
-        global file_id
-        global file_name
-        file_id = _file_id
-        file_name = _file_name
-        print("file_id, file_name__________________", file_id, file_name)
-
-    return _get_id
-
-
 # ---------------------------------------------------
 def gui_filedialog():
-    global init_list_files
     token = get_token()
 
+    print("****************in CREATE**init_list_files************************")
     init_list_files = asyncio.run(get_list_files(token_=token))
     print("init_list_files =__________________________________________", init_list_files)
 
@@ -39,35 +28,48 @@ def gui_filedialog():
 
     if init_list_files is not None:
         lbl_text = " Для работы необходимо " + title_text
-        lbl_text_message = lbl_text + "\nвыбери вариант"
-        tk.Label(window_, text=lbl_text_message, font=(font[0], 12)).grid(row=0)
+        tk.Label(window_, text=lbl_text, font=(font[0], 12)).grid(row=0)
     else:
-        lbl_text_message = "Похоже ваш токен устарел.\n Закройте это окно, пройдите авторизацию, и повторите попытку."
-        tk.Label(window_, text=lbl_text_message, font=(font[0], 12)).grid(row=0)
+        lbl_text = "Похоже ваш токен устарел.\n Закройте это окно, пройдите авторизацию, и повторите попытку."
+        tk.Label(window_, text=lbl_text, font=(font[0], 12)).grid(row=0)
 
         login_ = GUI_login(root=tk.Tk())
         login_.setup_login()
         login_.start()
         raise Exception("повторить действия")
 
+    # but = None
+    def click_name_(_file_id, _file_name, row_) -> int:
+        def _get_id():
+            global file_id
+            global file_name
+
+            file_id = _file_id
+            file_name = _file_name
+            print("file_id, file_name__________________", file_id, file_name)
+            but_open.configure(text=f"ОТКРЫТЬ {file_name}")
+            but_open.grid(column=0, row=1000)
+            but_del.configure(text=f"УДАЛИТЬ {file_name}")
+            but_del.grid(column=0, row=1005)
+
+        return _get_id
+
     _row = 2
     for i in init_list_files:
-        _row += _row
+        _row += 1
         tk.Button(
             window_,
             # text=i['name'] + f"  (id={i['id']})",
-            text=i[1] + f"  (id={i[0]})",
-            command=click_name_(_file_id=i[0], _file_name=i[1]),
-            **btn_master,
+            text=f"{i[1]} (id={i[0]})".center(28," "),
+            command=click_name_(_file_id=i[0], _file_name=i[1],row_=_row),
+            **btn_master_2,
         ).grid(column=0, row=_row)
 
-    tk.Button(
+    but_open = tk.Button(
         window_,
-        text="ОТКРЫТЬ",
-        # command=lambda: open_file_click(),
         command=lambda: window_.destroy(),
         **btn_master,
-    ).grid(column=0, row=1000)
+    )
 
     ent = tk.Entry(window_, font=(font[0], 12))
     ent.grid(column=0, row=1001)
@@ -79,11 +81,8 @@ def gui_filedialog():
             create_file(name_=name_)
 
         window_.destroy()
-        print("****************in CREATE**init_list_files************************")
-        # init_list_files = asyncio.run(get_list_files())
 
         gui_filedialog()
-        # func_init_list_files(list_files=init_list_files)
 
     tk.Button(window_, text="СОЗДАТЬ", command=create_file_click, **btn_master).grid(
         column=1, row=1001
@@ -94,9 +93,7 @@ def gui_filedialog():
         delete_file(id_=file_id)
         gui_filedialog()
 
-    tk.Button(window_, text="УДАЛИТЬ", command=delete_file_click, **btn_master).grid(
-        column=0, row=1005
-    )
+    but_del = tk.Button(window_, command=delete_file_click, **btn_master)
 
     window_.mainloop()
 

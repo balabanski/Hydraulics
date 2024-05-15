@@ -45,6 +45,9 @@ def create_file(name_):
     try:
         res = urllib.request.urlopen(req)
         print(res)
+        data_res_str = res.read().decode("UTF-8")
+        data_res_dict = json.loads(data_res_str)
+        return data_res_dict
     except Exception as e:
         for item in e.fp:
             print(

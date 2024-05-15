@@ -1,8 +1,8 @@
 import logging
 from typing import Any, Generic, List, Optional, Type, TypeVar
 
-from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+# from sqlalchemy.exc import MultipleResultsFound
 from sqlmodel import SQLModel, select
 
 from backend.src.interfaces.repository import IRepository
@@ -22,10 +22,8 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         self.db = db
 
     async def create(self, obj_in: CreateSchemaType) -> ModelType:
-        logger.info(f"\n**********Inserting new object[{obj_in.__class__.__name__}]")
-
+        logger.info(f"\n**********Inserting new object {obj_in} [{obj_in.__class__.__name__}]")
         db_obj = self._model.from_orm(obj_in)
-
         kwargs = {}
         add = kwargs.get("add", True)
         flush = kwargs.get("flush", True)
@@ -37,13 +35,16 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         if add and commit:
             try:
                 await self.db.commit()
+                print("******************commit*************************")
                 await self.db.refresh(db_obj)
+                print("******************refresh************************")
             except Exception as exc:
                 logger.error(exc)
                 await self.db.rollback()
 
         elif add and flush:
             await self.db.flush()
+        print("******************new db_obj\n", db_obj)
         return db_obj
 
     async def get(self, **kwargs: Any) -> Optional[ModelType]:
@@ -55,12 +56,16 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
         async with self.db:
             response = await self.db.execute(query)
             scalar: Optional[ModelType] = response.scalar_one_or_none()
-
-        if not scalar:
-            # raise ObjectNotFound(f"Object with [{kwargs}] not found.")
-            raise HTTPException(status_code=404, detail=f"Object with [{kwargs}] not found.")
-
-        return scalar
+            # try:
+            #     scalar: Optional[ModelType] = response.scalar_one_or_none()
+            #     if not scalar:
+            #         # raise ObjectNotFound(f"Object with [{kwargs}] not found.")
+            #         raise HTTPException(status_code=404, detail=f"****Object with [{kwargs}] not found.")
+            #     return scalar
+            # except MultipleResultsFound as e:
+            #     print(f"{e.args}".center(110,"*"))
+            #     raise HTTPException(status_code=400, detail=f"****Object with [{kwargs}] {e.args[0]}")
+            return scalar
 
     async def f(self, **kwargs: Any) -> List[ModelType]:
         logger.info(
@@ -120,12 +125,6 @@ class BaseSQLAlchemyRepository(IRepository, Generic[ModelType, CreateSchemaType,
             sort_order = OrderEnum.DESC
 
         order_by = getattr(columns[sort_field], sort_order)()
-
-        if not select_columns:
-            query = select(self._model).offset(skip).limit(limit).order_by(order_by)
-            response = await self.db.execute(query)
-
-            return response.scalars().all()
 
         if select_columns:
             list_columns = []

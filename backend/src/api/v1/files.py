@@ -9,6 +9,8 @@ from backend.src.repositories import FileRepository
 from backend.src.schemas.file import IFileCreateSchema, IFileReadSchema, IFileUpdateSchema
 
 
+# from starlette import status
+
 router = APIRouter()
 
 
@@ -21,9 +23,11 @@ async def list_files(
     session: AsyncSession = Depends(deps.get_db),
     user: models.User = Depends(deps.get_current_active_user),
 ):
-    # columns = ["id", "name"]
     repo = FileRepository(db=session)
+    # columns = ["id", "name"]
     # list_models_Files = await repo.all(sort_order="desc", select_columns=columns)
+    # print("%%%%%%%%%%******list_models_Files_________\n", list_models_Files)
+    # return list_models_Files
     list_models_Files = await repo.f(user_id=user.id)
     list_id_name = []
     for i in list_models_Files:
@@ -35,7 +39,7 @@ async def list_files(
 @router.post(
     "/create",
     response_description="create new file",
-    response_model=List[IFileReadSchema],
+    response_model=IFileReadSchema,
 )
 async def create_file(
     name: str,
@@ -43,10 +47,20 @@ async def create_file(
     user: models.User = Depends(deps.get_current_active_user),
 ):
     repo = FileRepository(db=session)
-    file = IFileCreateSchema(name=name, user_id=user.id)
-    await repo.create(obj_in=file)
-    list_id_name = await repo.f(user_id=user.id)
-    return list_id_name
+    obj_in = IFileCreateSchema(name=name, user_id=user.id)
+    file = await repo.create(obj_in=obj_in)
+    # try:
+    #     scalar = await repo.get(user_id=user.id, name=name)
+    #     if not scalar:
+    #         # raise ObjectNotFound(f"Object with [{kwargs}] not found.")
+    #         raise HTTPException(status_code=404, detail=f"Object with name [{name}] not found.")
+    #     return scalar
+    # except MultipleResultsFound as e:
+    #     print("*************MultipleResultsFound")
+    #     print(f"{e.args}".center(110, "*"))
+    #     print(f"The file with name [{name}] already exists in the system")
+    #     raise HTTPException(status_code=400, detail=f"The file with name [{name}] already exists in the system"
+    return file  # ==>dict
 
 
 @router.post(

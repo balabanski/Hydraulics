@@ -3,7 +3,7 @@ import logging
 # from aiohttp.web_exceptions import HTTPException
 from fastapi.exceptions import HTTPException
 
-from backend.src.db.session import get_session
+# from backend.src.db.session import get_session
 from backend.src.models import File
 from backend.src.repositories.sqlalchemy_ import BaseSQLAlchemyRepository
 from backend.src.schemas import IFileCreateSchema, IFileUpdateSchema
@@ -32,16 +32,16 @@ class FileRepository(BaseSQLAlchemyRepository[File, IFileCreateSchema, IFileUpda
         return db_file
 
 
-# _________________________________________________for asyncio.run (использую)______________________________________
+# _________________________________________________for asyncio.run ______________________________________
 
-
+"""
 async def select_file(columns=["id", "name"]):
     repo = FileRepository(db=await get_session())
     list_id_name = await repo.all(sort_order="desc", select_columns=columns)
     print("await repo.all()___________________________", list_id_name)
     return list_id_name
     # response.headers["x-content-range"] = f"{len(games)}/{limit}"
-
+"""
 
 """
 
@@ -54,12 +54,12 @@ async def select_file() -> None:
     return files
 """
 
-
+"""
 async def get_metadata_from_file(file_id):
     repo = FileRepository(db=await get_session())
     list_model_from_id = await repo.f(id=file_id)
     return list_model_from_id[0].meta_data
-
+"""
 
 """
 async def get_metadata_from_file(file_id):
@@ -93,7 +93,7 @@ async def create_file(file: IFileCreateSchema):
     return new_file.id
 """
 
-
+"""
 async def update_file(file_id: int, file: IFileUpdateSchema = None):
     repo = FileRepository(db=await get_session())
     file_current: File = await repo.get(**{"id": file_id})
@@ -102,7 +102,7 @@ async def update_file(file_id: int, file: IFileUpdateSchema = None):
         file_current,
     )
     await repo.update(obj_current=file_current, obj_in=file)
-
+"""
 
 """
 async def update_file(file_id: int, file: IFileUpdateSchema = None):
@@ -120,11 +120,11 @@ async def update_file(file_id: int, file: IFileUpdateSchema = None):
     return db_file
 """
 
-
+"""
 async def delete_file(file_id: int):
     repo = FileRepository(db=await get_session())
     await repo.delete(id=file_id)
-
+"""
 
 """
 

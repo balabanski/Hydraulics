@@ -3,7 +3,7 @@ import tkinter as tk
 
 from web_app.requests.req_file import create_file, delete_file, get_list_files, update_file
 from web_app.user import GUI_login, get_token
-from web_app.utils.settings_gui import btn_master,btn_master_2, font
+from web_app.utils.settings_gui import btn_master, btn_master_2, font
 
 
 file_id = None
@@ -14,7 +14,7 @@ file_name = None
 def gui_filedialog():
     token = get_token()
 
-    print("****************in CREATE**init_list_files************************")
+    print("****************in filedialog**init_list_files************************")
     init_list_files = asyncio.run(get_list_files(token_=token))
     print("init_list_files =__________________________________________", init_list_files)
 
@@ -60,8 +60,8 @@ def gui_filedialog():
         tk.Button(
             window_,
             # text=i['name'] + f"  (id={i['id']})",
-            text=f"{i[1]} (id={i[0]})".center(28," "),
-            command=click_name_(_file_id=i[0], _file_name=i[1],row_=_row),
+            text=f"{i[1]} (id={i[0]})".center(28, " "),
+            command=click_name_(_file_id=i[0], _file_name=i[1], row_=_row),
             **btn_master_2,
         ).grid(column=0, row=_row)
 
@@ -77,12 +77,16 @@ def gui_filedialog():
     def create_file_click():
         name_ = ent.get()
         print("****************CREATE**************************")
+        for tuple_ in init_list_files:
+            if name_ in tuple_:
+                raise Exception(f"фаил с именем {name_} уже существует")
         if name_:
-            create_file(name_=name_)
-
+            new_file = create_file(name_=name_)
+            global file_id
+            global file_name
+            file_id = new_file.get("id")
+            file_name = name_
         window_.destroy()
-
-        gui_filedialog()
 
     tk.Button(window_, text="СОЗДАТЬ", command=create_file_click, **btn_master).grid(
         column=1, row=1001

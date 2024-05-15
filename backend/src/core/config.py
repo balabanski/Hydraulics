@@ -170,4 +170,4 @@ settings = DevelopmentSettings()
 
 # print('settings.BACKEND_CORS_ORIGINS_______________', settings.BACKEND_CORS_ORIGINS)
 # print("POOL_SIZE_________________________________", settings.POOL_SIZE)
-print(settings.SECRET_KEY)
+# print("settings.POSTGRES_URL_____________", settings.POSTGRES_URL)

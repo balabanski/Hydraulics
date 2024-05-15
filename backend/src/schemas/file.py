@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
-from pydantic import BaseModel
-
+# from pydantic import BaseModel
+from backend.src.models.base import BaseModel
 from backend.src.models.files import FileBase
 
 
@@ -14,9 +14,9 @@ class IFileCreateSchema(FileBase):
     pass
 
 
-class IFileReadSchema(BaseModel):
-    id: int
-    name: str
+# class IFileReadSchema(BaseModel):
+class IFileReadSchema(FileBase, BaseModel):
+    pass
 
     # class Config:
     #     orm_mode = True
